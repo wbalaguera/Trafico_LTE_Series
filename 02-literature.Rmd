@@ -9,5 +9,5 @@ Las fuentes de información son las siguientes:
 
 **Dane:** Información de municipios de la cantidad de población , los municipios selecionados fueron los categorizados por el dane como de "poblacion media"
 
-**Paginas Web:** Información de las fechas de las ferias y fiestas de los municipios de cundinamarca
+**Paginas Web:** Información de las fechas de las ferias y fiestas de los municipios de Cundinamarca
 
