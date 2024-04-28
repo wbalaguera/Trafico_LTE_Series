@@ -35,3 +35,5 @@ análisis-de-rezagos
 formato-de-fechas
 análisis-de-estacionalidad
 preparación-y-análisis
+proximos-pasos
+proximos-pasos-1
