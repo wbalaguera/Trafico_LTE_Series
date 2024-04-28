@@ -1,4 +1,16 @@
-# Pasos siguientes
+# Análisis de la Series de Tiempo
+
+
+## Análisis descriptivo
+
+Al visualizar la serie de tiempo se puede ver la tendencia del tráfico con una pendiente positiva,
+al tener una poblacion en constante crecimiento y con mas demanda de atos moviles en redes LTE 
+es normal su gráfica.
+
+
+```{r}
+plot(serie_tiempo)
+```
 
 Some _significant_ applications are demonstrated in this chapter.
 
