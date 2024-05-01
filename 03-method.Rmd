@@ -34,8 +34,17 @@ Buscamos el mínimo día y la cantidad de días
 
 fecha_inicio <- min(data_sitio$M_FECHA_DIA)
 n_dias <- as.numeric(max(data_sitio$M_FECHA_DIA) - fecha_inicio) + 1
-
+fecha_max <- max(data_sitio$M_FECHA_DIA)
+fecha_inicio
+fecha_max
 ```
+
+Verificamos el dia mínimo y el máximo
+```{r}
+fecha_inicio
+fecha_max
+```
+
 
 Verificamos si la serie no tiene datos faltantes entre dias
 ```{r}
@@ -57,9 +66,18 @@ head(selected_columns)
 ```
 
 
+
+
+
 Creamos la serie de tiempo con la función  "ts" donde le indicamos la fecha de inicio con una frecuencia diaria
 ```{r}
-serie_tiempo <- ts(data_sitio$PAYLOAD_4G, start=c(as.numeric(format(fecha_inicio, "%Y")), as.numeric(format(fecha_inicio, "%j"))), frequency=7)
+
+serie_tiempo <- ts(
+    data_sitio$PAYLOAD_4G, 
+    start=c(as.numeric(format(fecha_inicio, "%Y")), as.numeric(format(fecha_inicio, "%j"))),
+    frequency=365
+    )
+
 ```
 
 Verificamos el tipo de datos de la serie de tiempo 
@@ -67,6 +85,20 @@ Verificamos el tipo de datos de la serie de tiempo
 class(serie_tiempo)
 ```
 
+
+Validación de fecha mínima y máxima de la serie
+
+```{r}
+start_time <- start(serie_tiempo)
+end_time <- end(serie_tiempo)
+frequency <- frequency(serie_tiempo)
+min_date <- as.Date(paste(start_time[1], start_time[2], sep="-"), "%Y-%j")
+max_date <- as.Date(paste(end_time[1], (end_time[2]-1) / frequency * 365, sep="-"), "%Y-%j")
+
+min_date
+max_date
+
+```
 
 ## Análisis Series de tiempo
 
@@ -109,9 +141,9 @@ Dentro la imagen podemos observar lo siguiente
 
 1. **Observed:**: Nos muestra la serie original , es decir la serie sin modificaciones.
     
-2. **Tred:** En la tendencia nos muestra la tendencia eliminando el ruido y estacionalidad sin embargo se observan picosal fina.l
+2. **Tred:** En la tendencia nos muestra la tendencia eliminando el ruido y estacionalidad sin embargo se observan los  picos de tráfico al final.
   
-3. **Seasonal:**: En la Estacionalidad podemos observar un patrón claro y repetitivo , lo cual indica  que existe estacionalidad en los datos en la serie de tiempo.
+3. **Seasonal:**: En la Estacionalidad podemos observar un patrón claro y repetitivo , lo cual indica  que existe estacionalidad en los datos del tráfico en esta de serie de tiempo.
 
 3. **Random**: Este gráfico muestra residuales o fluctuaciones que nos se pueden explicar , ya que puede ser atípicos o ruido, para estos casos particulares en tráfico hay que hacer investigaciones de las causas de estas anomalias.
 
@@ -120,6 +152,9 @@ Dentro la imagen podemos observar lo siguiente
 descomposicion <- decompose(serie_tiempo)
 
 plot(descomposicion)
+
+
+write.csv(serie_tiempo, "serie_tiempo.csv", row.names = FALSE)
 ```
 
 
