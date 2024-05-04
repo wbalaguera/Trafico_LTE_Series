@@ -221,7 +221,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ol>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="análisis-de-estacionariedad.html#cb7-1" tabindex="-1"></a>descomposicion <span class="ot">&lt;-</span> <span class="fu">decompose</span>(serie_tiempo)</span>
 <span id="cb7-2"><a href="análisis-de-estacionariedad.html#cb7-2" tabindex="-1"></a><span class="fu">plot</span>(descomposicion)</span></code></pre></div>
-<p><img src="Series-de-Tiempo_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p><img src="Series-de-Tiempo_files/figure-html/4_descomposicion-1.png" width="672" /></p>
 </div>
 <div id="diferenciacion-y-logaritmos" class="section level2 hasAnchor" number="5.3">
 <h2><span class="header-section-number">5.3</span> Diferenciacion y Logaritmos<a href="análisis-de-estacionariedad.html#diferenciacion-y-logaritmos" class="anchor-section" aria-label="Anchor link to header"></a></h2>
@@ -231,7 +231,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>Para el caso de logaritmos usamos la función “log”</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="análisis-de-estacionariedad.html#cb8-1" tabindex="-1"></a>serielog<span class="ot">=</span><span class="fu">log</span>(serie_tiempo)</span>
 <span id="cb8-2"><a href="análisis-de-estacionariedad.html#cb8-2" tabindex="-1"></a><span class="fu">plot</span>(serielog)</span></code></pre></div>
-<p><img src="Series-de-Tiempo_files/figure-html/unnamed-chunk-7-1.png" width="672" />
+<p><img src="Series-de-Tiempo_files/figure-html/4_1_log-1.png" width="672" />
 Al ver la gráfica no podemos apreciar estacionariedad ya que se ven caidas y bajadas y su media es diferente de cero.</p>
 <p>Verificamos si es estacionaria por medio de la prueba de “Dickey-Fuller” con la libreria “adf”</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="análisis-de-estacionariedad.html#cb9-1" tabindex="-1"></a><span class="fu">adf.test</span>(serielog,<span class="at">alternative =</span> <span class="st">&quot;stationary&quot;</span>)</span></code></pre></div>
@@ -252,7 +252,7 @@ Al ver la gráfica no podemos apreciar estacionariedad ya que se ven caidas y ba
 <p>El resultado es 1 diferencia para convertir la serie en estacionaria</p>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="análisis-de-estacionariedad.html#cb13-1" tabindex="-1"></a>seriedif<span class="ot">=</span><span class="fu">diff</span>(serie_tiempo)</span>
 <span id="cb13-2"><a href="análisis-de-estacionariedad.html#cb13-2" tabindex="-1"></a><span class="fu">plot</span>(seriedif,<span class="at">lty=</span><span class="st">&quot;dashed&quot;</span>,<span class="at">col=</span><span class="st">&quot;red&quot;</span>,<span class="at">main=</span><span class="st">&quot;Serie de Tiempo de Tráfico LTE&quot;</span>)</span></code></pre></div>
-<p><img src="Series-de-Tiempo_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p><img src="Series-de-Tiempo_files/figure-html/4_5_dir_serie-1.png" width="672" /></p>
 <p>Al ver la gráfica podemos apreciar que los datos estan alrededor de la misma media , en este caso de “cero”</p>
 <p>Para verificar si es estacionaria lo hacemos por medio de la prueba de “Dickey-Fuller” con la libreria “adf”</p>
 <div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="análisis-de-estacionariedad.html#cb14-1" tabindex="-1"></a><span class="fu">adf.test</span>(seriedif,<span class="at">alternative =</span> <span class="st">&quot;stationary&quot;</span>)</span></code></pre></div>
@@ -275,7 +275,7 @@ Al ver la gráfica no podemos apreciar estacionariedad ya que se ven caidas y ba
 <span id="cb19-3"><a href="análisis-de-estacionariedad.html#cb19-3" tabindex="-1"></a><span class="fu">Acf</span>(serie_tiempo,<span class="at">main=</span><span class="st">&quot;Serie No Estacionaria&quot;</span>)</span>
 <span id="cb19-4"><a href="análisis-de-estacionariedad.html#cb19-4" tabindex="-1"></a><span class="fu">plot</span>(seriedif)</span>
 <span id="cb19-5"><a href="análisis-de-estacionariedad.html#cb19-5" tabindex="-1"></a><span class="fu">acf</span>(seriedif,<span class="at">main=</span><span class="st">&quot;Serie Estacionaria&quot;</span>)</span></code></pre></div>
-<p><img src="Series-de-Tiempo_files/figure-html/unnamed-chunk-13-1.png" width="672" />
+<p><img src="Series-de-Tiempo_files/figure-html/4_8_Autocorr-1.png" width="672" />
 Podemos observar que el primer gráfico ” no es estacionario” tiene una tendencia , la cual es verificada por la autocorrelación de la derecha . el cual supera el el umbral de líneas azules (+/-)1.96</p>
 <p>En los gráficos inferiores se puede ver una media constante , varianza constante, y se puede ver en la gráfica de la derecha la comprobación de autocorrelacion donde se ve que no supera el umbral de (+/-)1.96</p>
 

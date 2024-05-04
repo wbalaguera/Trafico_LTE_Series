@@ -105,12 +105,12 @@ max_date
 ### Análisis descriptivo
 
 Al visualizar la serie de tiempo se puede ver la tendencia del tráfico con una pendiente positiva, al tener una población en constante crecimiento y con más demanda de datos móviles en redes LTE 
-```{r}
+```{r 3_trafico}
 plot(serie_tiempo)
 ```
 
 Tráfico por Año
-```{r}
+```{r 3_1_trafico_año}
 seasonplot(serie_tiempo,col=rainbow(4),year.labels = TRUE)
 ```
 
@@ -137,7 +137,7 @@ En este análisis podemos observar como los valores pasados de una serie afectan
 En la imagen podemos observar como todas las barras superan el umbral de líneas azules (+/-)1.96, lo que demuestra una alta autocorrelación en todos los rezagos. Esta autocorrelación demuestra que la serie no es aleatoria y puede ser una señal de estacionalidad o de tendencia
 
 
-```{r}
+```{r 3_2_acf}
 acf(serie_tiempo)
 
 ```
@@ -155,7 +155,7 @@ Dentro la imagen podemos observar lo siguiente
 3. **Random**: Este gráfico muestra residuales o fluctuaciones que nos se pueden explicar , ya que puede ser atípicos o ruido, para estos casos particulares en tráfico hay que hacer investigaciones de las causas de estas anomalias.
 
 
-```{r}
+```{r 3_3_descomposicion}
 descomposicion <- decompose(serie_tiempo)
 
 plot(descomposicion)

@@ -51,7 +51,7 @@ Dentro la imagen podemos observar lo siguiente:
 3. **Random**: Este gráfico muestra residuales o fluctuaciones que nos se pueden explicar , ya que puede ser atípicos o ruido, para estos casos particulares en tráfico hay que hacer investigaciones de las causas de estas anomalias.
 
 
-```{r}
+```{r 4_descomposicion}
 descomposicion <- decompose(serie_tiempo)
 plot(descomposicion)
  
@@ -68,7 +68,7 @@ Para poder realizar un Arima es importante tener estacionariedad ,  por eso debe
 
 Para el caso de logaritmos usamos la función "log"
 
-```{r}
+```{r 4_1_log}
 serielog=log(serie_tiempo)
 plot(serielog)
 ```
@@ -76,7 +76,7 @@ Al ver la gráfica no podemos apreciar estacionariedad ya que se ven caidas y ba
 
 Verificamos si es estacionaria por medio de la prueba de "Dickey-Fuller" con la libreria  "adf"
 
-```{r}
+```{r 4_1_log_test}
 adf.test(serielog,alternative = "stationary")
 ```
 
@@ -90,14 +90,14 @@ Con logaritmo no logramos conseguir Estacionariedad
 
 Antes de realizar las diferencias podemos ejecutar el comando "ndiffs" para saber cuantas necesitamos
 
-```{r}
+```{r 4_4_dif}
 ndiffs(serie_tiempo)
 ```
 El resultado es 1 diferencia para convertir la serie en estacionaria
 
 
 
-```{r}
+```{r 4_5_dir_serie}
 seriedif=diff(serie_tiempo)
 plot(seriedif,lty="dashed",col="red",main="Serie de Tiempo de Tráfico LTE")
 ```
@@ -107,7 +107,7 @@ Al ver la gráfica podemos apreciar que los datos estan alrededor de la misma me
 
 Para verificar si es estacionaria lo hacemos por medio de la prueba de "Dickey-Fuller" con la libreria  "adf"
 
-```{r}
+```{r 4_6 dif_test}
 adf.test(seriedif,alternative = "stationary")
 ```
 
@@ -120,7 +120,7 @@ El resultado de  es p-value = 0.01 al ser menor  a 0.05  se puede determinar que
 
  Podemos validar si necesitamos mas difrenciaciones con el comando "ndiffs"
  
-```{r}
+```{r 4_7_dif_ndiff}
 ndiffs(seriedif)
 ```
  
@@ -133,7 +133,7 @@ Análisis de autocorrelación
 
 
 
-```{r}
+```{r 4_8_Autocorr}
 par(mfrow=c(2,2),mar=c(4,4,4,1)+.1)
 plot(serie_tiempo,ylab="Tráfico LTE")
 Acf(serie_tiempo,main="Serie No Estacionaria")

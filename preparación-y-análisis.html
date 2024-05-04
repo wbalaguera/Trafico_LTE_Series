@@ -261,10 +261,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h3><span class="header-section-number">4.2.1</span> Análisis descriptivo<a href="preparación-y-análisis.html#análisis-descriptivo" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Al visualizar la serie de tiempo se puede ver la tendencia del tráfico con una pendiente positiva, al tener una población en constante crecimiento y con más demanda de datos móviles en redes LTE</p>
 <div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="preparación-y-análisis.html#cb21-1" tabindex="-1"></a><span class="fu">plot</span>(serie_tiempo)</span></code></pre></div>
-<p><img src="Series-de-Tiempo_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p><img src="Series-de-Tiempo_files/figure-html/3_trafico-1.png" width="672" /></p>
 <p>Tráfico por Año</p>
 <div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="preparación-y-análisis.html#cb22-1" tabindex="-1"></a><span class="fu">seasonplot</span>(serie_tiempo,<span class="at">col=</span><span class="fu">rainbow</span>(<span class="dv">4</span>),<span class="at">year.labels =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
-<p><img src="Series-de-Tiempo_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p><img src="Series-de-Tiempo_files/figure-html/3_1_trafico_a%C3%B1o-1.png" width="672" /></p>
 </div>
 <div id="análisis-de-promedio-móvil" class="section level3 hasAnchor" number="4.2.2">
 <h3><span class="header-section-number">4.2.2</span> Análisis de Promedio Móvil<a href="preparación-y-análisis.html#análisis-de-promedio-móvil" class="anchor-section" aria-label="Anchor link to header"></a></h3>
@@ -275,14 +275,14 @@ podemos observar como el promedio Móvil representado por la línea roja suavizo
 <span id="cb23-3"><a href="preparación-y-análisis.html#cb23-3" tabindex="-1"></a><span class="fu">plot</span>(serie_tiempo, <span class="at">main=</span><span class="st">&quot;Serie Temporal con Promedio Móvil&quot;</span>, <span class="at">xlab=</span><span class="st">&quot;Fecha&quot;</span>, <span class="at">ylab=</span><span class="st">&quot;PAYLOAD_4G&quot;</span>)</span>
 <span id="cb23-4"><a href="preparación-y-análisis.html#cb23-4" tabindex="-1"></a><span class="fu">lines</span>(promedio_movil, <span class="at">col=</span><span class="st">&quot;red&quot;</span>)</span>
 <span id="cb23-5"><a href="preparación-y-análisis.html#cb23-5" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">&quot;topright&quot;</span>, <span class="at">legend=</span><span class="fu">c</span>(<span class="st">&quot;Serie Original&quot;</span>, <span class="st">&quot;Promedio Móvil&quot;</span>), <span class="at">col=</span><span class="fu">c</span>(<span class="st">&quot;black&quot;</span>, <span class="st">&quot;red&quot;</span>), <span class="at">lty=</span><span class="dv">1</span>)</span></code></pre></div>
-<p><img src="Series-de-Tiempo_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<p><img src="Series-de-Tiempo_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
 </div>
 <div id="análisis-de-rezagos" class="section level3 hasAnchor" number="4.2.3">
 <h3><span class="header-section-number">4.2.3</span> Análisis de Rezagos<a href="preparación-y-análisis.html#análisis-de-rezagos" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>En este análisis podemos observar como los valores pasados de una serie afectan sus valores futuros
 En la imagen podemos observar como todas las barras superan el umbral de líneas azules (+/-)1.96, lo que demuestra una alta autocorrelación en todos los rezagos. Esta autocorrelación demuestra que la serie no es aleatoria y puede ser una señal de estacionalidad o de tendencia</p>
 <div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="preparación-y-análisis.html#cb24-1" tabindex="-1"></a><span class="fu">acf</span>(serie_tiempo)</span></code></pre></div>
-<p><img src="Series-de-Tiempo_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+<p><img src="Series-de-Tiempo_files/figure-html/3_2_acf-1.png" width="672" /></p>
 </div>
 <div id="análisis-de-estacionalidad" class="section level3 hasAnchor" number="4.2.4">
 <h3><span class="header-section-number">4.2.4</span> Análisis de Estacionalidad<a href="preparación-y-análisis.html#análisis-de-estacionalidad" class="anchor-section" aria-label="Anchor link to header"></a></h3>
@@ -296,7 +296,7 @@ En la imagen podemos observar como todas las barras superan el umbral de líneas
 <div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="preparación-y-análisis.html#cb25-1" tabindex="-1"></a>descomposicion <span class="ot">&lt;-</span> <span class="fu">decompose</span>(serie_tiempo)</span>
 <span id="cb25-2"><a href="preparación-y-análisis.html#cb25-2" tabindex="-1"></a></span>
 <span id="cb25-3"><a href="preparación-y-análisis.html#cb25-3" tabindex="-1"></a><span class="fu">plot</span>(descomposicion)</span></code></pre></div>
-<p><img src="Series-de-Tiempo_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+<p><img src="Series-de-Tiempo_files/figure-html/3_3_descomposicion-1.png" width="672" /></p>
 <div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="preparación-y-análisis.html#cb26-1" tabindex="-1"></a><span class="fu">write.csv</span>(serie_tiempo, <span class="st">&quot;serie_tiempo.csv&quot;</span>, <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
 
 </div>
