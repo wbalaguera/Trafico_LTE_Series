@@ -1,12 +1,149 @@
-# Proximos pasos
+# Análisis de Estacionariedad
 
 
-## Proximos pasos
+## Carga de Serie
+Importamos la serie de tiempo y verificamos su rango de fechas
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+library(lubridate)
+library(zoo)
+library(TTR) # libreria promedios móviles
+library(forecast) #  libreria estacionalidad y rezagos
+library(tseries)
 
-`
+```
 
-Some _significant_ applications are demonstrated in this chapter.
 
-## Example one
+```{r}
+datos <- read.csv("serie_tiempo.csv")
+```
 
-## Example two
+
+```{r}
+fecha_inicio <- as.Date("2021-01-01")
+serie_tiempo <- ts(datos$x, start = c(format(fecha_inicio, "%Y"), format(fecha_inicio, "%j")), frequency = 365)
+```
+
+Verificamos la fecha inicio y fecha fin
+
+```{r}
+start_time <- start(serie_tiempo)
+end_time <- end(serie_tiempo)
+frequency <- frequency(serie_tiempo)
+min_date <- as.Date(paste(start_time[1], start_time[2], sep="-"), "%Y-%j")
+max_date <- as.Date(paste(end_time[1], (end_time[2]-1) / frequency * 365, sep="-"), "%Y-%j")
+
+min_date
+max_date
+
+```
+
+
+## Análisis 
+
+Dentro la imagen podemos observar lo siguiente:
+
+1. **Observed:**: Nos muestra la serie original , es decir la serie de tráfico LTE  sin modificaciones.
+    
+2. **Tred:** En la tendencia nos muestra la tendencia eliminando el ruid.
+  
+3. **Seasonal:**: En la Estacionariedad podemos observar un patrón claro y repetitivo , lo cual indica  que existe estacionalidad en los datos del tráfico en esta de serie de tiempo.
+
+3. **Random**: Este gráfico muestra residuales o fluctuaciones que nos se pueden explicar , ya que puede ser atípicos o ruido, para estos casos particulares en tráfico hay que hacer investigaciones de las causas de estas anomalias.
+
+
+```{r}
+descomposicion <- decompose(serie_tiempo)
+plot(descomposicion)
+ 
+```
+
+
+
+
+## Diferenciacion y Logaritmos
+
+Para poder realizar un Arima es importante tener estacionariedad ,  por eso debemos convertirlo en estacionaria por medio de una transformación de logaritmos o diferencias 
+
+### Logaritmos
+
+Para el caso de logaritmos usamos la función "log"
+
+```{r}
+serielog=log(serie_tiempo)
+plot(serielog)
+```
+Al ver la gráfica no podemos apreciar estacionariedad ya que se ven caidas y bajadas y su media es diferente de cero.
+
+Verificamos si es estacionaria por medio de la prueba de "Dickey-Fuller" con la libreria  "adf"
+
+```{r}
+adf.test(serielog,alternative = "stationary")
+```
+
+El resultado de  es p-value = 0.2829 al ser mayor  a 0.05  se puede determinar que  es una serie no estacionaria 
+
+Con logaritmo no logramos conseguir Estacionariedad
+
+
+
+### Diferencias
+
+Antes de realizar las diferencias podemos ejecutar el comando "ndiffs" para saber cuantas necesitamos
+
+```{r}
+ndiffs(serie_tiempo)
+```
+El resultado es 1 diferencia para convertir la serie en estacionaria
+
+
+
+```{r}
+seriedif=diff(serie_tiempo)
+plot(seriedif,lty="dashed",col="red",main="Serie de Tiempo de Tráfico LTE")
+```
+
+Al ver la gráfica podemos apreciar que los datos estan alrededor de la misma media , en este caso de "cero"
+
+
+Para verificar si es estacionaria lo hacemos por medio de la prueba de "Dickey-Fuller" con la libreria  "adf"
+
+```{r}
+adf.test(seriedif,alternative = "stationary")
+```
+
+
+El resultado de  es p-value = 0.01 al ser menor  a 0.05  se puede determinar que  es una serie que si es estacionaria 
+
+
+
+
+
+ Podemos validar si necesitamos mas difrenciaciones con el comando "ndiffs"
+ 
+```{r}
+ndiffs(seriedif)
+```
+ 
+El resultado es cero por locual no necesitamos más diferenciaciones
+
+
+
+
+Análisis de autocorrelación
+
+
+
+```{r}
+par(mfrow=c(2,2),mar=c(4,4,4,1)+.1)
+plot(serie_tiempo,ylab="Tráfico LTE")
+Acf(serie_tiempo,main="Serie No Estacionaria")
+plot(seriedif)
+acf(seriedif,main="Serie Estacionaria")
+
+``` 
+Podemos observar que el primer gráfico " no es estacionario" tiene una tendencia  , la cual es verificada por la autocorrelación de la derecha . el cual supera el el umbral de líneas azules (+/-)1.96
+
+En los gráficos inferiores se puede ver una media constante , varianza constante,  y se puede ver en la gráfica de la derecha la comprobación de autocorrelacion donde se  ve que no supera el umbral de (+/-)1.96
+
+
+

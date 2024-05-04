@@ -108,6 +108,13 @@ Al visualizar la serie de tiempo se puede ver la tendencia del tráfico con una 
 ```{r}
 plot(serie_tiempo)
 ```
+
+Tráfico por Año
+```{r}
+seasonplot(serie_tiempo,col=rainbow(4),year.labels = TRUE)
+```
+
+
  
 ### Análisis de Promedio Móvil
 
@@ -156,6 +163,8 @@ plot(descomposicion)
 
 write.csv(serie_tiempo, "serie_tiempo.csv", row.names = FALSE)
 ```
+
+
 
 
 

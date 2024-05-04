@@ -23,7 +23,7 @@
 <meta name="author" content="Paula Gonzalez , Cristian Ibañez , Wilson Balaguera" />
 
 
-<meta name="date" content="2024-05-01" />
+<meta name="date" content="2024-05-04" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -31,7 +31,7 @@
   
   
 <link rel="prev" href="fuentes.html"/>
-<link rel="next" href="proximos-pasos.html"/>
+<link rel="next" href="análisis-de-estacionariedad.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -158,11 +158,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="4.2.4" data-path="preparación-y-análisis.html"><a href="preparación-y-análisis.html#análisis-de-estacionalidad"><i class="fa fa-check"></i><b>4.2.4</b> Análisis de Estacionalidad</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="5" data-path="proximos-pasos.html"><a href="proximos-pasos.html"><i class="fa fa-check"></i><b>5</b> Proximos pasos</a>
+<li class="chapter" data-level="5" data-path="análisis-de-estacionariedad.html"><a href="análisis-de-estacionariedad.html"><i class="fa fa-check"></i><b>5</b> Análisis de Estacionariedad</a>
 <ul>
-<li class="chapter" data-level="5.1" data-path="proximos-pasos.html"><a href="proximos-pasos.html#proximos-pasos-1"><i class="fa fa-check"></i><b>5.1</b> Proximos pasos</a></li>
-<li class="chapter" data-level="5.2" data-path="proximos-pasos.html"><a href="proximos-pasos.html#example-one"><i class="fa fa-check"></i><b>5.2</b> Example one</a></li>
-<li class="chapter" data-level="5.3" data-path="proximos-pasos.html"><a href="proximos-pasos.html#example-two"><i class="fa fa-check"></i><b>5.3</b> Example two</a></li>
+<li class="chapter" data-level="5.1" data-path="análisis-de-estacionariedad.html"><a href="análisis-de-estacionariedad.html#carga-de-serie"><i class="fa fa-check"></i><b>5.1</b> Carga de Serie</a></li>
+<li class="chapter" data-level="5.2" data-path="análisis-de-estacionariedad.html"><a href="análisis-de-estacionariedad.html#análisis"><i class="fa fa-check"></i><b>5.2</b> Análisis</a></li>
+<li class="chapter" data-level="5.3" data-path="análisis-de-estacionariedad.html"><a href="análisis-de-estacionariedad.html#diferenciacion-y-logaritmos"><i class="fa fa-check"></i><b>5.3</b> Diferenciacion y Logaritmos</a>
+<ul>
+<li class="chapter" data-level="5.3.1" data-path="análisis-de-estacionariedad.html"><a href="análisis-de-estacionariedad.html#logaritmos"><i class="fa fa-check"></i><b>5.3.1</b> Logaritmos</a></li>
+<li class="chapter" data-level="5.3.2" data-path="análisis-de-estacionariedad.html"><a href="análisis-de-estacionariedad.html#diferencias"><i class="fa fa-check"></i><b>5.3.2</b> Diferencias</a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="6" data-path="pasos-siguientes.html"><a href="pasos-siguientes.html"><i class="fa fa-check"></i><b>6</b> Pasos siguientes</a></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
@@ -258,24 +262,27 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>Al visualizar la serie de tiempo se puede ver la tendencia del tráfico con una pendiente positiva, al tener una población en constante crecimiento y con más demanda de datos móviles en redes LTE</p>
 <div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="preparación-y-análisis.html#cb21-1" tabindex="-1"></a><span class="fu">plot</span>(serie_tiempo)</span></code></pre></div>
 <p><img src="Series-de-Tiempo_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p>Tráfico por Año</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="preparación-y-análisis.html#cb22-1" tabindex="-1"></a><span class="fu">seasonplot</span>(serie_tiempo,<span class="at">col=</span><span class="fu">rainbow</span>(<span class="dv">4</span>),<span class="at">year.labels =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<p><img src="Series-de-Tiempo_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
 </div>
 <div id="análisis-de-promedio-móvil" class="section level3 hasAnchor" number="4.2.2">
 <h3><span class="header-section-number">4.2.2</span> Análisis de Promedio Móvil<a href="preparación-y-análisis.html#análisis-de-promedio-móvil" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Con la función “rollmean” suavizamos la serie usando una ventana de 7 días, en la gráfica
 podemos observar como el promedio Móvil representado por la línea roja suavizo los outlier que salía en la serie original representado con negro</p>
-<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="preparación-y-análisis.html#cb22-1" tabindex="-1"></a>promedio_movil <span class="ot">&lt;-</span> <span class="fu">rollmean</span>(serie_tiempo, <span class="dv">7</span>, <span class="at">fill =</span> <span class="cn">NA</span>)</span>
-<span id="cb22-2"><a href="preparación-y-análisis.html#cb22-2" tabindex="-1"></a></span>
-<span id="cb22-3"><a href="preparación-y-análisis.html#cb22-3" tabindex="-1"></a><span class="fu">plot</span>(serie_tiempo, <span class="at">main=</span><span class="st">&quot;Serie Temporal con Promedio Móvil&quot;</span>, <span class="at">xlab=</span><span class="st">&quot;Fecha&quot;</span>, <span class="at">ylab=</span><span class="st">&quot;PAYLOAD_4G&quot;</span>)</span>
-<span id="cb22-4"><a href="preparación-y-análisis.html#cb22-4" tabindex="-1"></a><span class="fu">lines</span>(promedio_movil, <span class="at">col=</span><span class="st">&quot;red&quot;</span>)</span>
-<span id="cb22-5"><a href="preparación-y-análisis.html#cb22-5" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">&quot;topright&quot;</span>, <span class="at">legend=</span><span class="fu">c</span>(<span class="st">&quot;Serie Original&quot;</span>, <span class="st">&quot;Promedio Móvil&quot;</span>), <span class="at">col=</span><span class="fu">c</span>(<span class="st">&quot;black&quot;</span>, <span class="st">&quot;red&quot;</span>), <span class="at">lty=</span><span class="dv">1</span>)</span></code></pre></div>
-<p><img src="Series-de-Tiempo_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="preparación-y-análisis.html#cb23-1" tabindex="-1"></a>promedio_movil <span class="ot">&lt;-</span> <span class="fu">rollmean</span>(serie_tiempo, <span class="dv">7</span>, <span class="at">fill =</span> <span class="cn">NA</span>)</span>
+<span id="cb23-2"><a href="preparación-y-análisis.html#cb23-2" tabindex="-1"></a></span>
+<span id="cb23-3"><a href="preparación-y-análisis.html#cb23-3" tabindex="-1"></a><span class="fu">plot</span>(serie_tiempo, <span class="at">main=</span><span class="st">&quot;Serie Temporal con Promedio Móvil&quot;</span>, <span class="at">xlab=</span><span class="st">&quot;Fecha&quot;</span>, <span class="at">ylab=</span><span class="st">&quot;PAYLOAD_4G&quot;</span>)</span>
+<span id="cb23-4"><a href="preparación-y-análisis.html#cb23-4" tabindex="-1"></a><span class="fu">lines</span>(promedio_movil, <span class="at">col=</span><span class="st">&quot;red&quot;</span>)</span>
+<span id="cb23-5"><a href="preparación-y-análisis.html#cb23-5" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">&quot;topright&quot;</span>, <span class="at">legend=</span><span class="fu">c</span>(<span class="st">&quot;Serie Original&quot;</span>, <span class="st">&quot;Promedio Móvil&quot;</span>), <span class="at">col=</span><span class="fu">c</span>(<span class="st">&quot;black&quot;</span>, <span class="st">&quot;red&quot;</span>), <span class="at">lty=</span><span class="dv">1</span>)</span></code></pre></div>
+<p><img src="Series-de-Tiempo_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
 </div>
 <div id="análisis-de-rezagos" class="section level3 hasAnchor" number="4.2.3">
 <h3><span class="header-section-number">4.2.3</span> Análisis de Rezagos<a href="preparación-y-análisis.html#análisis-de-rezagos" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>En este análisis podemos observar como los valores pasados de una serie afectan sus valores futuros
 En la imagen podemos observar como todas las barras superan el umbral de líneas azules (+/-)1.96, lo que demuestra una alta autocorrelación en todos los rezagos. Esta autocorrelación demuestra que la serie no es aleatoria y puede ser una señal de estacionalidad o de tendencia</p>
-<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="preparación-y-análisis.html#cb23-1" tabindex="-1"></a><span class="fu">acf</span>(serie_tiempo)</span></code></pre></div>
-<p><img src="Series-de-Tiempo_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="preparación-y-análisis.html#cb24-1" tabindex="-1"></a><span class="fu">acf</span>(serie_tiempo)</span></code></pre></div>
+<p><img src="Series-de-Tiempo_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
 </div>
 <div id="análisis-de-estacionalidad" class="section level3 hasAnchor" number="4.2.4">
 <h3><span class="header-section-number">4.2.4</span> Análisis de Estacionalidad<a href="preparación-y-análisis.html#análisis-de-estacionalidad" class="anchor-section" aria-label="Anchor link to header"></a></h3>
@@ -286,11 +293,11 @@ En la imagen podemos observar como todas las barras superan el umbral de líneas
 <li><p><strong>Seasonal:</strong>: En la Estacionalidad podemos observar un patrón claro y repetitivo , lo cual indica que existe estacionalidad en los datos del tráfico en esta de serie de tiempo.</p></li>
 <li><p><strong>Random</strong>: Este gráfico muestra residuales o fluctuaciones que nos se pueden explicar , ya que puede ser atípicos o ruido, para estos casos particulares en tráfico hay que hacer investigaciones de las causas de estas anomalias.</p></li>
 </ol>
-<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="preparación-y-análisis.html#cb24-1" tabindex="-1"></a>descomposicion <span class="ot">&lt;-</span> <span class="fu">decompose</span>(serie_tiempo)</span>
-<span id="cb24-2"><a href="preparación-y-análisis.html#cb24-2" tabindex="-1"></a></span>
-<span id="cb24-3"><a href="preparación-y-análisis.html#cb24-3" tabindex="-1"></a><span class="fu">plot</span>(descomposicion)</span></code></pre></div>
-<p><img src="Series-de-Tiempo_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
-<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="preparación-y-análisis.html#cb25-1" tabindex="-1"></a><span class="fu">write.csv</span>(serie_tiempo, <span class="st">&quot;serie_tiempo.csv&quot;</span>, <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="preparación-y-análisis.html#cb25-1" tabindex="-1"></a>descomposicion <span class="ot">&lt;-</span> <span class="fu">decompose</span>(serie_tiempo)</span>
+<span id="cb25-2"><a href="preparación-y-análisis.html#cb25-2" tabindex="-1"></a></span>
+<span id="cb25-3"><a href="preparación-y-análisis.html#cb25-3" tabindex="-1"></a><span class="fu">plot</span>(descomposicion)</span></code></pre></div>
+<p><img src="Series-de-Tiempo_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="preparación-y-análisis.html#cb26-1" tabindex="-1"></a><span class="fu">write.csv</span>(serie_tiempo, <span class="st">&quot;serie_tiempo.csv&quot;</span>, <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
 
 </div>
 </div>
@@ -301,7 +308,7 @@ En la imagen podemos observar como todas las barras superan el umbral de líneas
         </div>
       </div>
 <a href="fuentes.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="proximos-pasos.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="análisis-de-estacionariedad.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

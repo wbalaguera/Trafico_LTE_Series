@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Capítulo 5 Análisis de Estacionariedad | Análisis de tráfico en las redes telecomunicaciones móviles LTE en los municipios de Cundinamarca</title>
+  <meta name="description" content="This is a minimal example of using the bookdown package to write a book. The output format for this example is bookdown::gitbook." />
+  <meta name="generator" content="bookdown 0.38 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Capítulo 5 Análisis de Estacionariedad | Análisis de tráfico en las redes telecomunicaciones móviles LTE en los municipios de Cundinamarca" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="This is a minimal example of using the bookdown package to write a book. The output format for this example is bookdown::gitbook." />
+  <meta name="github-repo" content="rstudio/bookdown-demo" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Capítulo 5 Análisis de Estacionariedad | Análisis de tráfico en las redes telecomunicaciones móviles LTE en los municipios de Cundinamarca" />
+  
+  <meta name="twitter:description" content="This is a minimal example of using the bookdown package to write a book. The output format for this example is bookdown::gitbook." />
+  
+
+<meta name="author" content="Paula Gonzalez , Cristian Ibañez , Wilson Balaguera" />
+
+
+<meta name="date" content="2024-05-04" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="preparación-y-análisis.html"/>
+<link rel="next" href="pasos-siguientes.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./" style="font-size: 30px;">Series de tiempo</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introducción</a></li>
+<li class="chapter" data-level="2" data-path="importancia.html"><a href="importancia.html"><i class="fa fa-check"></i><b>2</b> Importancia</a></li>
+<li class="chapter" data-level="3" data-path="fuentes.html"><a href="fuentes.html"><i class="fa fa-check"></i><b>3</b> Fuentes</a></li>
+<li class="chapter" data-level="4" data-path="preparación-y-análisis.html"><a href="preparación-y-análisis.html"><i class="fa fa-check"></i><b>4</b> Preparación y análisis</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="preparación-y-análisis.html"><a href="preparación-y-análisis.html#cargue-de-datos"><i class="fa fa-check"></i><b>4.1</b> Cargue de datos</a>
+<ul>
+<li class="chapter" data-level="4.1.1" data-path="preparación-y-análisis.html"><a href="preparación-y-análisis.html#formato-de-fechas"><i class="fa fa-check"></i><b>4.1.1</b> Formato de fechas</a></li>
+<li class="chapter" data-level="4.1.2" data-path="preparación-y-análisis.html"><a href="preparación-y-análisis.html#selección-de-campos"><i class="fa fa-check"></i><b>4.1.2</b> Selección de campos</a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="preparación-y-análisis.html"><a href="preparación-y-análisis.html#análisis-series-de-tiempo"><i class="fa fa-check"></i><b>4.2</b> Análisis Series de tiempo</a>
+<ul>
+<li class="chapter" data-level="4.2.1" data-path="preparación-y-análisis.html"><a href="preparación-y-análisis.html#análisis-descriptivo"><i class="fa fa-check"></i><b>4.2.1</b> Análisis descriptivo</a></li>
+<li class="chapter" data-level="4.2.2" data-path="preparación-y-análisis.html"><a href="preparación-y-análisis.html#análisis-de-promedio-móvil"><i class="fa fa-check"></i><b>4.2.2</b> Análisis de Promedio Móvil</a></li>
+<li class="chapter" data-level="4.2.3" data-path="preparación-y-análisis.html"><a href="preparación-y-análisis.html#análisis-de-rezagos"><i class="fa fa-check"></i><b>4.2.3</b> Análisis de Rezagos</a></li>
+<li class="chapter" data-level="4.2.4" data-path="preparación-y-análisis.html"><a href="preparación-y-análisis.html#análisis-de-estacionalidad"><i class="fa fa-check"></i><b>4.2.4</b> Análisis de Estacionalidad</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="análisis-de-estacionariedad.html"><a href="análisis-de-estacionariedad.html"><i class="fa fa-check"></i><b>5</b> Análisis de Estacionariedad</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="análisis-de-estacionariedad.html"><a href="análisis-de-estacionariedad.html#carga-de-serie"><i class="fa fa-check"></i><b>5.1</b> Carga de Serie</a></li>
+<li class="chapter" data-level="5.2" data-path="análisis-de-estacionariedad.html"><a href="análisis-de-estacionariedad.html#análisis"><i class="fa fa-check"></i><b>5.2</b> Análisis</a></li>
+<li class="chapter" data-level="5.3" data-path="análisis-de-estacionariedad.html"><a href="análisis-de-estacionariedad.html#diferenciacion-y-logaritmos"><i class="fa fa-check"></i><b>5.3</b> Diferenciacion y Logaritmos</a>
+<ul>
+<li class="chapter" data-level="5.3.1" data-path="análisis-de-estacionariedad.html"><a href="análisis-de-estacionariedad.html#logaritmos"><i class="fa fa-check"></i><b>5.3.1</b> Logaritmos</a></li>
+<li class="chapter" data-level="5.3.2" data-path="análisis-de-estacionariedad.html"><a href="análisis-de-estacionariedad.html#diferencias"><i class="fa fa-check"></i><b>5.3.2</b> Diferencias</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="pasos-siguientes.html"><a href="pasos-siguientes.html"><i class="fa fa-check"></i><b>6</b> Pasos siguientes</a></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Análisis de tráfico en las redes telecomunicaciones móviles LTE en los municipios de Cundinamarca</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="análisis-de-estacionariedad" class="section level1 hasAnchor" number="5">
+<h1><span class="header-section-number">Capítulo 5</span> Análisis de Estacionariedad<a href="análisis-de-estacionariedad.html#análisis-de-estacionariedad" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="carga-de-serie" class="section level2 hasAnchor" number="5.1">
+<h2><span class="header-section-number">5.1</span> Carga de Serie<a href="análisis-de-estacionariedad.html#carga-de-serie" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Importamos la serie de tiempo y verificamos su rango de fechas</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="análisis-de-estacionariedad.html#cb1-1" tabindex="-1"></a>datos <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;serie_tiempo.csv&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="análisis-de-estacionariedad.html#cb2-1" tabindex="-1"></a>fecha_inicio <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(<span class="st">&quot;2021-01-01&quot;</span>)</span>
+<span id="cb2-2"><a href="análisis-de-estacionariedad.html#cb2-2" tabindex="-1"></a>serie_tiempo <span class="ot">&lt;-</span> <span class="fu">ts</span>(datos<span class="sc">$</span>x, <span class="at">start =</span> <span class="fu">c</span>(<span class="fu">format</span>(fecha_inicio, <span class="st">&quot;%Y&quot;</span>), <span class="fu">format</span>(fecha_inicio, <span class="st">&quot;%j&quot;</span>)), <span class="at">frequency =</span> <span class="dv">365</span>)</span></code></pre></div>
+<p>Verificamos la fecha inicio y fecha fin</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="análisis-de-estacionariedad.html#cb3-1" tabindex="-1"></a>start_time <span class="ot">&lt;-</span> <span class="fu">start</span>(serie_tiempo)</span>
+<span id="cb3-2"><a href="análisis-de-estacionariedad.html#cb3-2" tabindex="-1"></a>end_time <span class="ot">&lt;-</span> <span class="fu">end</span>(serie_tiempo)</span>
+<span id="cb3-3"><a href="análisis-de-estacionariedad.html#cb3-3" tabindex="-1"></a>frequency <span class="ot">&lt;-</span> <span class="fu">frequency</span>(serie_tiempo)</span>
+<span id="cb3-4"><a href="análisis-de-estacionariedad.html#cb3-4" tabindex="-1"></a>min_date <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(<span class="fu">paste</span>(start_time[<span class="dv">1</span>], start_time[<span class="dv">2</span>], <span class="at">sep=</span><span class="st">&quot;-&quot;</span>), <span class="st">&quot;%Y-%j&quot;</span>)</span>
+<span id="cb3-5"><a href="análisis-de-estacionariedad.html#cb3-5" tabindex="-1"></a>max_date <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(<span class="fu">paste</span>(end_time[<span class="dv">1</span>], (end_time[<span class="dv">2</span>]<span class="sc">-</span><span class="dv">1</span>) <span class="sc">/</span> frequency <span class="sc">*</span> <span class="dv">365</span>, <span class="at">sep=</span><span class="st">&quot;-&quot;</span>), <span class="st">&quot;%Y-%j&quot;</span>)</span>
+<span id="cb3-6"><a href="análisis-de-estacionariedad.html#cb3-6" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="análisis-de-estacionariedad.html#cb3-7" tabindex="-1"></a>min_date</span></code></pre></div>
+<pre><code>## [1] &quot;2021-01-01&quot;</code></pre>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="análisis-de-estacionariedad.html#cb5-1" tabindex="-1"></a>max_date</span></code></pre></div>
+<pre><code>## [1] &quot;2024-02-28&quot;</code></pre>
+</div>
+<div id="análisis" class="section level2 hasAnchor" number="5.2">
+<h2><span class="header-section-number">5.2</span> Análisis<a href="análisis-de-estacionariedad.html#análisis" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Dentro la imagen podemos observar lo siguiente:</p>
+<ol style="list-style-type: decimal">
+<li><p><strong>Observed:</strong>: Nos muestra la serie original , es decir la serie de tráfico LTE sin modificaciones.</p></li>
+<li><p><strong>Tred:</strong> En la tendencia nos muestra la tendencia eliminando el ruid.</p></li>
+<li><p><strong>Seasonal:</strong>: En la Estacionariedad podemos observar un patrón claro y repetitivo , lo cual indica que existe estacionalidad en los datos del tráfico en esta de serie de tiempo.</p></li>
+<li><p><strong>Random</strong>: Este gráfico muestra residuales o fluctuaciones que nos se pueden explicar , ya que puede ser atípicos o ruido, para estos casos particulares en tráfico hay que hacer investigaciones de las causas de estas anomalias.</p></li>
+</ol>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="análisis-de-estacionariedad.html#cb7-1" tabindex="-1"></a>descomposicion <span class="ot">&lt;-</span> <span class="fu">decompose</span>(serie_tiempo)</span>
+<span id="cb7-2"><a href="análisis-de-estacionariedad.html#cb7-2" tabindex="-1"></a><span class="fu">plot</span>(descomposicion)</span></code></pre></div>
+<p><img src="Series-de-Tiempo_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+</div>
+<div id="diferenciacion-y-logaritmos" class="section level2 hasAnchor" number="5.3">
+<h2><span class="header-section-number">5.3</span> Diferenciacion y Logaritmos<a href="análisis-de-estacionariedad.html#diferenciacion-y-logaritmos" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Para poder realizar un Arima es importante tener estacionariedad , por eso debemos convertirlo en estacionaria por medio de una transformación de logaritmos o diferencias</p>
+<div id="logaritmos" class="section level3 hasAnchor" number="5.3.1">
+<h3><span class="header-section-number">5.3.1</span> Logaritmos<a href="análisis-de-estacionariedad.html#logaritmos" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Para el caso de logaritmos usamos la función “log”</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="análisis-de-estacionariedad.html#cb8-1" tabindex="-1"></a>serielog<span class="ot">=</span><span class="fu">log</span>(serie_tiempo)</span>
+<span id="cb8-2"><a href="análisis-de-estacionariedad.html#cb8-2" tabindex="-1"></a><span class="fu">plot</span>(serielog)</span></code></pre></div>
+<p><img src="Series-de-Tiempo_files/figure-html/unnamed-chunk-7-1.png" width="672" />
+Al ver la gráfica no podemos apreciar estacionariedad ya que se ven caidas y bajadas y su media es diferente de cero.</p>
+<p>Verificamos si es estacionaria por medio de la prueba de “Dickey-Fuller” con la libreria “adf”</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="análisis-de-estacionariedad.html#cb9-1" tabindex="-1"></a><span class="fu">adf.test</span>(serielog,<span class="at">alternative =</span> <span class="st">&quot;stationary&quot;</span>)</span></code></pre></div>
+<pre><code>## 
+##  Augmented Dickey-Fuller Test
+## 
+## data:  serielog
+## Dickey-Fuller = -2.6979, Lag order = 10, p-value = 0.2829
+## alternative hypothesis: stationary</code></pre>
+<p>El resultado de es p-value = 0.2829 al ser mayor a 0.05 se puede determinar que es una serie no estacionaria</p>
+<p>Con logaritmo no logramos conseguir Estacionariedad</p>
+</div>
+<div id="diferencias" class="section level3 hasAnchor" number="5.3.2">
+<h3><span class="header-section-number">5.3.2</span> Diferencias<a href="análisis-de-estacionariedad.html#diferencias" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Antes de realizar las diferencias podemos ejecutar el comando “ndiffs” para saber cuantas necesitamos</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="análisis-de-estacionariedad.html#cb11-1" tabindex="-1"></a><span class="fu">ndiffs</span>(serie_tiempo)</span></code></pre></div>
+<pre><code>## [1] 1</code></pre>
+<p>El resultado es 1 diferencia para convertir la serie en estacionaria</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="análisis-de-estacionariedad.html#cb13-1" tabindex="-1"></a>seriedif<span class="ot">=</span><span class="fu">diff</span>(serie_tiempo)</span>
+<span id="cb13-2"><a href="análisis-de-estacionariedad.html#cb13-2" tabindex="-1"></a><span class="fu">plot</span>(seriedif,<span class="at">lty=</span><span class="st">&quot;dashed&quot;</span>,<span class="at">col=</span><span class="st">&quot;red&quot;</span>,<span class="at">main=</span><span class="st">&quot;Serie de Tiempo de Tráfico LTE&quot;</span>)</span></code></pre></div>
+<p><img src="Series-de-Tiempo_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p>Al ver la gráfica podemos apreciar que los datos estan alrededor de la misma media , en este caso de “cero”</p>
+<p>Para verificar si es estacionaria lo hacemos por medio de la prueba de “Dickey-Fuller” con la libreria “adf”</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="análisis-de-estacionariedad.html#cb14-1" tabindex="-1"></a><span class="fu">adf.test</span>(seriedif,<span class="at">alternative =</span> <span class="st">&quot;stationary&quot;</span>)</span></code></pre></div>
+<pre><code>## Warning in adf.test(seriedif, alternative = &quot;stationary&quot;): p-value smaller than
+## printed p-value</code></pre>
+<pre><code>## 
+##  Augmented Dickey-Fuller Test
+## 
+## data:  seriedif
+## Dickey-Fuller = -14.6, Lag order = 10, p-value = 0.01
+## alternative hypothesis: stationary</code></pre>
+<p>El resultado de es p-value = 0.01 al ser menor a 0.05 se puede determinar que es una serie que si es estacionaria</p>
+<p>Podemos validar si necesitamos mas difrenciaciones con el comando “ndiffs”</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="análisis-de-estacionariedad.html#cb17-1" tabindex="-1"></a><span class="fu">ndiffs</span>(seriedif)</span></code></pre></div>
+<pre><code>## [1] 0</code></pre>
+<p>El resultado es cero por locual no necesitamos más diferenciaciones</p>
+<p>Análisis de autocorrelación</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="análisis-de-estacionariedad.html#cb19-1" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>),<span class="at">mar=</span><span class="fu">c</span>(<span class="dv">4</span>,<span class="dv">4</span>,<span class="dv">4</span>,<span class="dv">1</span>)<span class="sc">+</span>.<span class="dv">1</span>)</span>
+<span id="cb19-2"><a href="análisis-de-estacionariedad.html#cb19-2" tabindex="-1"></a><span class="fu">plot</span>(serie_tiempo,<span class="at">ylab=</span><span class="st">&quot;Tráfico LTE&quot;</span>)</span>
+<span id="cb19-3"><a href="análisis-de-estacionariedad.html#cb19-3" tabindex="-1"></a><span class="fu">Acf</span>(serie_tiempo,<span class="at">main=</span><span class="st">&quot;Serie No Estacionaria&quot;</span>)</span>
+<span id="cb19-4"><a href="análisis-de-estacionariedad.html#cb19-4" tabindex="-1"></a><span class="fu">plot</span>(seriedif)</span>
+<span id="cb19-5"><a href="análisis-de-estacionariedad.html#cb19-5" tabindex="-1"></a><span class="fu">acf</span>(seriedif,<span class="at">main=</span><span class="st">&quot;Serie Estacionaria&quot;</span>)</span></code></pre></div>
+<p><img src="Series-de-Tiempo_files/figure-html/unnamed-chunk-13-1.png" width="672" />
+Podemos observar que el primer gráfico ” no es estacionario” tiene una tendencia , la cual es verificada por la autocorrelación de la derecha . el cual supera el el umbral de líneas azules (+/-)1.96</p>
+<p>En los gráficos inferiores se puede ver una media constante , varianza constante, y se puede ver en la gráfica de la derecha la comprobación de autocorrelacion donde se ve que no supera el umbral de (+/-)1.96</p>
+
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="preparación-y-análisis.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="pasos-siguientes.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/rstudio/bookdown-demo/edit/master/04-application.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["Series de Tiempo.pdf", "Series de Tiempo.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>
