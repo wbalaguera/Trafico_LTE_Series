@@ -50,3 +50,4 @@ análisis-de-estacionariedad
 análisis
 diferenciacion-y-logaritmos
 logaritmos
+arima
