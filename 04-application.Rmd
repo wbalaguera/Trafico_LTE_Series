@@ -2,7 +2,7 @@
 
 
 ## Carga de Serie
-Importamos la serie de tiempo y verificamos su rango de fechas
+Importamos la serie de tiempo del tráfico LTE y  verificamos su rango de fechas
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 library(lubridate)
 library(zoo)
@@ -40,16 +40,16 @@ max_date
 
 ## Análisis 
 
-Dentro la imagen podemos observar lo siguiente:
+
+Dentro la imagen podemos observar lo siguiente
 
 1. **Observed:**: Nos muestra la serie original , es decir la serie de tráfico LTE  sin modificaciones.
     
-2. **Tred:** En la tendencia nos muestra la tendencia eliminando el ruid.
+2. **Tred:** En la tendencia nos muestra la  eliminacion del ruido y estacionarie sin embargo se observan los  picos de tráfico al final.
   
-3. **Seasonal:**: En la Estacionariedad podemos observar un patrón claro y repetitivo , lo cual indica  que existe estacionalidad en los datos del tráfico en esta de serie de tiempo.
+3. **Seasonal:**: En la Estacionariedad podemos observar un patrón claro y repetitivo , lo cual indica  que existe estacionariedad en los datos del tráfico en esta de serie de tiempo.
 
 3. **Random**: Este gráfico muestra residuales o fluctuaciones que nos se pueden explicar , ya que puede ser atípicos o ruido, para estos casos particulares en tráfico hay que hacer investigaciones de las causas de estas anomalias.
-
 
 ```{r 4_descomposicion}
 descomposicion <- decompose(serie_tiempo)
@@ -62,9 +62,11 @@ plot(descomposicion)
 
 ## Diferenciacion y Logaritmos
 
-Para poder realizar un Arima es importante tener estacionariedad ,  por eso debemos convertirlo en estacionaria por medio de una transformación de logaritmos o diferencias 
+Para poder realizar un ARIMA es importante tener estacionariedad ,  por eso debemos convertirlo en estacionaria por medio de una transformación de logaritmos o diferencias 
 
 ### Logaritmos
+
+La función  logaritmica es una función continua deja los mínimos y máximos bajo logaritmo, estabilizando la varianza .
 
 Para el caso de logaritmos usamos la función "log"
 
@@ -88,13 +90,12 @@ Con logaritmo no logramos conseguir Estacionariedad
 
 ### Diferencias
 
-Antes de realizar las diferencias podemos ejecutar el comando "ndiffs" para saber cuantas necesitamos
+Antes de realizar las diferencias podemos ejecutar el comando "ndiffs" para saber cuantas diferencias  necesitamos
 
 ```{r 4_4_dif}
 ndiffs(serie_tiempo)
 ```
-El resultado es 1 diferencia para convertir la serie en estacionaria
-
+El resultado es "1" diferencia para convertir la serie en estacionaria
 
 
 ```{r 4_5_dir_serie}
@@ -111,25 +112,21 @@ Para verificar si es estacionaria lo hacemos por medio de la prueba de "Dickey-F
 adf.test(seriedif,alternative = "stationary")
 ```
 
-
 El resultado de  es p-value = 0.01 al ser menor  a 0.05  se puede determinar que  es una serie que si es estacionaria 
 
 
-
-
-
- Podemos validar si necesitamos mas difrenciaciones con el comando "ndiffs"
+ Podemos validar si necesitamos mas diferenciaciones con el comando "ndiffs"
  
 ```{r 4_7_dif_ndiff}
 ndiffs(seriedif)
 ```
  
-El resultado es cero por locual no necesitamos más diferenciaciones
+El resultado es cero por lo cuál no necesitamos más diferenciaciones
 
 
 
 
-Análisis de autocorrelación
+**Análisis de autocorrelación**
 
 
 
