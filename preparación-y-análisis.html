@@ -195,7 +195,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="cargue-de-datos" class="section level2 hasAnchor" number="4.1">
 <h2><span class="header-section-number">4.1</span> Cargue de datos<a href="preparación-y-análisis.html#cargue-de-datos" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>Importamos la información de tráfico de una Estación base del municipio de Cundinamarca, esta información ya viene anonimizada en sus nombres por motivos de confidiencialidad de la empresa</p>
-<p>Realizamos el cargue de los datos cv</p>
+<p>Realizamos el cargue de los datos csv</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="preparación-y-análisis.html#cb1-1" tabindex="-1"></a>data_sitio <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;data_sitio.csv&quot;</span>, <span class="at">sep =</span> <span class="st">&quot;;&quot;</span>)</span></code></pre></div>
 <div id="formato-de-fechas" class="section level3 hasAnchor" number="4.1.1">
 <h3><span class="header-section-number">4.1.1</span> Formato de fechas<a href="preparación-y-análisis.html#formato-de-fechas" class="anchor-section" aria-label="Anchor link to header"></a></h3>
@@ -210,7 +210,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <pre><code>## [1] &quot;2021-01-01&quot;</code></pre>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="preparación-y-análisis.html#cb5-1" tabindex="-1"></a>fecha_max</span></code></pre></div>
 <pre><code>## [1] &quot;2024-02-29&quot;</code></pre>
-<p>Verificamos el día mínimo y el máximo de nuestro de dataset</p>
+<p>Verificamos el día mínimo y el máximo de nuestro dataset</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="preparación-y-análisis.html#cb7-1" tabindex="-1"></a>fecha_inicio</span></code></pre></div>
 <pre><code>## [1] &quot;2021-01-01&quot;</code></pre>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="preparación-y-análisis.html#cb9-1" tabindex="-1"></a>fecha_max</span></code></pre></div>
@@ -284,7 +284,7 @@ El tráfico año por año va incrementando al detallarlo mes por mes se denota e
 <span id="cb23-15"><a href="preparación-y-análisis.html#cb23-15" tabindex="-1"></a><span class="co"># Imprimir el plot</span></span>
 <span id="cb23-16"><a href="preparación-y-análisis.html#cb23-16" tabindex="-1"></a><span class="fu">print</span>(p)</span></code></pre></div>
 <p><img src="Series-de-Tiempo_files/figure-html/3_1a_radar-1.png" width="672" /></p>
-<p><strong>Box Plot</strong> Podemos apreciar una tendencia creciente mirando el diagrama de cajas , la única diferencia es en 2024 ya que tiene pocos meses</p>
+<p><strong>Box Plot</strong> Podemos apreciar una tendencia creciente mirando el diagrama de cajas , la única diferencia es en el año 2024 ya que tiene 2 meses</p>
 <div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="preparación-y-análisis.html#cb24-1" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
 <span id="cb24-2"><a href="preparación-y-análisis.html#cb24-2" tabindex="-1"></a>time_index <span class="ot">&lt;-</span> <span class="fu">time</span>(serie_tiempo)</span>
 <span id="cb24-3"><a href="preparación-y-análisis.html#cb24-3" tabindex="-1"></a>years <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(<span class="fu">floor</span>(time_index))</span>
@@ -295,7 +295,7 @@ El tráfico año por año va incrementando al detallarlo mes por mes se denota e
 <p>**Histograma* No se puede observar ningún tipo de distribución en el gráfico.</p>
 <div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="preparación-y-análisis.html#cb25-1" tabindex="-1"></a><span class="fu">hist</span>(serie_tiempo, <span class="at">breaks =</span> <span class="dv">30</span>, <span class="at">main =</span> <span class="st">&quot;Histograma de serie_tiempo&quot;</span>, <span class="at">xlab =</span> <span class="st">&quot;Valores&quot;</span>)</span></code></pre></div>
 <p><img src="Series-de-Tiempo_files/figure-html/unnamed-chunk-13-1.png" width="672" />
-**Densidad* Podemos ver un gráfico parecido al histograma per suavizado.</p>
+**Densidad* Podemos ver un gráfico parecido al histograma pero suavizado.</p>
 <div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="preparación-y-análisis.html#cb26-1" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">density</span>(serie_tiempo), <span class="at">main =</span> <span class="st">&quot;Densidad de serie_tiempo&quot;</span>, <span class="at">xlab =</span> <span class="st">&quot;Valores&quot;</span>, <span class="at">ylab =</span> <span class="st">&quot;Densidad&quot;</span>)</span></code></pre></div>
 <p><img src="Series-de-Tiempo_files/figure-html/unnamed-chunk-14-1.png" width="672" />
 <strong>Gráfico de dispersión con Lags(Autocorrelación)</strong></p>

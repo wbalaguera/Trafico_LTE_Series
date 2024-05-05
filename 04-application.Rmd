@@ -138,9 +138,9 @@ plot(seriedif)
 acf(seriedif,main="Serie Estacionaria")
 
 ``` 
-Podemos observar que el primer gráfico " no es estacionario" tiene una tendencia  , la cual es verificada por la autocorrelación de la derecha . el cual supera el el umbral de líneas azules (+/-)1.96
+Podemos observar que el primer gráfico " no es estacionario" tiene una tendencia  , la cual es verificada por la autocorrelación de la derecha . el cual supera el umbral de líneas azules (+/-)1.96
 
-En los gráficos inferiores se puede ver una media constante , varianza constante,  y se puede ver en la gráfica de la derecha la comprobación de autocorrelacion donde se  ve que no supera el umbral de (+/-)1.96
+En los gráficos inferiores se puede ver una media constante , varianza constante,  y se puede ver en la gráfica de la derecha la comprobación de autocorrelacion donde se  visualiza que no supera el umbral de (+/-)1.96
 
 
 

@@ -2,9 +2,9 @@
 
 ## Cargue de datos
 
-Importamos la información de tráfico de una Estación base del municipio de Cundinamarca, esta información ya viene anonimizada en sus nombres para seguridad de la empresa
+Importamos la información de tráfico de una Estación base del municipio de Cundinamarca, esta información ya viene anonimizada en sus nombres por motivos de confidiencialidad de la empresa
 
-Realizamos el cague de los datos
+Realizamos el cargue de los datos csv
 
 ```{r}
 data_sitio <- read.csv("data_sitio.csv", sep = ";")
@@ -22,14 +22,14 @@ library(tseries)
 ```
 
 
-Para el manejo de datos en la columna "M_FECHA_DIA" damos formato con  "as.Date" lo ordenamos
+Para el manejo de datos en la columna "M_FECHA_DIA" damos formato con  "as.Date" y lo ordenamos
 
 ```{r}
 data_sitio$M_FECHA_DIA <- as.Date(data_sitio$M_FECHA_DIA)
 data_sitio <- data_sitio[order(data_sitio$M_FECHA_DIA), ]
 ```
 
-Buscamos el mínimo día y la cantidad de días
+Buscamos el mínimo día y la cantidad de días 
 ```{r}
 
 fecha_inicio <- min(data_sitio$M_FECHA_DIA)
@@ -39,14 +39,14 @@ fecha_inicio
 fecha_max
 ```
 
-Verificamos el dia mínimo y el máximo
+Verificamos el día mínimo y el máximo de nuestro  dataset
 ```{r}
 fecha_inicio
 fecha_max
 ```
 
 
-Verificamos si la serie no tiene datos faltantes entre dias
+Verificamos si la serie no tiene datos faltantes entre días para poder usar la funcion "ts"
 ```{r}
 fechas_completas <- seq(fecha_inicio, by = "day", length.out = n_dias)
 if(length(fechas_completas) != nrow(data_sitio)) {
@@ -104,13 +104,13 @@ max_date
 
 ### Análisis descriptivo
 
-Al visualizar la serie de tiempo se puede ver la tendencia del tráfico con una pendiente positiva, al tener una población en constante crecimiento y con más demanda de datos móviles en redes LTE 
+Al visualizar la serie de tiempo se puede visualizar  la tendencia del tráfico con una pendiente positiva, al tener una población en constante crecimiento es normal que aumente la demanda de datos móviles en redes LTE 
 ```{r 3_trafico}
 plot(serie_tiempo)
 ```
 
 **Tráfico por Año**
-El tráfico año por año va incrementando
+El tráfico año por año va incrementando al detallarlo mes por mes se denota el aumento
 
 
 ```{r 3_1_trafico_año}
@@ -119,7 +119,7 @@ seasonplot(serie_tiempo,col=rainbow(4),year.labels = TRUE)
 
 
 
-El tráfico al verlo en una grafica circular se  puede ver como el gráfico crece año tras año 
+El tráfico al verlo en una gráfica circular se  puede ver como  crece año tras año  , sin importar al mes , cabe destacar los valores de alto tráfico 
 
 
 
@@ -148,7 +148,7 @@ print(p)
 
 
 
-**Box Plot** podemos apreciar una tendencia creciente  mirando el diagrama de cajas , la unica diferencia es en 2024 ya que tiene pocos meses
+**Box Plot** Podemos apreciar una tendencia creciente  mirando el diagrama de cajas , la única diferencia es en el año 2024 ya que tiene 2  meses
 
 ```{r}
 library(ggplot2)
@@ -161,7 +161,7 @@ ggplot(serie_df, aes(x = Year, y = Value)) + geom_boxplot()
 
 ```
 
-**Histograma* no se puede observar  ningun tipo de distribución en el gráfico
+**Histograma* No se puede observar  ningún tipo de distribución en el gráfico.
 
 
 ```{r}
@@ -170,7 +170,7 @@ hist(serie_tiempo, breaks = 30, main = "Histograma de serie_tiempo", xlab = "Val
 
 
 ```
-**Densidad* podemos ver un gráfico parecido al histograma per suavizado
+**Densidad* Podemos ver un gráfico parecido al histograma pero suavizado.
 
 ```{r}
 
@@ -180,7 +180,7 @@ plot(density(serie_tiempo), main = "Densidad de serie_tiempo", xlab = "Valores",
 ```
 **Gráfico de dispersión con Lags(Autocorrelación)**
 
-Aca podemos observar la autocorrelacion entre los datos observados actuales versus 1  dato anterior(lag)
+Aca podemos observar la autocorrelación entre los datos observados actuales versus un  dato anterior(lag=1), solo hay unos atípicos en la parte superior y en el extremo derecho.
 
 ```{r}
 lag <- 1  # Cambia esto para diferentes lags
@@ -194,7 +194,7 @@ plot(serie_tiempo[-(1:lag)], serie_tiempo[-((length(serie_tiempo)-(lag-1)):lengt
 ### Análisis de Promedio Móvil
 
 Con la función "rollmean" suavizamos la serie usando una ventana de 7 días, en la gráfica 
-podemos observar como el promedio Móvil representado por la línea roja suavizo los outlier que salía en la serie original representado con negro
+podemos observar como el promedio Móvil representado por la línea roja ,el cual suaviza los outlier que salían en la serie original representado con la linea negra
 
 
 ```{r}
@@ -209,7 +209,7 @@ legend("topright", legend=c("Serie Original", "Promedio Móvil"), col=c("black",
 ### Análisis de Rezagos
 
 En este análisis podemos observar como los valores pasados de una serie afectan sus valores futuros
-En la imagen podemos observar como todas las barras superan el umbral de líneas azules (+/-)1.96, lo que demuestra una alta autocorrelación en todos los rezagos. Esta autocorrelación demuestra que la serie no es aleatoria y puede ser una señal de estacionalidad o de tendencia
+En la imagen podemos observar como todas las barras superan el umbral de líneas azules (+/-)1.96, lo que demuestra una alta autocorrelación en todos los rezagos. Esta autocorrelación demuestra que la serie no es aleatoria y puede ser una señal de estacionariedad o de tendencia
 
 
 ```{r 3_2_acf}
@@ -221,11 +221,11 @@ acf(serie_tiempo)
 
 Dentro la imagen podemos observar lo siguiente
 
-1. **Observed:**: Nos muestra la serie original , es decir la serie sin modificaciones.
+1. **Observed:**: Nos muestra la serie original , es decir la serie de tráfico LTE  sin modificaciones.
     
-2. **Tred:** En la tendencia nos muestra la tendencia eliminando el ruido y estacionalidad sin embargo se observan los  picos de tráfico al final.
+2. **Tred:** En la tendencia nos muestra la  eliminacion del ruido y estacionarie sin embargo se observan los  picos de tráfico al final.
   
-3. **Seasonal:**: En la Estacionalidad podemos observar un patrón claro y repetitivo , lo cual indica  que existe estacionalidad en los datos del tráfico en esta de serie de tiempo.
+3. **Seasonal:**: En la Estacionariedad podemos observar un patrón claro y repetitivo , lo cual indica  que existe estacionariedad en los datos del tráfico en esta de serie de tiempo.
 
 3. **Random**: Este gráfico muestra residuales o fluctuaciones que nos se pueden explicar , ya que puede ser atípicos o ruido, para estos casos particulares en tráfico hay que hacer investigaciones de las causas de estas anomalias.
 
