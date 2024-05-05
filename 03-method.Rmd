@@ -109,9 +109,84 @@ Al visualizar la serie de tiempo se puede ver la tendencia del tráfico con una 
 plot(serie_tiempo)
 ```
 
-Tráfico por Año
+**Tráfico por Año**
+El tráfico año por año va incrementando
+
+
 ```{r 3_1_trafico_año}
 seasonplot(serie_tiempo,col=rainbow(4),year.labels = TRUE)
+```
+
+
+
+El tráfico al verlo en una grafica circular se  puede ver como el gráfico crece año tras año 
+
+
+
+```{r 3_1a_radar}
+
+# Cargar las bibliotecas necesarias
+library(forecast)
+library(ggplot2)
+
+# Asegurar que serie_tiempo es una serie de tiempo con la frecuencia correcta
+# (opcional: ajustar la serie a una frecuencia de 365 días por año)
+serie_tiempo <- ts(serie_tiempo, frequency = 365)
+
+# Usar ggseasonplot para visualizar la serie de tiempo
+p <- ggseasonplot(serie_tiempo, polar = TRUE, year.labels = TRUE, year.labels.left = TRUE) +
+  labs(y = "Valores", title = "Tráfico LTE por Mes") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Ajustar los textos del eje x si necesario
+
+# Imprimir el plot
+print(p)
+
+
+```
+
+
+
+
+**Box Plot** podemos apreciar una tendencia creciente  mirando el diagrama de cajas , la unica diferencia es en 2024 ya que tiene pocos meses
+
+```{r}
+library(ggplot2)
+time_index <- time(serie_tiempo)
+years <- as.integer(floor(time_index))
+values <- as.numeric(serie_tiempo)
+serie_df <- data.frame(Year = as.factor(years), Value = values)
+ggplot(serie_df, aes(x = Year, y = Value)) + geom_boxplot()
+
+
+```
+
+**Histograma* no se puede observar  ningun tipo de distribución en el gráfico
+
+
+```{r}
+
+hist(serie_tiempo, breaks = 30, main = "Histograma de serie_tiempo", xlab = "Valores")
+
+
+```
+**Densidad* podemos ver un gráfico parecido al histograma per suavizado
+
+```{r}
+
+plot(density(serie_tiempo), main = "Densidad de serie_tiempo", xlab = "Valores", ylab = "Densidad")
+
+
+```
+**Gráfico de dispersión con Lags(Autocorrelación)**
+
+Aca podemos observar la autocorrelacion entre los datos observados actuales versus 1  dato anterior(lag)
+
+```{r}
+lag <- 1  # Cambia esto para diferentes lags
+plot(serie_tiempo[-(1:lag)], serie_tiempo[-((length(serie_tiempo)-(lag-1)):length(serie_tiempo))],
+     xlab = paste("Lag", lag), ylab = "serie_tiempo")
+
 ```
 
 
