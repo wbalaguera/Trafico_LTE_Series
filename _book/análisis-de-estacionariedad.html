@@ -358,7 +358,7 @@ El gráfico muestra cambios claros a lo largo del tiempo , evidenciando patrones
 ## 
 ## data:  residuos_hw
 ## X-squared = 5.1468, df = 1, p-value = 0.02329</code></pre>
-<p>Dadoque el valor -p es menor que 0.05 se rechaza la hipotesis nula que no existe autocrrelaciones significativas en los residuos del modelo , esto significa que los residuos no son completamente aleatorios por lo tanto el modelo Holt - Winters puede no estar capturando toda la estructura dependiente en los datos</p>
+<p>Dadoque el valor -p es menor que 0.05 se rechaza la hipotesis nula que no existe autocorrelaciones significativas en los residuos del modelo , esto significa que los residuos no son completamente aleatorios por lo tanto el modelo Holt - Winters puede no estar capturando toda la estructura dependiente en los datos</p>
 <p>Se realiza la prueba de Ljung-Box cun un mayor de retrasos de 30 podria proporcionar una vision mas clara de la estructura de autocorrelación en los residuos</p>
 <div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="análisis-de-estacionariedad.html#cb40-1" tabindex="-1"></a>residuos_hw2 <span class="ot">&lt;-</span> <span class="fu">residuals</span>(hw)</span>
 <span id="cb40-2"><a href="análisis-de-estacionariedad.html#cb40-2" tabindex="-1"></a>ljung_box_result_30 <span class="ot">&lt;-</span> <span class="fu">Box.test</span>(residuos_hw2, <span class="at">type =</span> <span class="st">&quot;Ljung-Box&quot;</span>, <span class="at">lag =</span> <span class="dv">30</span>)</span>
@@ -750,6 +750,9 @@ El gráfico muestra cambios claros a lo largo del tiempo , evidenciando patrones
 ## 2025.1616      1043.8682  414.8183 1672.9180  81.81940 2005.917</code></pre>
 <p>Al mirar el Point Forecast a lo largo del tiempo se ve el aumento de los valores predichos , lo que podria indicar una tendencia ascendente esperada en la serie temporal</p>
 <p>Al ver la prediccion podemos ver entre más ampliamos la confianza se amplia el rango y y aumenta la incertidumbre de los pronósticos que cubren el valor real , con esto se puede hacer un análisis de riesgos para la empresa</p>
+<p><strong>Conclusión</strong>
+EL metodo Holt-Winters si bien es aplicado a la estacionalidad encontrando patrones del tráfico , no es suficiente para tener un modelo confiable ya que al aplicar la prueba de residuos de Ljung_box rechaza la Hipotesisi nula de no tener autocorrelacion de los residuos por lo cual
+no permite captar la estructura de los datos ,</p>
 
 </div>
 </div>
