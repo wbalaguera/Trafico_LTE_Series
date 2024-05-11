@@ -97,14 +97,12 @@ ndiffs(serie_tiempo)
 ```
 El resultado es "1" diferencia para convertir la serie en estacionaria
 
-
 ```{r 4_5_dir_serie}
 seriedif=diff(serie_tiempo)
 plot(seriedif,lty="dashed",col="red",main="Serie de Tiempo de Tráfico LTE")
 ```
 
 Al ver la gráfica podemos apreciar que los datos estan alrededor de la misma media , en este caso de "cero"
-
 
 Para verificar si es estacionaria lo hacemos por medio de la prueba de "Dickey-Fuller" con la libreria  "adf"
 
@@ -129,7 +127,6 @@ El resultado es cero por lo cuál no necesitamos más diferenciaciones
 **Análisis de autocorrelación**
 
 
-
 ```{r 4_8_Autocorr}
 par(mfrow=c(2,2),mar=c(4,4,4,1)+.1)
 plot(serie_tiempo,ylab="Tráfico LTE")
@@ -143,7 +140,165 @@ Podemos observar que el primer gráfico " no es estacionario" tiene una tendenci
 En los gráficos inferiores se puede ver una media constante , varianza constante,  y se puede ver en la gráfica de la derecha la comprobación de autocorrelacion donde se  visualiza que no supera el umbral de (+/-)1.96
 
 
+## Método de Holt Winters
 
+
+Para hacer prediciones utilizando datos con tendencia y estacionalidad, recurrimos al método estacional de Holt-Winters . Este método se puede implementar con una estructura "Aditiva" o una estrucutra "multiplicativa"
+
+El modelo aditivo  se utliza mejor cuando la tendencia estacional es la misma magnitud  en todo el conjunto de datos, mientras que el modelo multiplicativo  cuando la magnitud de la estacionalidad cambia a medida que aumenta o disminuye el tiempo el tiempo
+
+
+
+
+```{r hw plot}
+plot(serie_tiempo)
+```
+
+Al ver la gráfica al tener una periocidad diaria no es claro si usar el modelo aditivo o multiplicativo por lo cual evaluamos la homocedasticidad de los residuos .
+
+```{r}
+frequency(serie_tiempo)
+```
+
+
+**Modelo Aditivo**
+```{r hw_aditivo}
+modelo_aditivo <- decompose(serie_tiempo, type="additive")
+plot(modelo_aditivo)
+```
+
+**Modelo Multiplicativo**
+```{r hw_multi}
+# Descomposición Multiplicativa
+modelo_multiplicativo <- decompose(serie_tiempo, type="multiplicative")
+plot(modelo_multiplicativo)
+
+```
+
+
+Al revisar los dos modelos en la parte de **residuos** podemos ver que el multiplicativo  es mas viable ya que parecen mas aleatorios y  con menos patrones sistematicos que el modelo aditivo 
+
+Para volver a verificar  vamos a usa la descomposición STL (Seasonal and Trend  decomposition using Loess) y un modelo ETS(Error, Trend , Seasonality )
+
+
+```{r hw_forec}
+resultado_forecast <- stlf(serie_tiempo, robust=TRUE)
+plot(resultado_forecast)
+```
+En la gráfica la linea negra representa los datos observados , la linea azul y las bandas al final representan los pronosticos y sus intervalos de confianza , la predicion muestra picos  y cambios abruptos lo que sugiere una variabilidad de los datos  lo que podria estar relacionado con el nivel dela serie . El modelo utilizado es una ETS(M,N,N)  (Multiplicativo ,Sin Tendencia(N), Sin estacionalidad (N) ) , esto indica que el modelo asume qu los errores se multiplican  por el nivel de la serie para mejorar la variabilidad de los datos
+
+Aplicamos el metodo Holt Winteres especificando el un modelo multiplicativo
+
+
+```{r hw_mul}
+hw <- HoltWinters(serie_tiempo, seasonal="multiplicative")
+plot(hw)
+```
+La linea represnta los datos orginales de la serie de tiempo, la linea roja indica la serie ajustada obtenida desde el metodo de Holt-Winters , el cual se puede ver como se suaviza las fluctuaciones ,el modelo  se centra enla tendencia general y los patrones de estaciones regulares
+
+** Lectura de Alpha, Beta y Gama**
+```{r}
+
+alpha <- hw$alpha
+beta <- hw$beta
+gamma <- hw$gamma
+
+# Imprimir los parámetros
+cat("Alpha (nivel):", alpha, "\n")
+cat("Beta (tendencia):", beta, "\n")
+cat("Gamma (estacionalidad):", gamma, "\n")
+
+```
+**Alpha:** va tomar valores pasados 
+**Beta** como da cero no existe tendencia
+**Gama** al estar cercano a 0.5 representa estacionalidad
+
+
+
+**Componentes de modelo**
+
+```{r hw var}
+print(str(hw$fitted))
+```
+
+**Componente de Nivel ** 
+
+Este  grafico  se ajusta para ver la tendencia general excluyendo la estacionalidad y los valores irregurales
+```{r hwnivel}
+plot(hw$fitted[, "level"], main="Componente de nivel")
+```
+Al ver la gráfica podemos ver que empiza en 600 pero sigue creciendo hasta 1800 , lo que demuestra una tendencia creciente. Tambien se denotan variaciones  y periodos donde tiene incrementos y descensos temporales , por ejemplo para finales de 2023 e inicios de 2024 se observa una voltatilidad , estos cambios son importantes investigarlos ya pueden ser factores externos
+
+
+**Componente de tendencia**
+
+Este componenen nos indica como evoluciona la serie temporal sin tomar las variaciones estacionales
+```{r hwtende}
+plot(hw$fitted[, "trend"], main="Componente de tendencia")
+```
+La linea horizaontal nos muestra que la tendencia es constante  a lo largo del tiempo , no se observan cambios ,esto indicaria que los cambios vistos en los Compenentes de nivel  son  estacionales o irregulares, no tendenciales.
+
+
+**Componente de estacionalidad**
+
+ Este componente  nos muestras las variaciones periódicas que ocurren en los intervalos regulares 
+```{r hwestacional}
+plot(hw$fitted[, "season"], main="Componente estacional")
+```
+El gráfico muestra cambios claros  a lo largo del tiempo , evidenciando patrones estacionales. La amplitud  de los cambios oscilan entre 0.6 y 1.4 , la subidas y bajadas  reflejan periodicos especificos del año donde se espera que en cierto periodo  suba o baje el tráfico , para nuestro caso puntual serian los periodos donde se realizan las fiestas y ferias. Con este componente se puede realizar el diseño e implementación de mejoras de la red previniendo los periodos de alto tráfico
+
+
+
+
+**Verificación**
+
+**Prueba de Ljung-Box:** l esta herramienta nos sirve para verificar si hay autocorrelaciones significativas en una serie de residuos en distintos retrasos
+
+```{r}
+residuos_hw <- residuals(hw)
+ljung_box_result <- Box.test(residuos_hw, type = "Ljung-Box")
+print(ljung_box_result)
+
+```
+Dadoque el valor -p es menor que  0.05 se rechaza la hipotesis nula que no existe  autocrrelaciones significativas en los residuos del modelo , esto significa que los residuos no son completamente aleatorios por lo tanto el modelo Holt - Winters puede no estar capturando toda la estructura dependiente en los datos
+
+Se realiza la prueba de Ljung-Box cun un mayor de retrasos de 30 podria proporcionar una vision mas clara de la estructura de autocorrelación en los residuos
+
+
+```{r}
+residuos_hw2 <- residuals(hw)
+ljung_box_result_30 <- Box.test(residuos_hw2, type = "Ljung-Box", lag = 30)
+print(ljung_box_result_30)
+
+```
+
+Al ser el valor -p menor a 0.05 se rechaza la hipotesis nula de que no hay autocorrelaciones en los residuos del modelo a los 30 retrasos lo que implica que el modelo  no esta capturando la estructura actual de los datos
+
+
+
+**Predicción**
+
+Por medio de la funcion "forecast" realizamos la predicción del modelo ,en la linea azul  se ven los valores originales, en la linea verde los valores de la serie ajustada, en la linea rojas los valores predicidos .
+
+```{r  forecast}
+hw_forecast <- forecast(hw, h=365)
+plot(serie_tiempo, type = "l", col = "blue", xlab = "Tiempo", ylab = "Valores", main = "Datos Originales, Ajuste y Pronóstico de Holt-Winters", ylim = range(c(serie_tiempo, hw$fitted[, "xhat"], hw_forecast$mean, hw_forecast$lower, hw_forecast$upper)))
+lines(hw$fitted[, "xhat"], col = "green")
+lines(hw_forecast$mean, col = "red")
+matlines(hw_forecast$mean, hw_forecast$lower[, "80%"], col = "red", lty = 2)
+matlines(hw_forecast$mean, hw_forecast$upper[, "80%"], col = "red", lty = 2)
+matlines(hw_forecast$mean, hw_forecast$lower[, "95%"], col = "red", lty = 2)
+matlines(hw_forecast$mean, hw_forecast$upper[, "95%"], col = "red", lty = 2)
+legend("topright", legend = c("Datos Originales", "Ajuste HW", "Pronóstico HW", "Intervalo 80%", "Intervalo 95%"), col = c("blue", "green", "red", "red", "red"), lty = c(1, 1, 1, 2, 2), merge = TRUE)
+
+```
+```{r}
+hw_forecast
+
+```
+Al mirar el Point Forecast  a lo largo del tiempo  se ve el aumento de los valores predichos , lo que podria indicar una tendencia ascendente  esperada en la serie temporal 
+
+Al ver la prediccion podemos ver entre más ampliamos la confianza   se amplia el rango y y aumenta la incertidumbre de los pronósticos  que cubren el valor real , con esto se puede hacer un análisis de riesgos para la empresa 
 
 
 
