@@ -51,3 +51,5 @@ análisis
 diferenciacion-y-logaritmos
 logaritmos
 arima
+método-de-holt-winter
+método-de-holt-winters
