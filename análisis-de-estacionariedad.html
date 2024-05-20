@@ -238,7 +238,7 @@ causas de estas anomalias.</p></li>
 </ol>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="análisis-de-estacionariedad.html#cb7-1" tabindex="-1"></a>descomposicion <span class="ot">&lt;-</span> <span class="fu">decompose</span>(serie_tiempo)</span>
 <span id="cb7-2"><a href="análisis-de-estacionariedad.html#cb7-2" tabindex="-1"></a><span class="fu">plot</span>(descomposicion)</span></code></pre></div>
-<p><img src="Series-de-Tiempo_files/figure-html/4_descomposicion-1.png" width="672" /></p>
+<p><img src="Series-de-Tiempo_files/figure-html/4_descomposicionn-1.png" width="672" /></p>
 </div>
 <div id="diferenciacion-y-logaritmos" class="section level2 hasAnchor" number="5.3">
 <h2><span class="header-section-number">5.3</span> Diferenciacion y Logaritmos<a href="análisis-de-estacionariedad.html#diferenciacion-y-logaritmos" class="anchor-section" aria-label="Anchor link to header"></a></h2>
@@ -324,7 +324,7 @@ misma magnitud en todo el conjunto de datos, mientras que el modelo
 multiplicativo cuando la magnitud de la estacionalidad cambia a medida
 que aumenta o disminuye el tiempo el tiempo</p>
 <div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="análisis-de-estacionariedad.html#cb20-1" tabindex="-1"></a><span class="fu">plot</span>(serie_tiempo)</span></code></pre></div>
-<p><img src="Series-de-Tiempo_files/figure-html/hw%20plot-1.png" width="672" /></p>
+<p><img src="Series-de-Tiempo_files/figure-html/hw%20plotr-1.png" width="672" /></p>
 <p>Al ver la gráfica al tener una periocidad diaria no es claro si usar el
 modelo aditivo o multiplicativo por lo cual evaluamos la
 homocedasticidad de los residuos .</p>
@@ -390,7 +390,7 @@ tendencia <strong>Gama</strong> al estar cercano a 0.5 representa estacionalidad
 <p>Este grafico se ajusta para ver la tendencia general excluyendo la
 estacionalidad y los valores irregurales</p>
 <div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="análisis-de-estacionariedad.html#cb35-1" tabindex="-1"></a><span class="fu">plot</span>(hw<span class="sc">$</span>fitted[, <span class="st">&quot;level&quot;</span>], <span class="at">main=</span><span class="st">&quot;Componente de nivel&quot;</span>)</span></code></pre></div>
-<p><img src="Series-de-Tiempo_files/figure-html/hwnivel-1.png" width="672" /></p>
+<p><img src="Series-de-Tiempo_files/figure-html/hwniveles-1.png" width="672" /></p>
 <p>Al ver la gráfica podemos ver que empiza en 600 pero sigue creciendo
 hasta 1800 , lo que demuestra una tendencia creciente. Tambien se
 denotan variaciones y periodos donde tiene incrementos y descensos
@@ -401,7 +401,7 @@ ya pueden ser factores externos</p>
 <p>Este componenen nos indica como evoluciona la serie temporal sin tomar
 las variaciones estacionales</p>
 <div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="análisis-de-estacionariedad.html#cb36-1" tabindex="-1"></a><span class="fu">plot</span>(hw<span class="sc">$</span>fitted[, <span class="st">&quot;trend&quot;</span>], <span class="at">main=</span><span class="st">&quot;Componente de tendencia&quot;</span>)</span></code></pre></div>
-<p><img src="Series-de-Tiempo_files/figure-html/hwtende-1.png" width="672" /></p>
+<p><img src="Series-de-Tiempo_files/figure-html/hwtendee-1.png" width="672" /></p>
 <p>La linea horizaontal nos muestra que la tendencia es constante a lo
 largo del tiempo , no se observan cambios ,esto indicaria que los
 cambios vistos en los Compenentes de nivel son estacionales o
@@ -463,7 +463,7 @@ valores de la serie ajustada, en la linea rojas los valores predicidos .</p>
 <span id="cb42-7"><a href="análisis-de-estacionariedad.html#cb42-7" tabindex="-1"></a><span class="fu">matlines</span>(hw_forecast<span class="sc">$</span>mean, hw_forecast<span class="sc">$</span>lower[, <span class="st">&quot;95%&quot;</span>], <span class="at">col =</span> <span class="st">&quot;red&quot;</span>, <span class="at">lty =</span> <span class="dv">2</span>)</span>
 <span id="cb42-8"><a href="análisis-de-estacionariedad.html#cb42-8" tabindex="-1"></a><span class="fu">matlines</span>(hw_forecast<span class="sc">$</span>mean, hw_forecast<span class="sc">$</span>upper[, <span class="st">&quot;95%&quot;</span>], <span class="at">col =</span> <span class="st">&quot;red&quot;</span>, <span class="at">lty =</span> <span class="dv">2</span>)</span>
 <span id="cb42-9"><a href="análisis-de-estacionariedad.html#cb42-9" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">&quot;topright&quot;</span>, <span class="at">legend =</span> <span class="fu">c</span>(<span class="st">&quot;Datos Originales&quot;</span>, <span class="st">&quot;Ajuste HW&quot;</span>, <span class="st">&quot;Pronóstico HW&quot;</span>, <span class="st">&quot;Intervalo 80%&quot;</span>, <span class="st">&quot;Intervalo 95%&quot;</span>), <span class="at">col =</span> <span class="fu">c</span>(<span class="st">&quot;blue&quot;</span>, <span class="st">&quot;green&quot;</span>, <span class="st">&quot;red&quot;</span>, <span class="st">&quot;red&quot;</span>, <span class="st">&quot;red&quot;</span>), <span class="at">lty =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">2</span>), <span class="at">merge =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
-<p><img src="Series-de-Tiempo_files/figure-html/forecast-1.png" width="672" /></p>
+<p><img src="Series-de-Tiempo_files/figure-html/forecastt-1.png" width="672" /></p>
 <div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="análisis-de-estacionariedad.html#cb43-1" tabindex="-1"></a>hw_forecast</span></code></pre></div>
 <pre><code>##           Point Forecast     Lo 80     Hi 80     Lo 95    Hi 95
 ## 2024.1644       836.3786  728.6764  944.0808 671.66235 1001.095
@@ -854,19 +854,19 @@ constante. Verificamos si es estacionaria por medio de la prueba de
 puede determinar que la serie era estacionaria , a continuación podemos
 explorar mas gráficos como el ACF y el PACF:</p>
 <div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="análisis-de-estacionariedad.html#cb45-1" tabindex="-1"></a><span class="fu">plot</span>(seriedif)</span></code></pre></div>
-<p><img src="Series-de-Tiempo_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p><img src="Series-de-Tiempo_files/figure-html/plotseriedif-1.png" width="672" /></p>
 <p><strong>ACF</strong></p>
 <p>Este gráfico nos muestra la correlación en la serie (seriediff) y sus
 retrasos</p>
 <div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="análisis-de-estacionariedad.html#cb46-1" tabindex="-1"></a><span class="fu">acf</span>(seriedif)</span></code></pre></div>
-<p><img src="Series-de-Tiempo_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p><img src="Series-de-Tiempo_files/figure-html/acf-1.png" width="672" /></p>
 <p>En este caso al ver el primer retraso seguido de barras que se vuelven
 insignificantes lo que con lleva aun modelo de <strong>media móvil (1)</strong></p>
 <p><strong>PACF</strong></p>
 <p>Este mide la correlación parcial entre la serie y sus retrasos ,
 controlando los valores de los retrasos intermedios</p>
 <div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="análisis-de-estacionariedad.html#cb47-1" tabindex="-1"></a><span class="fu">pacf</span>(seriedif)</span></code></pre></div>
-<p><img src="Series-de-Tiempo_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p><img src="Series-de-Tiempo_files/figure-html/pacrseriedif-1.png" width="672" /></p>
 <p>En esta gráfica observamos que el primer retraso muestra una correlación
 parcial significativa negativa que luego cae a cero ,lo que puede
 sugerir un <strong>AR(1)</strong></p>
@@ -1016,7 +1016,7 @@ lo cual se ajusta bien el modelo</p>
 <p>Como podemos ver que el valor a partir del índice 2024.1808 se comporta
 constante con el valor de (882.3)</p>
 <div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb60-1"><a href="análisis-de-estacionariedad.html#cb60-1" tabindex="-1"></a><span class="fu">plot</span>(pronostico_arima9)</span></code></pre></div>
-<p><img src="Series-de-Tiempo_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+<p><img src="Series-de-Tiempo_files/figure-html/arima9-1.png" width="672" /></p>
 </div>
 <div id="arima-con-drift" class="section level3 hasAnchor" number="5.5.2">
 <h3><span class="header-section-number">5.5.2</span> ARIMA con Drift<a href="análisis-de-estacionariedad.html#arima-con-drift" class="anchor-section" aria-label="Anchor link to header"></a></h3>
@@ -1055,7 +1055,7 @@ capturar esa tendencia residual mejorando la precisión del modelo</p>
 ## AIC=13904.16   AICc=13904.2   BIC=13924.37</code></pre>
 <p><strong>Diagnostico del modelo</strong></p>
 <div class="sourceCode" id="cb65"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb65-1"><a href="análisis-de-estacionariedad.html#cb65-1" tabindex="-1"></a><span class="fu">tsdiag</span>(modelo_arima_drift)</span></code></pre></div>
-<p><img src="Series-de-Tiempo_files/figure-html/drift-1.png" width="672" /></p>
+<p><img src="Series-de-Tiempo_files/figure-html/driftman-1.png" width="672" /></p>
 <p><strong>Residuos estandar</strong>: Se pueden ver los residuos distribuidos
 aleatoriamente alrededor de cero , con algunos outlier <strong>Residuos ACF</strong>
 : Todas las autocorrelaciones estan dentro de la banda de confianza , lo
@@ -1077,7 +1077,7 @@ lo cual se ajusta bien el modelo</p>
 <p>En este gráfico podemos observar que la media es igual a cero</p>
 <div class="sourceCode" id="cb68"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb68-1"><a href="análisis-de-estacionariedad.html#cb68-1" tabindex="-1"></a>error<span class="ot">=</span><span class="fu">residuals</span>(modelo_arima_drift)</span>
 <span id="cb68-2"><a href="análisis-de-estacionariedad.html#cb68-2" tabindex="-1"></a><span class="fu">plot</span> (error)</span></code></pre></div>
-<p><img src="Series-de-Tiempo_files/figure-html/error_arimad-1.png" width="672" /></p>
+<p><img src="Series-de-Tiempo_files/figure-html/error_arimadee-1.png" width="672" /></p>
 <p><strong>Pronóstico</strong></p>
 <div class="sourceCode" id="cb69"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb69-1"><a href="análisis-de-estacionariedad.html#cb69-1" tabindex="-1"></a><span class="co"># Pronóstico utilizando el modelo ARIMA con drift</span></span>
 <span id="cb69-2"><a href="análisis-de-estacionariedad.html#cb69-2" tabindex="-1"></a>pronostico_arima_drift <span class="ot">&lt;-</span> <span class="fu">forecast</span>(modelo_arima_drift, <span class="at">h=</span><span class="dv">150</span>)</span>
@@ -1234,7 +1234,7 @@ lo cual se ajusta bien el modelo</p>
 ## 2024.5699       950.7145 636.5736 1264.855 470.2774 1431.151
 ## 2024.5726       951.1552 636.1372 1266.173 469.3767 1432.934</code></pre>
 <div class="sourceCode" id="cb71"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb71-1"><a href="análisis-de-estacionariedad.html#cb71-1" tabindex="-1"></a><span class="fu">plot</span>(pronostico_arima_drift)</span></code></pre></div>
-<p><img src="Series-de-Tiempo_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
+<p><img src="Series-de-Tiempo_files/figure-html/arimanamnualdrif-1.png" width="672" /></p>
 <p>Podemos ver como en los puntos de Predicción ya no tiene una tendencia
 lineal,ya los valores presentan una tendencia</p>
 </div>
@@ -1266,7 +1266,7 @@ penúltimo periodo, esta elección tambien es dado porque el valor del
 error(-0.0767) es menor respecto al periodo anterior (-0.7636)</p>
 <p><strong>Diagnóstico del Modelo</strong></p>
 <div class="sourceCode" id="cb74"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb74-1"><a href="análisis-de-estacionariedad.html#cb74-1" tabindex="-1"></a><span class="fu">tsdiag</span>(modelo)</span></code></pre></div>
-<p><img src="Series-de-Tiempo_files/figure-html/tsdiag-1.png" width="672" /></p>
+<p><img src="Series-de-Tiempo_files/figure-html/tsdiagautoarima-1.png" width="672" /></p>
 <p><strong>Residuos estandar</strong> se pueden ver los residuso distribuidos
 aleatoriamente alrededor de cero , con algunos outlier <strong>Residuos ACF</strong>
 : Todas las autocorrelaciones estan dentro de la banda de confianza ,
@@ -1289,7 +1289,7 @@ Ruido Blanco y se ajusta bien el modelo</p>
 <p>En este gráfico podemos observar que la media es igual a cero</p>
 <div class="sourceCode" id="cb77"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb77-1"><a href="análisis-de-estacionariedad.html#cb77-1" tabindex="-1"></a>error<span class="ot">=</span><span class="fu">residuals</span>(modelo)</span>
 <span id="cb77-2"><a href="análisis-de-estacionariedad.html#cb77-2" tabindex="-1"></a><span class="fu">plot</span> (error)</span></code></pre></div>
-<p><img src="Series-de-Tiempo_files/figure-html/error-1.png" width="672" /></p>
+<p><img src="Series-de-Tiempo_files/figure-html/errorres-1.png" width="672" /></p>
 <p><strong>Pronóstico</strong></p>
 <div class="sourceCode" id="cb78"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb78-1"><a href="análisis-de-estacionariedad.html#cb78-1" tabindex="-1"></a>pronostico <span class="ot">&lt;-</span> forecast<span class="sc">::</span><span class="fu">forecast</span>(modelo ,<span class="at">h=</span><span class="dv">100</span>)</span>
 <span id="cb78-2"><a href="análisis-de-estacionariedad.html#cb78-2" tabindex="-1"></a>pronostico</span></code></pre></div>
@@ -1587,7 +1587,7 @@ segundo Indice</p>
 ## 2024.5699       881.2991 561.7956 1200.803 392.6606 1369.938
 ## 2024.5726       881.2991 560.8963 1201.702 391.2852 1371.313</code></pre>
 <div class="sourceCode" id="cb86"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb86-1"><a href="análisis-de-estacionariedad.html#cb86-1" tabindex="-1"></a><span class="fu">plot</span>(pronostico_auto_con_drift)</span></code></pre></div>
-<p><img src="Series-de-Tiempo_files/figure-html/unnamed-chunk-22-1.png" width="672" /></p>
+<p><img src="Series-de-Tiempo_files/figure-html/plot_drift-1.png" width="672" /></p>
 </div>
 <div id="conclusión" class="section level3 hasAnchor" number="5.5.5">
 <h3><span class="header-section-number">5.5.5</span> Conclusión<a href="análisis-de-estacionariedad.html#conclusión" class="anchor-section" aria-label="Anchor link to header"></a></h3>
