@@ -20,8 +20,9 @@ library(tseries)
 
 ```
 
-```{r}
+```{r datoss}
 datos <- read.csv("serie_tiempo.csv")
+head(datos,5)
 ```
 
 ```{r}
@@ -31,7 +32,7 @@ serie_tiempo <- ts(datos$x, start = c(format(fecha_inicio, "%Y"), format(fecha_i
 
 Verificamos la fecha inicio y fecha fin
 
-```{r}
+```{r valserietiempo}
 start_time <- start(serie_tiempo)
 end_time <- end(serie_tiempo)
 frequency <- frequency(serie_tiempo)
@@ -62,7 +63,7 @@ Dentro la imagen podemos observar lo siguiente
     casos particulares en tráfico hay que hacer investigaciones de las
     causas de estas anomalias.
 
-```{r 4_descomposicion}
+```{r 4_descomposicionn}
 descomposicion <- decompose(serie_tiempo)
 plot(descomposicion)
  
@@ -170,7 +171,7 @@ misma magnitud en todo el conjunto de datos, mientras que el modelo
 multiplicativo cuando la magnitud de la estacionalidad cambia a medida
 que aumenta o disminuye el tiempo el tiempo
 
-```{r hw plot}
+```{r hw plotr}
 plot(serie_tiempo)
 ```
 
@@ -178,7 +179,7 @@ Al ver la gráfica al tener una periocidad diaria no es claro si usar el
 modelo aditivo o multiplicativo por lo cual evaluamos la
 homocedasticidad de los residuos .
 
-```{r}
+```{r reqserietiempo}
 frequency(serie_tiempo)
 ```
 
@@ -235,7 +236,7 @@ centra enla tendencia general y los patrones de estaciones regulares
 
 \*\* Lectura de Alpha, Beta y Gama\*\*
 
-```{r}
+```{r alpha}
 
 alpha <- hw$alpha
 beta <- hw$beta
@@ -253,7 +254,7 @@ tendencia **Gama** al estar cercano a 0.5 representa estacionalidad
 
 **Componentes de modelo**
 
-```{r hw var}
+```{r hw varr}
 print(str(hw$fitted))
 ```
 
@@ -262,7 +263,7 @@ print(str(hw$fitted))
 Este grafico se ajusta para ver la tendencia general excluyendo la
 estacionalidad y los valores irregurales
 
-```{r hwnivel}
+```{r hwniveles}
 plot(hw$fitted[, "level"], main="Componente de nivel")
 ```
 
@@ -278,7 +279,7 @@ ya pueden ser factores externos
 Este componenen nos indica como evoluciona la serie temporal sin tomar
 las variaciones estacionales
 
-```{r hwtende}
+```{r hwtendee}
 plot(hw$fitted[, "trend"], main="Componente de tendencia")
 ```
 
@@ -310,7 +311,7 @@ mejoras de la red previniendo los periodos de alto tráfico
 hay autocorrelaciones significativas en una serie de residuos en
 distintos retrasos
 
-```{r}
+```{r rsss}
 residuos_hw <- residuals(hw)
 ljung_box_result <- Box.test(residuos_hw, type = "Ljung-Box")
 print(ljung_box_result)
@@ -327,7 +328,7 @@ Se realiza la prueba de Ljung-Box cun un mayor de retrasos de 30 podria
 proporcionar una vision mas clara de la estructura de autocorrelación en
 los residuos
 
-```{r}
+```{r ressshw}
 residuos_hw2 <- residuals(hw)
 ljung_box_result_30 <- Box.test(residuos_hw2, type = "Ljung-Box", lag = 30)
 print(ljung_box_result_30)
@@ -345,7 +346,7 @@ Por medio de la funcion "forecast" realizamos la predicción del modelo
 ,en la linea azul se ven los valores originales, en la linea verde los
 valores de la serie ajustada, en la linea rojas los valores predicidos .
 
-```{r  forecast}
+```{r  forecastt}
 hw_forecast <- forecast(hw, h=365)
 plot(serie_tiempo, type = "l", col = "blue", xlab = "Tiempo", ylab = "Valores", main = "Datos Originales, Ajuste y Pronóstico de Holt-Winters", ylim = range(c(serie_tiempo, hw$fitted[, "xhat"], hw_forecast$mean, hw_forecast$lower, hw_forecast$upper)))
 lines(hw$fitted[, "xhat"], col = "green")
@@ -358,7 +359,7 @@ legend("topright", legend = c("Datos Originales", "Ajuste HW", "Pronóstico HW",
 
 ```
 
-```{r}
+```{r hwfore}
 hw_forecast
 
 ```
@@ -388,7 +389,7 @@ constante. Verificamos si es estacionaria por medio de la prueba de
 puede determinar que la serie era estacionaria , a continuación podemos
 explorar mas gráficos como el ACF y el PACF:
 
-```{r}
+```{r plotseriedif}
 plot(seriedif)
 ```
 
@@ -397,7 +398,7 @@ plot(seriedif)
 Este gráfico nos muestra la correlación en la serie (seriediff) y sus
 retrasos
 
-```{r}
+```{r acf}
 acf(seriedif)
 
 ```
@@ -410,7 +411,7 @@ insignificantes lo que con lleva aun modelo de **media móvil (1)**
 Este mide la correlación parcial entre la serie y sus retrasos ,
 controlando los valores de los retrasos intermedios
 
-```{r}
+```{r pacrseriedif}
 pacf(seriedif)
 
 ```
@@ -493,7 +494,7 @@ plot (error)
 
 **Pronóstico**
 
-```{r}
+```{r proarima9}
 pronostico_arima9 <- forecast(arima9 ,level=c(95),h=50)
 pronostico_arima9
 
@@ -502,7 +503,7 @@ pronostico_arima9
 Como podemos ver que el valor a partir del índice 2024.1808 se comporta
 constante con el valor de (882.3)
 
-```{r}
+```{r arima9}
 plot(pronostico_arima9)
 ```
 
@@ -513,7 +514,7 @@ de una constante que representa una tendencia lineal en la serie
 temporal después de la diferenciación. Al incluirlo , el modelo puedo
 capturar esa tendencia residual mejorando la precisión del modelo
 
-```{r}
+```{r modesymmar}
 modelo_arima_drift <- Arima(serie_tiempo, order=c(1,1,1), include.drift=TRUE)
 summary(modelo_arima_drift)
 modelo_arima_drift
@@ -522,7 +523,7 @@ modelo_arima_drift
 
 **Diagnostico del modelo**
 
-```{r drift}
+```{r driftman}
 tsdiag(modelo_arima_drift)
 ```
 
@@ -536,7 +537,7 @@ residuos no tienen autocorrelación, por lo tanto el modelo es adecuado
 
 **Prueba de Lgung-Box**
 
-```{r bozta_arimadrift}
+```{r bozta_arimadriftmanual}
 Box.test(residuals(modelo_arima_drift),type ="Ljung-Box")
 ```
 
@@ -548,14 +549,14 @@ lo cual se ajusta bien el modelo
 
 En este gráfico podemos observar que la media es igual a cero
 
-```{r error_arimad}
+```{r error_arimadee}
 error=residuals(modelo_arima_drift)
 plot (error)
 ```
 
 **Pronóstico**
 
-```{r}
+```{r arimanamnualdrif}
 # Pronóstico utilizando el modelo ARIMA con drift
 pronostico_arima_drift <- forecast(modelo_arima_drift, h=150)
 pronostico_arima_drift
@@ -571,7 +572,7 @@ El AUTOARIMA utilizavarios modelos y selecciona los mejores AIC/BIC
 buscando el mejor modelo que ajuste los datos y la el mas simple
 utilizando la menor cantidad de parámetros
 
-```{r}
+```{r autoarimaserietiem}
 modelo<-auto.arima(serie_tiempo)
 modelo
 ```
@@ -582,14 +583,14 @@ El resultado de AUTOARIMA sugiere un modelo (0,1,2).
 tienen efecto sobre los valores futuros \*\*Diferenciación\*: Se
 necesita una diferenciación para hacer la serie estacionaria . Esta fue
 la observación realizada anteriormente con una diferencia a la serie
-original **Media Móvil**: Indica que con 2 medias moviles seria
+original **Media Móvil**: Indica que con 2 medias móviles seria
 suficiene, ya que maneja la influencia de error de predicción de
 penúltimo periodo, esta elección tambien es dado porque el valor del
 error(-0.0767) es menor respecto al periodo anterior (-0.7636)
 
 **Diagnóstico del Modelo**
 
-```{r tsdiag}
+```{r tsdiagautoarima}
 tsdiag(modelo)
 ```
 
@@ -604,7 +605,7 @@ es adecuado
 
 **Prueba de Lgung-Box**
 
-```{r bozta}
+```{r boztaungbox}
 Box.test(residuals(modelo),type ="Ljung-Box")
 ```
 
@@ -616,14 +617,14 @@ Ruido Blanco y se ajusta bien el modelo
 
 En este gráfico podemos observar que la media es igual a cero
 
-```{r error}
+```{r errorres}
 error=residuals(modelo)
 plot (error)
 ```
 
 **Pronóstico**
 
-```{r proautoarima}
+```{r proautoarimaa }
 pronostico <- forecast::forecast(modelo ,h=100)
 pronostico
 
@@ -637,7 +638,7 @@ del indice (2024.1671)
 AL igual que el ARIMA anterior vamos a incluir el parametro Drift para
 ajustar la linealidad
 
-```{r}
+```{r modeautodrif}
 library(forecast)
 modelo_auto_con_drift <- auto.arima(serie_tiempo, d=1, D=0, seasonal=FALSE, allowdrift=TRUE)
 summary(modelo_auto_con_drift)
@@ -648,13 +649,13 @@ modelo_auto_con_drift
 Se puede ver en el pronóstico una linealidad de (881.29) a parir del
 segundo Indice
 
-```{r}
+```{r autodfrifff}
 
 pronostico_auto_con_drift <- forecast(modelo_auto_con_drift, h=150) 
 pronostico_auto_con_drift
 ```
 
-```{r}
+```{r plot_drift} 
 plot(pronostico_auto_con_drift)
 ```
 
@@ -664,3 +665,175 @@ El modelo AUTOARIMA puede no capturar todas las caraterisitcas de una
 serie temporal , como una tendencia residual . Por otro lado al incluir
 el parámetro **drift¨** en el modelo ARIMA(1,1,1) ayudo a capturar esta
 tendencia mejorando el ajuste y la interpretación del modelo
+
+
+
+
+## Facebook Prophet 
+
+Usaremos la libreria Prophet esta herramienta fue desarrollada por Facebook, el cual se basa en un modelo aditivo , donde las tendencias no lineales se ajustan con la estacionariedad diaria, semanal y anual teniendo encuenta los días festivos.
+
+
+### Carque de datos
+
+```{r ph,echo=FALSE , warning=FALSE, message=FALSE}
+library(prophet)
+library(dplyr)
+
+```
+
+
+Cargamos los datos desde data_sitio.csv para incluir las colunas de ferias y fiestas "FIESTAS"
+
+```{r phdat}
+data_sitio <- read.csv("data_sitio.csv", sep = ";")
+data_sitio$M_FECHA_DIA <- as.Date(data_sitio$M_FECHA_DIA)
+data_sitio <- data_sitio[order(data_sitio$M_FECHA_DIA), ]
+head(data_sitio,5)
+```
+
+```{r ph_df}
+df <- data_sitio[, c("M_FECHA_DIA", "PAYLOAD_4G","FIESTA")]
+head(df,5)
+```
+
+### Alistamiento de datos para el modelo
+
+Para preparar los datos para usar la libreria Prophet colocando la columna "M_FECHA_DIA" en "ds" y la variable a predecir en este caso "PAYLOAD 4G" en la variable "y" 
+
+
+```{r ph_rename}
+df <- df %>%
+  rename(ds = M_FECHA_DIA, y = PAYLOAD_4G)
+```
+
+Aseguramos el tipo de dato para "ds" y "y"
+```{r ph_tipovalor}
+df$ds <- as.Date(df$ds) 
+df$y <- as.numeric(df$y)
+
+```
+
+
+Se crea un nuevo dataframe "holydays" para los días de ferias y fiestas de nuestro proyecto, este se usa para mejorar el ajuste del proyecto 
+
+
+```{r ph_holydays}
+
+holidays <- df %>%
+  filter(FIESTA == 1) %>%
+  select(ds) %>%
+  mutate(holiday = 'fiesta')
+
+```
+
+
+### Creación de modelo
+
+Creamos el modelo teniendo encuenta los festivos incluidos en "holidays" , y definimos que no tenemos estacionalidad horaria , ya que la minima expresión en fechas es el dia entero
+
+```{r ph_modelo}
+modelo_prophet <- prophet(holidays = holidays, daily.seasonality = FALSE)
+
+modelo_prophet <- fit.prophet(modelo_prophet, df)
+
+
+```
+
+### Descomposición
+
+```{r_descomposicion}
+prophet_plot_components(modelo_prophet, pronostico)
+```
+**Trend:**  La tendencia muestra como el "PAYLOAD 4G" aumenta a lo largo del tiempo , desde el 2021  al 2023 hay una tendencia creciente , luego en 2023 se estabiliza
+
+**Holydays:** Este gráfico muestra el impacto de los festivo en el tráfico. Se ve un impacto en significativo en el 2022. En los otros años el impacto parece ser menor o inexistente.
+
+**Weekly:**Muestra como en los días viernes sabado y domingo aumenta el tráfico, mientras que en los días lunes es mas bajo.
+
+**Yearly** Este gráfico muestra que hay mayor tráfico  los meses de Julio y Diciembre, mientras que Enero y Octubre tienen menor tráfico
+
+
+### Pronóstico
+
+Creamos un dataset con fechas futuras  y las incluimos en el pronóstico 365 días
+```{r ph_pronostico}
+futuro <- make_future_dataframe(modelo_prophet, periods = 365)
+pronostico <- predict(modelo_prophet, futuro)
+head(pronostico,5)
+```
+**Linea Azul:**: prediccion de Payload 4G, la cual nos muestra una tendencia ascendente hasta 2023 , despues de este año se estabiliza
+
+**Banda Azul Clara:** Estas bandas corresponde  al nivel de confianza  que normalmente es del (80% al 95%)
+
+**Puntos Negros:** Valores reales de Payload 
+
+**Lineas Rojas:** son los Changepoint o puntos de cambio detectados por el modelo Prophet,son puntos donde el modelo detecta un cambio de tendencia de Payload 4G
+
+**Puntos negros:** son los valores reales  de Payload 4g, nos permite visualmente comparar las predicciones del modelo , con los observados
+
+**Visualización de resultados**
+```{r ph_plot_pronostico}
+
+plot(modelo_prophet, pronostico) +
+  add_changepoints_to_plot(modelo_prophet)
+
+```
+
+
+
+
+### Métricas de Error
+
+Calculamos los errores 
+
+
+**MAE (Mean Absolute Error):** Esto significa que en promedio las predicciones estan con una difrenciade 59 unidades 
+
+**MSE (Mean Squared Error):** Penaliza los errores grandes 
+
+**RMSE (Root Mean Squared Error):** Esta es la raiz cuadrada del MSE  proporcioando la medida de de error en las mismas unidades  de los datos originales
+
+
+```{r ph_error}
+actual <- df$y
+predicted <- predict(modelo_prophet, df)$yhat
+
+mae <- mean(abs(actual - predicted), na.rm = TRUE)
+mse <- mean((actual - predicted)^2, na.rm = TRUE)
+rmse <- sqrt(mse)
+print(sprintf("RESULTADO MAE: %.4f", mae))
+print(sprintf("RESULTADO MSE: %.4f", mse))
+print(sprintf("RESULTADO RMSE: %.4f", rmse))
+```
+
+
+**R² (Coeficiente de Determinación):** este Indica que el modelo explica el 86.6%  de la variabilidad  en los datos 
+
+
+
+```{r ph_r2}
+ss_res <- sum((actual - predicted)^2, na.rm = TRUE)
+ss_tot <- sum((actual - mean(actual))^2, na.rm = TRUE)
+r_squared <- 1 - (ss_res / ss_tot)
+r_squared <- as.numeric(r_squared)
+
+print(sprintf("RESULTADO R²: %.4f", r_squared))
+```
+
+
+**MAPE (Mean Absolute Percentage Error:)**: Este indica que el error promedio es del 7.2%, proporciOna una medida relativa del error respecto a los  valores reales
+
+
+
+```{r ph_mape}
+
+mape <- mean(abs((actual - predicted) / actual), na.rm = TRUE) * 100
+mape <- as.numeric(mape)
+print(sprintf("RESULTADO MAPE: %.4f", mape))
+
+```
+
+### Conclusiones 
+Las métricas de error (MAE,MSE,RMSE,R², MAPE) muestran que modelo captura tendencias y patrones de tráfico "Payload 4G". La incorporación de las festividades en "Holidays" ha mejorado la precisión del modelo permitiendo ajusta el tráfico duarante estos dias feriados
+
