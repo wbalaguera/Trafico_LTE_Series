@@ -23,7 +23,7 @@
 <meta name="author" content="Paula Gonzalez , Cristian Ibañez , Wilson Balaguera" />
 
 
-<meta name="date" content="2024-05-19" />
+<meta name="date" content="2024-05-25" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -176,6 +176,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="5.5.4" data-path="análisis-de-estacionariedad.html"><a href="análisis-de-estacionariedad.html#autoarima-con-drift"><i class="fa fa-check"></i><b>5.5.4</b> AUTOARIMA con Drift</a></li>
 <li class="chapter" data-level="5.5.5" data-path="análisis-de-estacionariedad.html"><a href="análisis-de-estacionariedad.html#conclusión"><i class="fa fa-check"></i><b>5.5.5</b> Conclusión</a></li>
 </ul></li>
+<li class="chapter" data-level="5.6" data-path="análisis-de-estacionariedad.html"><a href="análisis-de-estacionariedad.html#facebook-prophet"><i class="fa fa-check"></i><b>5.6</b> Facebook Prophet</a>
+<ul>
+<li class="chapter" data-level="5.6.1" data-path="análisis-de-estacionariedad.html"><a href="análisis-de-estacionariedad.html#carque-de-datos"><i class="fa fa-check"></i><b>5.6.1</b> Carque de datos</a></li>
+<li class="chapter" data-level="5.6.2" data-path="análisis-de-estacionariedad.html"><a href="análisis-de-estacionariedad.html#alistamiento-de-datos-para-el-modelo"><i class="fa fa-check"></i><b>5.6.2</b> Alistamiento de datos para el modelo</a></li>
+<li class="chapter" data-level="5.6.3" data-path="análisis-de-estacionariedad.html"><a href="análisis-de-estacionariedad.html#creación-de-modelo"><i class="fa fa-check"></i><b>5.6.3</b> Creación de modelo</a></li>
+<li class="chapter" data-level="5.6.4" data-path="análisis-de-estacionariedad.html"><a href="análisis-de-estacionariedad.html#descomposición"><i class="fa fa-check"></i><b>5.6.4</b> Descomposición</a></li>
+<li class="chapter" data-level="5.6.5" data-path="análisis-de-estacionariedad.html"><a href="análisis-de-estacionariedad.html#pronóstico"><i class="fa fa-check"></i><b>5.6.5</b> Pronóstico</a></li>
+<li class="chapter" data-level="5.6.6" data-path="análisis-de-estacionariedad.html"><a href="análisis-de-estacionariedad.html#métricas-de-error"><i class="fa fa-check"></i><b>5.6.6</b> Métricas de Error</a></li>
+<li class="chapter" data-level="5.6.7" data-path="análisis-de-estacionariedad.html"><a href="análisis-de-estacionariedad.html#conclusiones"><i class="fa fa-check"></i><b>5.6.7</b> Conclusiones</a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="6" data-path="pasos-siguientes.html"><a href="pasos-siguientes.html"><i class="fa fa-check"></i><b>6</b> Pasos siguientes</a></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
@@ -205,19 +215,26 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2><span class="header-section-number">5.1</span> Carga de Serie<a href="análisis-de-estacionariedad.html#carga-de-serie" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>Importamos la serie de tiempo del tráfico LTE y verificamos su rango de
 fechas</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="análisis-de-estacionariedad.html#cb1-1" tabindex="-1"></a>datos <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;serie_tiempo.csv&quot;</span>)</span></code></pre></div>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="análisis-de-estacionariedad.html#cb2-1" tabindex="-1"></a>fecha_inicio <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(<span class="st">&quot;2021-01-01&quot;</span>)</span>
-<span id="cb2-2"><a href="análisis-de-estacionariedad.html#cb2-2" tabindex="-1"></a>serie_tiempo <span class="ot">&lt;-</span> <span class="fu">ts</span>(datos<span class="sc">$</span>x, <span class="at">start =</span> <span class="fu">c</span>(<span class="fu">format</span>(fecha_inicio, <span class="st">&quot;%Y&quot;</span>), <span class="fu">format</span>(fecha_inicio, <span class="st">&quot;%j&quot;</span>)), <span class="at">frequency =</span> <span class="dv">365</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="análisis-de-estacionariedad.html#cb1-1" tabindex="-1"></a>datos <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;serie_tiempo.csv&quot;</span>)</span>
+<span id="cb1-2"><a href="análisis-de-estacionariedad.html#cb1-2" tabindex="-1"></a><span class="fu">head</span>(datos,<span class="dv">5</span>)</span></code></pre></div>
+<pre><code>##        x
+## 1 393.57
+## 2 314.84
+## 3 341.93
+## 4 375.91
+## 5 368.37</code></pre>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="análisis-de-estacionariedad.html#cb3-1" tabindex="-1"></a>fecha_inicio <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(<span class="st">&quot;2021-01-01&quot;</span>)</span>
+<span id="cb3-2"><a href="análisis-de-estacionariedad.html#cb3-2" tabindex="-1"></a>serie_tiempo <span class="ot">&lt;-</span> <span class="fu">ts</span>(datos<span class="sc">$</span>x, <span class="at">start =</span> <span class="fu">c</span>(<span class="fu">format</span>(fecha_inicio, <span class="st">&quot;%Y&quot;</span>), <span class="fu">format</span>(fecha_inicio, <span class="st">&quot;%j&quot;</span>)), <span class="at">frequency =</span> <span class="dv">365</span>)</span></code></pre></div>
 <p>Verificamos la fecha inicio y fecha fin</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="análisis-de-estacionariedad.html#cb3-1" tabindex="-1"></a>start_time <span class="ot">&lt;-</span> <span class="fu">start</span>(serie_tiempo)</span>
-<span id="cb3-2"><a href="análisis-de-estacionariedad.html#cb3-2" tabindex="-1"></a>end_time <span class="ot">&lt;-</span> <span class="fu">end</span>(serie_tiempo)</span>
-<span id="cb3-3"><a href="análisis-de-estacionariedad.html#cb3-3" tabindex="-1"></a>frequency <span class="ot">&lt;-</span> <span class="fu">frequency</span>(serie_tiempo)</span>
-<span id="cb3-4"><a href="análisis-de-estacionariedad.html#cb3-4" tabindex="-1"></a>min_date <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(<span class="fu">paste</span>(start_time[<span class="dv">1</span>], start_time[<span class="dv">2</span>], <span class="at">sep=</span><span class="st">&quot;-&quot;</span>), <span class="st">&quot;%Y-%j&quot;</span>)</span>
-<span id="cb3-5"><a href="análisis-de-estacionariedad.html#cb3-5" tabindex="-1"></a>max_date <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(<span class="fu">paste</span>(end_time[<span class="dv">1</span>], (end_time[<span class="dv">2</span>]<span class="sc">-</span><span class="dv">1</span>) <span class="sc">/</span> frequency <span class="sc">*</span> <span class="dv">365</span>, <span class="at">sep=</span><span class="st">&quot;-&quot;</span>), <span class="st">&quot;%Y-%j&quot;</span>)</span>
-<span id="cb3-6"><a href="análisis-de-estacionariedad.html#cb3-6" tabindex="-1"></a></span>
-<span id="cb3-7"><a href="análisis-de-estacionariedad.html#cb3-7" tabindex="-1"></a>min_date</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="análisis-de-estacionariedad.html#cb4-1" tabindex="-1"></a>start_time <span class="ot">&lt;-</span> <span class="fu">start</span>(serie_tiempo)</span>
+<span id="cb4-2"><a href="análisis-de-estacionariedad.html#cb4-2" tabindex="-1"></a>end_time <span class="ot">&lt;-</span> <span class="fu">end</span>(serie_tiempo)</span>
+<span id="cb4-3"><a href="análisis-de-estacionariedad.html#cb4-3" tabindex="-1"></a>frequency <span class="ot">&lt;-</span> <span class="fu">frequency</span>(serie_tiempo)</span>
+<span id="cb4-4"><a href="análisis-de-estacionariedad.html#cb4-4" tabindex="-1"></a>min_date <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(<span class="fu">paste</span>(start_time[<span class="dv">1</span>], start_time[<span class="dv">2</span>], <span class="at">sep=</span><span class="st">&quot;-&quot;</span>), <span class="st">&quot;%Y-%j&quot;</span>)</span>
+<span id="cb4-5"><a href="análisis-de-estacionariedad.html#cb4-5" tabindex="-1"></a>max_date <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(<span class="fu">paste</span>(end_time[<span class="dv">1</span>], (end_time[<span class="dv">2</span>]<span class="sc">-</span><span class="dv">1</span>) <span class="sc">/</span> frequency <span class="sc">*</span> <span class="dv">365</span>, <span class="at">sep=</span><span class="st">&quot;-&quot;</span>), <span class="st">&quot;%Y-%j&quot;</span>)</span>
+<span id="cb4-6"><a href="análisis-de-estacionariedad.html#cb4-6" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="análisis-de-estacionariedad.html#cb4-7" tabindex="-1"></a>min_date</span></code></pre></div>
 <pre><code>## [1] &quot;2021-01-01&quot;</code></pre>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="análisis-de-estacionariedad.html#cb5-1" tabindex="-1"></a>max_date</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="análisis-de-estacionariedad.html#cb6-1" tabindex="-1"></a>max_date</span></code></pre></div>
 <pre><code>## [1] &quot;2024-02-28&quot;</code></pre>
 </div>
 <div id="análisis" class="section level2 hasAnchor" number="5.2">
@@ -236,8 +253,8 @@ se pueden explicar , ya que puede ser atípicos o ruido, para estos
 casos particulares en tráfico hay que hacer investigaciones de las
 causas de estas anomalias.</p></li>
 </ol>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="análisis-de-estacionariedad.html#cb7-1" tabindex="-1"></a>descomposicion <span class="ot">&lt;-</span> <span class="fu">decompose</span>(serie_tiempo)</span>
-<span id="cb7-2"><a href="análisis-de-estacionariedad.html#cb7-2" tabindex="-1"></a><span class="fu">plot</span>(descomposicion)</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="análisis-de-estacionariedad.html#cb8-1" tabindex="-1"></a>descomposicion <span class="ot">&lt;-</span> <span class="fu">decompose</span>(serie_tiempo)</span>
+<span id="cb8-2"><a href="análisis-de-estacionariedad.html#cb8-2" tabindex="-1"></a><span class="fu">plot</span>(descomposicion)</span></code></pre></div>
 <p><img src="Series-de-Tiempo_files/figure-html/4_descomposicionn-1.png" width="672" /></p>
 </div>
 <div id="diferenciacion-y-logaritmos" class="section level2 hasAnchor" number="5.3">
@@ -250,14 +267,14 @@ de logaritmos o diferencias</p>
 <p>La función logaritmica es una función continua deja los mínimos y
 máximos bajo logaritmo, estabilizando la varianza .</p>
 <p>Para el caso de logaritmos usamos la función “log”</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="análisis-de-estacionariedad.html#cb8-1" tabindex="-1"></a>serielog<span class="ot">=</span><span class="fu">log</span>(serie_tiempo)</span>
-<span id="cb8-2"><a href="análisis-de-estacionariedad.html#cb8-2" tabindex="-1"></a><span class="fu">plot</span>(serielog)</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="análisis-de-estacionariedad.html#cb9-1" tabindex="-1"></a>serielog<span class="ot">=</span><span class="fu">log</span>(serie_tiempo)</span>
+<span id="cb9-2"><a href="análisis-de-estacionariedad.html#cb9-2" tabindex="-1"></a><span class="fu">plot</span>(serielog)</span></code></pre></div>
 <p><img src="Series-de-Tiempo_files/figure-html/4_1_log-1.png" width="672" /></p>
 <p>Al ver la gráfica no podemos apreciar estacionariedad ya que se ven
 caidas y bajadas y su media es diferente de cero.</p>
 <p>Verificamos si es estacionaria por medio de la prueba de “Dickey-Fuller”
 con la libreria “adf”</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="análisis-de-estacionariedad.html#cb9-1" tabindex="-1"></a><span class="fu">adf.test</span>(serielog,<span class="at">alternative =</span> <span class="st">&quot;stationary&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="análisis-de-estacionariedad.html#cb10-1" tabindex="-1"></a><span class="fu">adf.test</span>(serielog,<span class="at">alternative =</span> <span class="st">&quot;stationary&quot;</span>)</span></code></pre></div>
 <pre><code>## 
 ##  Augmented Dickey-Fuller Test
 ## 
@@ -272,17 +289,17 @@ determinar que es una serie no estacionaria</p>
 <h3><span class="header-section-number">5.3.2</span> Diferencias<a href="análisis-de-estacionariedad.html#diferencias" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Antes de realizar las diferencias podemos ejecutar el comando “ndiffs”
 para saber cuantas diferencias necesitamos</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="análisis-de-estacionariedad.html#cb11-1" tabindex="-1"></a><span class="fu">ndiffs</span>(serie_tiempo)</span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="análisis-de-estacionariedad.html#cb12-1" tabindex="-1"></a><span class="fu">ndiffs</span>(serie_tiempo)</span></code></pre></div>
 <pre><code>## [1] 1</code></pre>
 <p>El resultado es “1” diferencia para convertir la serie en estacionaria</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="análisis-de-estacionariedad.html#cb13-1" tabindex="-1"></a>seriedif<span class="ot">=</span><span class="fu">diff</span>(serie_tiempo)</span>
-<span id="cb13-2"><a href="análisis-de-estacionariedad.html#cb13-2" tabindex="-1"></a><span class="fu">plot</span>(seriedif,<span class="at">lty=</span><span class="st">&quot;dashed&quot;</span>,<span class="at">col=</span><span class="st">&quot;red&quot;</span>,<span class="at">main=</span><span class="st">&quot;Serie de Tiempo de Tráfico LTE&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="análisis-de-estacionariedad.html#cb14-1" tabindex="-1"></a>seriedif<span class="ot">=</span><span class="fu">diff</span>(serie_tiempo)</span>
+<span id="cb14-2"><a href="análisis-de-estacionariedad.html#cb14-2" tabindex="-1"></a><span class="fu">plot</span>(seriedif,<span class="at">lty=</span><span class="st">&quot;dashed&quot;</span>,<span class="at">col=</span><span class="st">&quot;red&quot;</span>,<span class="at">main=</span><span class="st">&quot;Serie de Tiempo de Tráfico LTE&quot;</span>)</span></code></pre></div>
 <p><img src="Series-de-Tiempo_files/figure-html/4_5_dir_serie-1.png" width="672" /></p>
 <p>Al ver la gráfica podemos apreciar que los datos estan alrededor de la
 misma media , en este caso de “cero”</p>
 <p>Para verificar si es estacionaria lo hacemos por medio de la prueba de
 “Dickey-Fuller” con la libreria “adf”</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="análisis-de-estacionariedad.html#cb14-1" tabindex="-1"></a><span class="fu">adf.test</span>(seriedif,<span class="at">alternative =</span> <span class="st">&quot;stationary&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="análisis-de-estacionariedad.html#cb15-1" tabindex="-1"></a><span class="fu">adf.test</span>(seriedif,<span class="at">alternative =</span> <span class="st">&quot;stationary&quot;</span>)</span></code></pre></div>
 <pre><code>## Warning in adf.test(seriedif, alternative = &quot;stationary&quot;): p-value smaller than
 ## printed p-value</code></pre>
 <pre><code>## 
@@ -295,15 +312,15 @@ misma media , en este caso de “cero”</p>
 determinar que es una serie que si es estacionaria</p>
 <p>Podemos validar si necesitamos mas diferenciaciones con el comando
 “ndiffs”</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="análisis-de-estacionariedad.html#cb17-1" tabindex="-1"></a><span class="fu">ndiffs</span>(seriedif)</span></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="análisis-de-estacionariedad.html#cb18-1" tabindex="-1"></a><span class="fu">ndiffs</span>(seriedif)</span></code></pre></div>
 <pre><code>## [1] 0</code></pre>
 <p>El resultado es cero por lo cuál no necesitamos más diferenciaciones</p>
 <p><strong>Análisis de autocorrelación</strong></p>
-<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="análisis-de-estacionariedad.html#cb19-1" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>),<span class="at">mar=</span><span class="fu">c</span>(<span class="dv">4</span>,<span class="dv">4</span>,<span class="dv">4</span>,<span class="dv">1</span>)<span class="sc">+</span>.<span class="dv">1</span>)</span>
-<span id="cb19-2"><a href="análisis-de-estacionariedad.html#cb19-2" tabindex="-1"></a><span class="fu">plot</span>(serie_tiempo,<span class="at">ylab=</span><span class="st">&quot;Tráfico LTE&quot;</span>)</span>
-<span id="cb19-3"><a href="análisis-de-estacionariedad.html#cb19-3" tabindex="-1"></a><span class="fu">Acf</span>(serie_tiempo,<span class="at">main=</span><span class="st">&quot;Serie No Estacionaria&quot;</span>)</span>
-<span id="cb19-4"><a href="análisis-de-estacionariedad.html#cb19-4" tabindex="-1"></a><span class="fu">plot</span>(seriedif)</span>
-<span id="cb19-5"><a href="análisis-de-estacionariedad.html#cb19-5" tabindex="-1"></a><span class="fu">acf</span>(seriedif,<span class="at">main=</span><span class="st">&quot;Serie Estacionaria&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="análisis-de-estacionariedad.html#cb20-1" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>),<span class="at">mar=</span><span class="fu">c</span>(<span class="dv">4</span>,<span class="dv">4</span>,<span class="dv">4</span>,<span class="dv">1</span>)<span class="sc">+</span>.<span class="dv">1</span>)</span>
+<span id="cb20-2"><a href="análisis-de-estacionariedad.html#cb20-2" tabindex="-1"></a><span class="fu">plot</span>(serie_tiempo,<span class="at">ylab=</span><span class="st">&quot;Tráfico LTE&quot;</span>)</span>
+<span id="cb20-3"><a href="análisis-de-estacionariedad.html#cb20-3" tabindex="-1"></a><span class="fu">Acf</span>(serie_tiempo,<span class="at">main=</span><span class="st">&quot;Serie No Estacionaria&quot;</span>)</span>
+<span id="cb20-4"><a href="análisis-de-estacionariedad.html#cb20-4" tabindex="-1"></a><span class="fu">plot</span>(seriedif)</span>
+<span id="cb20-5"><a href="análisis-de-estacionariedad.html#cb20-5" tabindex="-1"></a><span class="fu">acf</span>(seriedif,<span class="at">main=</span><span class="st">&quot;Serie Estacionaria&quot;</span>)</span></code></pre></div>
 <p><img src="Series-de-Tiempo_files/figure-html/4_8_Autocorr-1.png" width="672" /></p>
 <p>Podemos observar que el primer gráfico ” no es estacionario” tiene una
 tendencia , la cual es verificada por la autocorrelación de la derecha .
@@ -323,21 +340,21 @@ implementar con una estructura “Aditiva” o una estrucutra
 misma magnitud en todo el conjunto de datos, mientras que el modelo
 multiplicativo cuando la magnitud de la estacionalidad cambia a medida
 que aumenta o disminuye el tiempo el tiempo</p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="análisis-de-estacionariedad.html#cb20-1" tabindex="-1"></a><span class="fu">plot</span>(serie_tiempo)</span></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="análisis-de-estacionariedad.html#cb21-1" tabindex="-1"></a><span class="fu">plot</span>(serie_tiempo)</span></code></pre></div>
 <p><img src="Series-de-Tiempo_files/figure-html/hw%20plotr-1.png" width="672" /></p>
 <p>Al ver la gráfica al tener una periocidad diaria no es claro si usar el
 modelo aditivo o multiplicativo por lo cual evaluamos la
 homocedasticidad de los residuos .</p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="análisis-de-estacionariedad.html#cb21-1" tabindex="-1"></a><span class="fu">frequency</span>(serie_tiempo)</span></code></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="análisis-de-estacionariedad.html#cb22-1" tabindex="-1"></a><span class="fu">frequency</span>(serie_tiempo)</span></code></pre></div>
 <pre><code>## [1] 365</code></pre>
 <p><strong>Modelo Aditivo</strong></p>
-<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="análisis-de-estacionariedad.html#cb23-1" tabindex="-1"></a>modelo_aditivo <span class="ot">&lt;-</span> <span class="fu">decompose</span>(serie_tiempo, <span class="at">type=</span><span class="st">&quot;additive&quot;</span>)</span>
-<span id="cb23-2"><a href="análisis-de-estacionariedad.html#cb23-2" tabindex="-1"></a><span class="fu">plot</span>(modelo_aditivo)</span></code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="análisis-de-estacionariedad.html#cb24-1" tabindex="-1"></a>modelo_aditivo <span class="ot">&lt;-</span> <span class="fu">decompose</span>(serie_tiempo, <span class="at">type=</span><span class="st">&quot;additive&quot;</span>)</span>
+<span id="cb24-2"><a href="análisis-de-estacionariedad.html#cb24-2" tabindex="-1"></a><span class="fu">plot</span>(modelo_aditivo)</span></code></pre></div>
 <p><img src="Series-de-Tiempo_files/figure-html/hw_aditivo-1.png" width="672" /></p>
 <p><strong>Modelo Multiplicativo</strong></p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="análisis-de-estacionariedad.html#cb24-1" tabindex="-1"></a><span class="co"># Descomposición Multiplicativa</span></span>
-<span id="cb24-2"><a href="análisis-de-estacionariedad.html#cb24-2" tabindex="-1"></a>modelo_multiplicativo <span class="ot">&lt;-</span> <span class="fu">decompose</span>(serie_tiempo, <span class="at">type=</span><span class="st">&quot;multiplicative&quot;</span>)</span>
-<span id="cb24-3"><a href="análisis-de-estacionariedad.html#cb24-3" tabindex="-1"></a><span class="fu">plot</span>(modelo_multiplicativo)</span></code></pre></div>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="análisis-de-estacionariedad.html#cb25-1" tabindex="-1"></a><span class="co"># Descomposición Multiplicativa</span></span>
+<span id="cb25-2"><a href="análisis-de-estacionariedad.html#cb25-2" tabindex="-1"></a>modelo_multiplicativo <span class="ot">&lt;-</span> <span class="fu">decompose</span>(serie_tiempo, <span class="at">type=</span><span class="st">&quot;multiplicative&quot;</span>)</span>
+<span id="cb25-3"><a href="análisis-de-estacionariedad.html#cb25-3" tabindex="-1"></a><span class="fu">plot</span>(modelo_multiplicativo)</span></code></pre></div>
 <p><img src="Series-de-Tiempo_files/figure-html/hw_multi-1.png" width="672" /></p>
 <p>Al revisar los dos modelos en la parte de <strong>residuos</strong> podemos ver que
 el multiplicativo es mas viable ya que parecen mas aleatorios y con
@@ -345,8 +362,8 @@ menos patrones sistematicos que el modelo aditivo</p>
 <p>Para volver a verificar vamos a usa la descomposición STL (Seasonal and
 Trend decomposition using Loess) y un modelo ETS(Error, Trend ,
 Seasonality )</p>
-<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="análisis-de-estacionariedad.html#cb25-1" tabindex="-1"></a>resultado_forecast <span class="ot">&lt;-</span> <span class="fu">stlf</span>(serie_tiempo, <span class="at">robust=</span><span class="cn">TRUE</span>)</span>
-<span id="cb25-2"><a href="análisis-de-estacionariedad.html#cb25-2" tabindex="-1"></a><span class="fu">plot</span>(resultado_forecast)</span></code></pre></div>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="análisis-de-estacionariedad.html#cb26-1" tabindex="-1"></a>resultado_forecast <span class="ot">&lt;-</span> <span class="fu">stlf</span>(serie_tiempo, <span class="at">robust=</span><span class="cn">TRUE</span>)</span>
+<span id="cb26-2"><a href="análisis-de-estacionariedad.html#cb26-2" tabindex="-1"></a><span class="fu">plot</span>(resultado_forecast)</span></code></pre></div>
 <p><img src="Series-de-Tiempo_files/figure-html/hw_forec-1.png" width="672" /></p>
 <p>En la gráfica la linea negra representa los datos observados , la linea
 azul y las bandas al final representan los pronosticos y sus intervalos
@@ -358,29 +375,29 @@ indica que el modelo asume qu los errores se multiplican por el nivel de
 la serie para mejorar la variabilidad de los datos</p>
 <p>Aplicamos el metodo Holt Winteres especificando el un modelo
 multiplicativo</p>
-<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="análisis-de-estacionariedad.html#cb26-1" tabindex="-1"></a>hw <span class="ot">&lt;-</span> <span class="fu">HoltWinters</span>(serie_tiempo, <span class="at">seasonal=</span><span class="st">&quot;multiplicative&quot;</span>)</span>
-<span id="cb26-2"><a href="análisis-de-estacionariedad.html#cb26-2" tabindex="-1"></a><span class="fu">plot</span>(hw)</span></code></pre></div>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="análisis-de-estacionariedad.html#cb27-1" tabindex="-1"></a>hw <span class="ot">&lt;-</span> <span class="fu">HoltWinters</span>(serie_tiempo, <span class="at">seasonal=</span><span class="st">&quot;multiplicative&quot;</span>)</span>
+<span id="cb27-2"><a href="análisis-de-estacionariedad.html#cb27-2" tabindex="-1"></a><span class="fu">plot</span>(hw)</span></code></pre></div>
 <p><img src="Series-de-Tiempo_files/figure-html/hw_mul-1.png" width="672" /></p>
 <p>La linea represnta los datos orginales de la serie de tiempo, la linea
 roja indica la serie ajustada obtenida desde el metodo de Holt-Winters ,
 el cual se puede ver como se suaviza las fluctuaciones ,el modelo se
 centra enla tendencia general y los patrones de estaciones regulares</p>
 <p>** Lectura de Alpha, Beta y Gama**</p>
-<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="análisis-de-estacionariedad.html#cb27-1" tabindex="-1"></a>alpha <span class="ot">&lt;-</span> hw<span class="sc">$</span>alpha</span>
-<span id="cb27-2"><a href="análisis-de-estacionariedad.html#cb27-2" tabindex="-1"></a>beta <span class="ot">&lt;-</span> hw<span class="sc">$</span>beta</span>
-<span id="cb27-3"><a href="análisis-de-estacionariedad.html#cb27-3" tabindex="-1"></a>gamma <span class="ot">&lt;-</span> hw<span class="sc">$</span>gamma</span>
-<span id="cb27-4"><a href="análisis-de-estacionariedad.html#cb27-4" tabindex="-1"></a></span>
-<span id="cb27-5"><a href="análisis-de-estacionariedad.html#cb27-5" tabindex="-1"></a><span class="co"># Imprimir los parámetros</span></span>
-<span id="cb27-6"><a href="análisis-de-estacionariedad.html#cb27-6" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Alpha (nivel):&quot;</span>, alpha, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="análisis-de-estacionariedad.html#cb28-1" tabindex="-1"></a>alpha <span class="ot">&lt;-</span> hw<span class="sc">$</span>alpha</span>
+<span id="cb28-2"><a href="análisis-de-estacionariedad.html#cb28-2" tabindex="-1"></a>beta <span class="ot">&lt;-</span> hw<span class="sc">$</span>beta</span>
+<span id="cb28-3"><a href="análisis-de-estacionariedad.html#cb28-3" tabindex="-1"></a>gamma <span class="ot">&lt;-</span> hw<span class="sc">$</span>gamma</span>
+<span id="cb28-4"><a href="análisis-de-estacionariedad.html#cb28-4" tabindex="-1"></a></span>
+<span id="cb28-5"><a href="análisis-de-estacionariedad.html#cb28-5" tabindex="-1"></a><span class="co"># Imprimir los parámetros</span></span>
+<span id="cb28-6"><a href="análisis-de-estacionariedad.html#cb28-6" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Alpha (nivel):&quot;</span>, alpha, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
 <pre><code>## Alpha (nivel): 0.2195587</code></pre>
-<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="análisis-de-estacionariedad.html#cb29-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Beta (tendencia):&quot;</span>, beta, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="análisis-de-estacionariedad.html#cb30-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Beta (tendencia):&quot;</span>, beta, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
 <pre><code>## Beta (tendencia): 0</code></pre>
-<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="análisis-de-estacionariedad.html#cb31-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Gamma (estacionalidad):&quot;</span>, gamma, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="análisis-de-estacionariedad.html#cb32-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Gamma (estacionalidad):&quot;</span>, gamma, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
 <pre><code>## Gamma (estacionalidad): 0.5320815</code></pre>
 <p><strong>Alpha:</strong> va tomar valores pasados <strong>Beta</strong> como da cero no existe
 tendencia <strong>Gama</strong> al estar cercano a 0.5 representa estacionalidad</p>
 <p><strong>Componentes de modelo</strong></p>
-<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="análisis-de-estacionariedad.html#cb33-1" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">str</span>(hw<span class="sc">$</span>fitted))</span></code></pre></div>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="análisis-de-estacionariedad.html#cb34-1" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">str</span>(hw<span class="sc">$</span>fitted))</span></code></pre></div>
 <pre><code>##  Time-Series [1:790, 1:4] from 2022 to 2024: 363 359 418 496 562 ...
 ##  - attr(*, &quot;dimnames&quot;)=List of 2
 ##   ..$ : NULL
@@ -389,7 +406,7 @@ tendencia <strong>Gama</strong> al estar cercano a 0.5 representa estacionalidad
 <p><strong>Componente de Nivel</strong></p>
 <p>Este grafico se ajusta para ver la tendencia general excluyendo la
 estacionalidad y los valores irregurales</p>
-<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="análisis-de-estacionariedad.html#cb35-1" tabindex="-1"></a><span class="fu">plot</span>(hw<span class="sc">$</span>fitted[, <span class="st">&quot;level&quot;</span>], <span class="at">main=</span><span class="st">&quot;Componente de nivel&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="análisis-de-estacionariedad.html#cb36-1" tabindex="-1"></a><span class="fu">plot</span>(hw<span class="sc">$</span>fitted[, <span class="st">&quot;level&quot;</span>], <span class="at">main=</span><span class="st">&quot;Componente de nivel&quot;</span>)</span></code></pre></div>
 <p><img src="Series-de-Tiempo_files/figure-html/hwniveles-1.png" width="672" /></p>
 <p>Al ver la gráfica podemos ver que empiza en 600 pero sigue creciendo
 hasta 1800 , lo que demuestra una tendencia creciente. Tambien se
@@ -400,7 +417,7 @@ ya pueden ser factores externos</p>
 <p><strong>Componente de tendencia</strong></p>
 <p>Este componenen nos indica como evoluciona la serie temporal sin tomar
 las variaciones estacionales</p>
-<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="análisis-de-estacionariedad.html#cb36-1" tabindex="-1"></a><span class="fu">plot</span>(hw<span class="sc">$</span>fitted[, <span class="st">&quot;trend&quot;</span>], <span class="at">main=</span><span class="st">&quot;Componente de tendencia&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="análisis-de-estacionariedad.html#cb37-1" tabindex="-1"></a><span class="fu">plot</span>(hw<span class="sc">$</span>fitted[, <span class="st">&quot;trend&quot;</span>], <span class="at">main=</span><span class="st">&quot;Componente de tendencia&quot;</span>)</span></code></pre></div>
 <p><img src="Series-de-Tiempo_files/figure-html/hwtendee-1.png" width="672" /></p>
 <p>La linea horizaontal nos muestra que la tendencia es constante a lo
 largo del tiempo , no se observan cambios ,esto indicaria que los
@@ -409,7 +426,7 @@ irregulares, no tendenciales.</p>
 <p><strong>Componente de estacionalidad</strong></p>
 <p>Este componente nos muestras las variaciones periódicas que ocurren en
 los intervalos regulares</p>
-<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="análisis-de-estacionariedad.html#cb37-1" tabindex="-1"></a><span class="fu">plot</span>(hw<span class="sc">$</span>fitted[, <span class="st">&quot;season&quot;</span>], <span class="at">main=</span><span class="st">&quot;Componente estacional&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="análisis-de-estacionariedad.html#cb38-1" tabindex="-1"></a><span class="fu">plot</span>(hw<span class="sc">$</span>fitted[, <span class="st">&quot;season&quot;</span>], <span class="at">main=</span><span class="st">&quot;Componente estacional&quot;</span>)</span></code></pre></div>
 <p><img src="Series-de-Tiempo_files/figure-html/hwestacional-1.png" width="672" /></p>
 <p>El gráfico muestra cambios claros a lo largo del tiempo , evidenciando
 patrones estacionales. La amplitud de los cambios oscilan entre 0.6 y
@@ -422,9 +439,9 @@ mejoras de la red previniendo los periodos de alto tráfico</p>
 <p><strong>Prueba de Ljung-Box:</strong> l esta herramienta nos sirve para verificar si
 hay autocorrelaciones significativas en una serie de residuos en
 distintos retrasos</p>
-<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="análisis-de-estacionariedad.html#cb38-1" tabindex="-1"></a>residuos_hw <span class="ot">&lt;-</span> <span class="fu">residuals</span>(hw)</span>
-<span id="cb38-2"><a href="análisis-de-estacionariedad.html#cb38-2" tabindex="-1"></a>ljung_box_result <span class="ot">&lt;-</span> <span class="fu">Box.test</span>(residuos_hw, <span class="at">type =</span> <span class="st">&quot;Ljung-Box&quot;</span>)</span>
-<span id="cb38-3"><a href="análisis-de-estacionariedad.html#cb38-3" tabindex="-1"></a><span class="fu">print</span>(ljung_box_result)</span></code></pre></div>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="análisis-de-estacionariedad.html#cb39-1" tabindex="-1"></a>residuos_hw <span class="ot">&lt;-</span> <span class="fu">residuals</span>(hw)</span>
+<span id="cb39-2"><a href="análisis-de-estacionariedad.html#cb39-2" tabindex="-1"></a>ljung_box_result <span class="ot">&lt;-</span> <span class="fu">Box.test</span>(residuos_hw, <span class="at">type =</span> <span class="st">&quot;Ljung-Box&quot;</span>)</span>
+<span id="cb39-3"><a href="análisis-de-estacionariedad.html#cb39-3" tabindex="-1"></a><span class="fu">print</span>(ljung_box_result)</span></code></pre></div>
 <pre><code>## 
 ##  Box-Ljung test
 ## 
@@ -438,9 +455,9 @@ estructura dependiente en los datos</p>
 <p>Se realiza la prueba de Ljung-Box cun un mayor de retrasos de 30 podria
 proporcionar una vision mas clara de la estructura de autocorrelación en
 los residuos</p>
-<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="análisis-de-estacionariedad.html#cb40-1" tabindex="-1"></a>residuos_hw2 <span class="ot">&lt;-</span> <span class="fu">residuals</span>(hw)</span>
-<span id="cb40-2"><a href="análisis-de-estacionariedad.html#cb40-2" tabindex="-1"></a>ljung_box_result_30 <span class="ot">&lt;-</span> <span class="fu">Box.test</span>(residuos_hw2, <span class="at">type =</span> <span class="st">&quot;Ljung-Box&quot;</span>, <span class="at">lag =</span> <span class="dv">30</span>)</span>
-<span id="cb40-3"><a href="análisis-de-estacionariedad.html#cb40-3" tabindex="-1"></a><span class="fu">print</span>(ljung_box_result_30)</span></code></pre></div>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="análisis-de-estacionariedad.html#cb41-1" tabindex="-1"></a>residuos_hw2 <span class="ot">&lt;-</span> <span class="fu">residuals</span>(hw)</span>
+<span id="cb41-2"><a href="análisis-de-estacionariedad.html#cb41-2" tabindex="-1"></a>ljung_box_result_30 <span class="ot">&lt;-</span> <span class="fu">Box.test</span>(residuos_hw2, <span class="at">type =</span> <span class="st">&quot;Ljung-Box&quot;</span>, <span class="at">lag =</span> <span class="dv">30</span>)</span>
+<span id="cb41-3"><a href="análisis-de-estacionariedad.html#cb41-3" tabindex="-1"></a><span class="fu">print</span>(ljung_box_result_30)</span></code></pre></div>
 <pre><code>## 
 ##  Box-Ljung test
 ## 
@@ -454,17 +471,17 @@ datos</p>
 <p>Por medio de la funcion “forecast” realizamos la predicción del modelo
 ,en la linea azul se ven los valores originales, en la linea verde los
 valores de la serie ajustada, en la linea rojas los valores predicidos .</p>
-<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="análisis-de-estacionariedad.html#cb42-1" tabindex="-1"></a>hw_forecast <span class="ot">&lt;-</span> <span class="fu">forecast</span>(hw, <span class="at">h=</span><span class="dv">365</span>)</span>
-<span id="cb42-2"><a href="análisis-de-estacionariedad.html#cb42-2" tabindex="-1"></a><span class="fu">plot</span>(serie_tiempo, <span class="at">type =</span> <span class="st">&quot;l&quot;</span>, <span class="at">col =</span> <span class="st">&quot;blue&quot;</span>, <span class="at">xlab =</span> <span class="st">&quot;Tiempo&quot;</span>, <span class="at">ylab =</span> <span class="st">&quot;Valores&quot;</span>, <span class="at">main =</span> <span class="st">&quot;Datos Originales, Ajuste y Pronóstico de Holt-Winters&quot;</span>, <span class="at">ylim =</span> <span class="fu">range</span>(<span class="fu">c</span>(serie_tiempo, hw<span class="sc">$</span>fitted[, <span class="st">&quot;xhat&quot;</span>], hw_forecast<span class="sc">$</span>mean, hw_forecast<span class="sc">$</span>lower, hw_forecast<span class="sc">$</span>upper)))</span>
-<span id="cb42-3"><a href="análisis-de-estacionariedad.html#cb42-3" tabindex="-1"></a><span class="fu">lines</span>(hw<span class="sc">$</span>fitted[, <span class="st">&quot;xhat&quot;</span>], <span class="at">col =</span> <span class="st">&quot;green&quot;</span>)</span>
-<span id="cb42-4"><a href="análisis-de-estacionariedad.html#cb42-4" tabindex="-1"></a><span class="fu">lines</span>(hw_forecast<span class="sc">$</span>mean, <span class="at">col =</span> <span class="st">&quot;red&quot;</span>)</span>
-<span id="cb42-5"><a href="análisis-de-estacionariedad.html#cb42-5" tabindex="-1"></a><span class="fu">matlines</span>(hw_forecast<span class="sc">$</span>mean, hw_forecast<span class="sc">$</span>lower[, <span class="st">&quot;80%&quot;</span>], <span class="at">col =</span> <span class="st">&quot;red&quot;</span>, <span class="at">lty =</span> <span class="dv">2</span>)</span>
-<span id="cb42-6"><a href="análisis-de-estacionariedad.html#cb42-6" tabindex="-1"></a><span class="fu">matlines</span>(hw_forecast<span class="sc">$</span>mean, hw_forecast<span class="sc">$</span>upper[, <span class="st">&quot;80%&quot;</span>], <span class="at">col =</span> <span class="st">&quot;red&quot;</span>, <span class="at">lty =</span> <span class="dv">2</span>)</span>
-<span id="cb42-7"><a href="análisis-de-estacionariedad.html#cb42-7" tabindex="-1"></a><span class="fu">matlines</span>(hw_forecast<span class="sc">$</span>mean, hw_forecast<span class="sc">$</span>lower[, <span class="st">&quot;95%&quot;</span>], <span class="at">col =</span> <span class="st">&quot;red&quot;</span>, <span class="at">lty =</span> <span class="dv">2</span>)</span>
-<span id="cb42-8"><a href="análisis-de-estacionariedad.html#cb42-8" tabindex="-1"></a><span class="fu">matlines</span>(hw_forecast<span class="sc">$</span>mean, hw_forecast<span class="sc">$</span>upper[, <span class="st">&quot;95%&quot;</span>], <span class="at">col =</span> <span class="st">&quot;red&quot;</span>, <span class="at">lty =</span> <span class="dv">2</span>)</span>
-<span id="cb42-9"><a href="análisis-de-estacionariedad.html#cb42-9" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">&quot;topright&quot;</span>, <span class="at">legend =</span> <span class="fu">c</span>(<span class="st">&quot;Datos Originales&quot;</span>, <span class="st">&quot;Ajuste HW&quot;</span>, <span class="st">&quot;Pronóstico HW&quot;</span>, <span class="st">&quot;Intervalo 80%&quot;</span>, <span class="st">&quot;Intervalo 95%&quot;</span>), <span class="at">col =</span> <span class="fu">c</span>(<span class="st">&quot;blue&quot;</span>, <span class="st">&quot;green&quot;</span>, <span class="st">&quot;red&quot;</span>, <span class="st">&quot;red&quot;</span>, <span class="st">&quot;red&quot;</span>), <span class="at">lty =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">2</span>), <span class="at">merge =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="análisis-de-estacionariedad.html#cb43-1" tabindex="-1"></a>hw_forecast <span class="ot">&lt;-</span> <span class="fu">forecast</span>(hw, <span class="at">h=</span><span class="dv">365</span>)</span>
+<span id="cb43-2"><a href="análisis-de-estacionariedad.html#cb43-2" tabindex="-1"></a><span class="fu">plot</span>(serie_tiempo, <span class="at">type =</span> <span class="st">&quot;l&quot;</span>, <span class="at">col =</span> <span class="st">&quot;blue&quot;</span>, <span class="at">xlab =</span> <span class="st">&quot;Tiempo&quot;</span>, <span class="at">ylab =</span> <span class="st">&quot;Valores&quot;</span>, <span class="at">main =</span> <span class="st">&quot;Datos Originales, Ajuste y Pronóstico de Holt-Winters&quot;</span>, <span class="at">ylim =</span> <span class="fu">range</span>(<span class="fu">c</span>(serie_tiempo, hw<span class="sc">$</span>fitted[, <span class="st">&quot;xhat&quot;</span>], hw_forecast<span class="sc">$</span>mean, hw_forecast<span class="sc">$</span>lower, hw_forecast<span class="sc">$</span>upper)))</span>
+<span id="cb43-3"><a href="análisis-de-estacionariedad.html#cb43-3" tabindex="-1"></a><span class="fu">lines</span>(hw<span class="sc">$</span>fitted[, <span class="st">&quot;xhat&quot;</span>], <span class="at">col =</span> <span class="st">&quot;green&quot;</span>)</span>
+<span id="cb43-4"><a href="análisis-de-estacionariedad.html#cb43-4" tabindex="-1"></a><span class="fu">lines</span>(hw_forecast<span class="sc">$</span>mean, <span class="at">col =</span> <span class="st">&quot;red&quot;</span>)</span>
+<span id="cb43-5"><a href="análisis-de-estacionariedad.html#cb43-5" tabindex="-1"></a><span class="fu">matlines</span>(hw_forecast<span class="sc">$</span>mean, hw_forecast<span class="sc">$</span>lower[, <span class="st">&quot;80%&quot;</span>], <span class="at">col =</span> <span class="st">&quot;red&quot;</span>, <span class="at">lty =</span> <span class="dv">2</span>)</span>
+<span id="cb43-6"><a href="análisis-de-estacionariedad.html#cb43-6" tabindex="-1"></a><span class="fu">matlines</span>(hw_forecast<span class="sc">$</span>mean, hw_forecast<span class="sc">$</span>upper[, <span class="st">&quot;80%&quot;</span>], <span class="at">col =</span> <span class="st">&quot;red&quot;</span>, <span class="at">lty =</span> <span class="dv">2</span>)</span>
+<span id="cb43-7"><a href="análisis-de-estacionariedad.html#cb43-7" tabindex="-1"></a><span class="fu">matlines</span>(hw_forecast<span class="sc">$</span>mean, hw_forecast<span class="sc">$</span>lower[, <span class="st">&quot;95%&quot;</span>], <span class="at">col =</span> <span class="st">&quot;red&quot;</span>, <span class="at">lty =</span> <span class="dv">2</span>)</span>
+<span id="cb43-8"><a href="análisis-de-estacionariedad.html#cb43-8" tabindex="-1"></a><span class="fu">matlines</span>(hw_forecast<span class="sc">$</span>mean, hw_forecast<span class="sc">$</span>upper[, <span class="st">&quot;95%&quot;</span>], <span class="at">col =</span> <span class="st">&quot;red&quot;</span>, <span class="at">lty =</span> <span class="dv">2</span>)</span>
+<span id="cb43-9"><a href="análisis-de-estacionariedad.html#cb43-9" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">&quot;topright&quot;</span>, <span class="at">legend =</span> <span class="fu">c</span>(<span class="st">&quot;Datos Originales&quot;</span>, <span class="st">&quot;Ajuste HW&quot;</span>, <span class="st">&quot;Pronóstico HW&quot;</span>, <span class="st">&quot;Intervalo 80%&quot;</span>, <span class="st">&quot;Intervalo 95%&quot;</span>), <span class="at">col =</span> <span class="fu">c</span>(<span class="st">&quot;blue&quot;</span>, <span class="st">&quot;green&quot;</span>, <span class="st">&quot;red&quot;</span>, <span class="st">&quot;red&quot;</span>, <span class="st">&quot;red&quot;</span>), <span class="at">lty =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">2</span>), <span class="at">merge =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
 <p><img src="Series-de-Tiempo_files/figure-html/forecastt-1.png" width="672" /></p>
-<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="análisis-de-estacionariedad.html#cb43-1" tabindex="-1"></a>hw_forecast</span></code></pre></div>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="análisis-de-estacionariedad.html#cb44-1" tabindex="-1"></a>hw_forecast</span></code></pre></div>
 <pre><code>##           Point Forecast     Lo 80     Hi 80     Lo 95    Hi 95
 ## 2024.1644       836.3786  728.6764  944.0808 671.66235 1001.095
 ## 2024.1671       850.2662  736.1103  964.4221 675.67981 1024.853
@@ -853,19 +870,19 @@ constante. Verificamos si es estacionaria por medio de la prueba de
 “Dickey-Fuller” , el cual su p-value = 0.01, al ser menor a 0.05 se
 puede determinar que la serie era estacionaria , a continuación podemos
 explorar mas gráficos como el ACF y el PACF:</p>
-<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="análisis-de-estacionariedad.html#cb45-1" tabindex="-1"></a><span class="fu">plot</span>(seriedif)</span></code></pre></div>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="análisis-de-estacionariedad.html#cb46-1" tabindex="-1"></a><span class="fu">plot</span>(seriedif)</span></code></pre></div>
 <p><img src="Series-de-Tiempo_files/figure-html/plotseriedif-1.png" width="672" /></p>
 <p><strong>ACF</strong></p>
 <p>Este gráfico nos muestra la correlación en la serie (seriediff) y sus
 retrasos</p>
-<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="análisis-de-estacionariedad.html#cb46-1" tabindex="-1"></a><span class="fu">acf</span>(seriedif)</span></code></pre></div>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="análisis-de-estacionariedad.html#cb47-1" tabindex="-1"></a><span class="fu">acf</span>(seriedif)</span></code></pre></div>
 <p><img src="Series-de-Tiempo_files/figure-html/acf-1.png" width="672" /></p>
 <p>En este caso al ver el primer retraso seguido de barras que se vuelven
 insignificantes lo que con lleva aun modelo de <strong>media móvil (1)</strong></p>
 <p><strong>PACF</strong></p>
 <p>Este mide la correlación parcial entre la serie y sus retrasos ,
 controlando los valores de los retrasos intermedios</p>
-<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="análisis-de-estacionariedad.html#cb47-1" tabindex="-1"></a><span class="fu">pacf</span>(seriedif)</span></code></pre></div>
+<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb48-1"><a href="análisis-de-estacionariedad.html#cb48-1" tabindex="-1"></a><span class="fu">pacf</span>(seriedif)</span></code></pre></div>
 <p><img src="Series-de-Tiempo_files/figure-html/pacrseriedif-1.png" width="672" /></p>
 <p>En esta gráfica observamos que el primer retraso muestra una correlación
 parcial significativa negativa que luego cae a cero ,lo que puede
@@ -875,20 +892,20 @@ sugerir un <strong>AR(1)</strong></p>
 <p>Vamos a realizar varios modelos ARIMA teniendo como precedente que según
 el análisis anterior de diferencias(1) , ACF(1) y el PACF(1) , por medio
 del analisis de AIC y BIC seleccionaremos el mejor modelo</p>
-<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb48-1"><a href="análisis-de-estacionariedad.html#cb48-1" tabindex="-1"></a>arima1<span class="ot">&lt;-</span> <span class="fu">Arima</span>(serie_tiempo,<span class="at">order =</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">0</span>) )</span>
-<span id="cb48-2"><a href="análisis-de-estacionariedad.html#cb48-2" tabindex="-1"></a>arima2<span class="ot">&lt;-</span> <span class="fu">Arima</span>(serie_tiempo,<span class="at">order =</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">0</span>) )</span>
-<span id="cb48-3"><a href="análisis-de-estacionariedad.html#cb48-3" tabindex="-1"></a>arima3<span class="ot">&lt;-</span> <span class="fu">Arima</span>(serie_tiempo,<span class="at">order =</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">0</span>) )</span>
-<span id="cb48-4"><a href="análisis-de-estacionariedad.html#cb48-4" tabindex="-1"></a>arima4<span class="ot">&lt;-</span> <span class="fu">Arima</span>(serie_tiempo,<span class="at">order =</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">1</span>) )</span>
-<span id="cb48-5"><a href="análisis-de-estacionariedad.html#cb48-5" tabindex="-1"></a>arima5<span class="ot">&lt;-</span> <span class="fu">Arima</span>(serie_tiempo,<span class="at">order =</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">1</span>) )</span>
-<span id="cb48-6"><a href="análisis-de-estacionariedad.html#cb48-6" tabindex="-1"></a>arima6<span class="ot">&lt;-</span> <span class="fu">Arima</span>(serie_tiempo,<span class="at">order =</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">0</span>) )</span>
-<span id="cb48-7"><a href="análisis-de-estacionariedad.html#cb48-7" tabindex="-1"></a>arima7<span class="ot">&lt;-</span> <span class="fu">Arima</span>(serie_tiempo,<span class="at">order =</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">0</span>) )</span>
-<span id="cb48-8"><a href="análisis-de-estacionariedad.html#cb48-8" tabindex="-1"></a>arima8<span class="ot">&lt;-</span> <span class="fu">Arima</span>(serie_tiempo,<span class="at">order =</span><span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">2</span>,<span class="dv">2</span>) )</span>
-<span id="cb48-9"><a href="análisis-de-estacionariedad.html#cb48-9" tabindex="-1"></a>arima9<span class="ot">&lt;-</span> <span class="fu">Arima</span>(serie_tiempo,<span class="at">order =</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>) )</span>
-<span id="cb48-10"><a href="análisis-de-estacionariedad.html#cb48-10" tabindex="-1"></a>arima10<span class="ot">&lt;-</span> <span class="fu">Arima</span>(serie_tiempo,<span class="at">order =</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">2</span>) )</span>
-<span id="cb48-11"><a href="análisis-de-estacionariedad.html#cb48-11" tabindex="-1"></a>arima11<span class="ot">&lt;-</span> <span class="fu">Arima</span>(serie_tiempo,<span class="at">order =</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">3</span>) )</span>
-<span id="cb48-12"><a href="análisis-de-estacionariedad.html#cb48-12" tabindex="-1"></a>arima12<span class="ot">&lt;-</span> <span class="fu">Arima</span>(serie_tiempo,<span class="at">order =</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">2</span>) )</span>
-<span id="cb48-13"><a href="análisis-de-estacionariedad.html#cb48-13" tabindex="-1"></a>arima13<span class="ot">&lt;-</span> <span class="fu">Arima</span>(serie_tiempo,<span class="at">order =</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">0</span>))</span>
-<span id="cb48-14"><a href="análisis-de-estacionariedad.html#cb48-14" tabindex="-1"></a><span class="fu">AIC</span>(arima1,arima2,arima3,arima4,arima5,arima6,arima7,arima8,arima9,arima10,arima11,arima12,arima13)</span></code></pre></div>
+<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb49-1"><a href="análisis-de-estacionariedad.html#cb49-1" tabindex="-1"></a>arima1<span class="ot">&lt;-</span> <span class="fu">Arima</span>(serie_tiempo,<span class="at">order =</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">0</span>) )</span>
+<span id="cb49-2"><a href="análisis-de-estacionariedad.html#cb49-2" tabindex="-1"></a>arima2<span class="ot">&lt;-</span> <span class="fu">Arima</span>(serie_tiempo,<span class="at">order =</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">0</span>) )</span>
+<span id="cb49-3"><a href="análisis-de-estacionariedad.html#cb49-3" tabindex="-1"></a>arima3<span class="ot">&lt;-</span> <span class="fu">Arima</span>(serie_tiempo,<span class="at">order =</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">0</span>) )</span>
+<span id="cb49-4"><a href="análisis-de-estacionariedad.html#cb49-4" tabindex="-1"></a>arima4<span class="ot">&lt;-</span> <span class="fu">Arima</span>(serie_tiempo,<span class="at">order =</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">1</span>) )</span>
+<span id="cb49-5"><a href="análisis-de-estacionariedad.html#cb49-5" tabindex="-1"></a>arima5<span class="ot">&lt;-</span> <span class="fu">Arima</span>(serie_tiempo,<span class="at">order =</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">1</span>) )</span>
+<span id="cb49-6"><a href="análisis-de-estacionariedad.html#cb49-6" tabindex="-1"></a>arima6<span class="ot">&lt;-</span> <span class="fu">Arima</span>(serie_tiempo,<span class="at">order =</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">0</span>) )</span>
+<span id="cb49-7"><a href="análisis-de-estacionariedad.html#cb49-7" tabindex="-1"></a>arima7<span class="ot">&lt;-</span> <span class="fu">Arima</span>(serie_tiempo,<span class="at">order =</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">0</span>) )</span>
+<span id="cb49-8"><a href="análisis-de-estacionariedad.html#cb49-8" tabindex="-1"></a>arima8<span class="ot">&lt;-</span> <span class="fu">Arima</span>(serie_tiempo,<span class="at">order =</span><span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">2</span>,<span class="dv">2</span>) )</span>
+<span id="cb49-9"><a href="análisis-de-estacionariedad.html#cb49-9" tabindex="-1"></a>arima9<span class="ot">&lt;-</span> <span class="fu">Arima</span>(serie_tiempo,<span class="at">order =</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>) )</span>
+<span id="cb49-10"><a href="análisis-de-estacionariedad.html#cb49-10" tabindex="-1"></a>arima10<span class="ot">&lt;-</span> <span class="fu">Arima</span>(serie_tiempo,<span class="at">order =</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">2</span>) )</span>
+<span id="cb49-11"><a href="análisis-de-estacionariedad.html#cb49-11" tabindex="-1"></a>arima11<span class="ot">&lt;-</span> <span class="fu">Arima</span>(serie_tiempo,<span class="at">order =</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">3</span>) )</span>
+<span id="cb49-12"><a href="análisis-de-estacionariedad.html#cb49-12" tabindex="-1"></a>arima12<span class="ot">&lt;-</span> <span class="fu">Arima</span>(serie_tiempo,<span class="at">order =</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">2</span>) )</span>
+<span id="cb49-13"><a href="análisis-de-estacionariedad.html#cb49-13" tabindex="-1"></a>arima13<span class="ot">&lt;-</span> <span class="fu">Arima</span>(serie_tiempo,<span class="at">order =</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">0</span>))</span>
+<span id="cb49-14"><a href="análisis-de-estacionariedad.html#cb49-14" tabindex="-1"></a><span class="fu">AIC</span>(arima1,arima2,arima3,arima4,arima5,arima6,arima7,arima8,arima9,arima10,arima11,arima12,arima13)</span></code></pre></div>
 <pre><code>## Warning in AIC.default(arima1, arima2, arima3, arima4, arima5, arima6, arima7,
 ## : models are not all fitted to the same number of observations</code></pre>
 <pre><code>##         df      AIC
@@ -905,7 +922,7 @@ del analisis de AIC y BIC seleccionaremos el mejor modelo</p>
 ## arima11  5 13906.24
 ## arima12  3 13903.05
 ## arima13  2 14148.26</code></pre>
-<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb51-1"><a href="análisis-de-estacionariedad.html#cb51-1" tabindex="-1"></a><span class="fu">BIC</span>(arima1,arima2,arima3,arima4,arima5,arima6,arima7,arima8,arima9,arima10,arima11,arima12,arima13)</span></code></pre></div>
+<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="análisis-de-estacionariedad.html#cb52-1" tabindex="-1"></a><span class="fu">BIC</span>(arima1,arima2,arima3,arima4,arima5,arima6,arima7,arima8,arima9,arima10,arima11,arima12,arima13)</span></code></pre></div>
 <pre><code>## Warning in BIC.default(arima1, arima2, arima3, arima4, arima5, arima6, arima7,
 ## : models are not all fitted to the same number of observations</code></pre>
 <pre><code>##         df      BIC
@@ -935,7 +952,7 @@ anteriormente con una diferencia a la serie original <strong>Media Móvil</stron
 Indica que con (1) media móvil seria suficiente, ya que maneja la
 influencia de error de predicción de penúltimo periodo</p>
 <p><strong>Diagnóstico del Modelo</strong></p>
-<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb54-1"><a href="análisis-de-estacionariedad.html#cb54-1" tabindex="-1"></a><span class="fu">tsdiag</span>(arima9)</span></code></pre></div>
+<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="análisis-de-estacionariedad.html#cb55-1" tabindex="-1"></a><span class="fu">tsdiag</span>(arima9)</span></code></pre></div>
 <p><img src="Series-de-Tiempo_files/figure-html/tsdiagarima9-1.png" width="672" /></p>
 <p><strong>Residuos estandar</strong>: Se pueden ver los residuos distribuidos
 aleatoriamente alrededor de cero , con algunos outlier <strong>Residuos ACF</strong>
@@ -945,7 +962,7 @@ capturando bien la serie temporal <strong>P values de Ljung-Box</strong>: Los va
 estan por encima de la línea de significancia , lo que indica que los
 residuos no tienen autocorrelación, por lo tanto el modelo es adecuado</p>
 <p><strong>Prueba de Lgung-Box</strong></p>
-<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="análisis-de-estacionariedad.html#cb55-1" tabindex="-1"></a><span class="fu">Box.test</span>(<span class="fu">residuals</span>(arima9),<span class="at">type =</span><span class="st">&quot;Ljung-Box&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb56-1"><a href="análisis-de-estacionariedad.html#cb56-1" tabindex="-1"></a><span class="fu">Box.test</span>(<span class="fu">residuals</span>(arima9),<span class="at">type =</span><span class="st">&quot;Ljung-Box&quot;</span>)</span></code></pre></div>
 <pre><code>## 
 ##  Box-Ljung test
 ## 
@@ -956,12 +973,12 @@ residuos no tienen autocorrelación, por lo tanto el modelo es adecuado</p>
 lo cual se ajusta bien el modelo</p>
 <p><strong>Validación de residuos</strong></p>
 <p>En este gráfico podemos observar que la media es igual a cero</p>
-<div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb57-1"><a href="análisis-de-estacionariedad.html#cb57-1" tabindex="-1"></a>error<span class="ot">=</span><span class="fu">residuals</span>(arima9)</span>
-<span id="cb57-2"><a href="análisis-de-estacionariedad.html#cb57-2" tabindex="-1"></a><span class="fu">plot</span> (error)</span></code></pre></div>
+<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb58-1"><a href="análisis-de-estacionariedad.html#cb58-1" tabindex="-1"></a>error<span class="ot">=</span><span class="fu">residuals</span>(arima9)</span>
+<span id="cb58-2"><a href="análisis-de-estacionariedad.html#cb58-2" tabindex="-1"></a><span class="fu">plot</span> (error)</span></code></pre></div>
 <p><img src="Series-de-Tiempo_files/figure-html/error%20arima9-1.png" width="672" /></p>
 <p><strong>Pronóstico</strong></p>
-<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb58-1"><a href="análisis-de-estacionariedad.html#cb58-1" tabindex="-1"></a>pronostico_arima9 <span class="ot">&lt;-</span> <span class="fu">forecast</span>(arima9 ,<span class="at">level=</span><span class="fu">c</span>(<span class="dv">95</span>),<span class="at">h=</span><span class="dv">50</span>)</span>
-<span id="cb58-2"><a href="análisis-de-estacionariedad.html#cb58-2" tabindex="-1"></a>pronostico_arima9</span></code></pre></div>
+<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb59-1"><a href="análisis-de-estacionariedad.html#cb59-1" tabindex="-1"></a>pronostico_arima9 <span class="ot">&lt;-</span> <span class="fu">forecast</span>(arima9 ,<span class="at">level=</span><span class="fu">c</span>(<span class="dv">95</span>),<span class="at">h=</span><span class="dv">50</span>)</span>
+<span id="cb59-2"><a href="análisis-de-estacionariedad.html#cb59-2" tabindex="-1"></a>pronostico_arima9</span></code></pre></div>
 <pre><code>##           Point Forecast    Lo 95    Hi 95
 ## 2024.1644       875.1025 679.6017 1070.603
 ## 2024.1671       881.6557 679.3318 1083.980
@@ -1015,7 +1032,7 @@ lo cual se ajusta bien el modelo</p>
 ## 2024.2986       882.3813 559.8178 1204.945</code></pre>
 <p>Como podemos ver que el valor a partir del índice 2024.1808 se comporta
 constante con el valor de (882.3)</p>
-<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb60-1"><a href="análisis-de-estacionariedad.html#cb60-1" tabindex="-1"></a><span class="fu">plot</span>(pronostico_arima9)</span></code></pre></div>
+<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb61-1"><a href="análisis-de-estacionariedad.html#cb61-1" tabindex="-1"></a><span class="fu">plot</span>(pronostico_arima9)</span></code></pre></div>
 <p><img src="Series-de-Tiempo_files/figure-html/arima9-1.png" width="672" /></p>
 </div>
 <div id="arima-con-drift" class="section level3 hasAnchor" number="5.5.2">
@@ -1024,8 +1041,8 @@ constante con el valor de (882.3)</p>
 de una constante que representa una tendencia lineal en la serie
 temporal después de la diferenciación. Al incluirlo , el modelo puedo
 capturar esa tendencia residual mejorando la precisión del modelo</p>
-<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb61-1"><a href="análisis-de-estacionariedad.html#cb61-1" tabindex="-1"></a>modelo_arima_drift <span class="ot">&lt;-</span> <span class="fu">Arima</span>(serie_tiempo, <span class="at">order=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>), <span class="at">include.drift=</span><span class="cn">TRUE</span>)</span>
-<span id="cb61-2"><a href="análisis-de-estacionariedad.html#cb61-2" tabindex="-1"></a><span class="fu">summary</span>(modelo_arima_drift)</span></code></pre></div>
+<div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb62-1"><a href="análisis-de-estacionariedad.html#cb62-1" tabindex="-1"></a>modelo_arima_drift <span class="ot">&lt;-</span> <span class="fu">Arima</span>(serie_tiempo, <span class="at">order=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>), <span class="at">include.drift=</span><span class="cn">TRUE</span>)</span>
+<span id="cb62-2"><a href="análisis-de-estacionariedad.html#cb62-2" tabindex="-1"></a><span class="fu">summary</span>(modelo_arima_drift)</span></code></pre></div>
 <pre><code>## Series: serie_tiempo 
 ## ARIMA(1,1,1) with drift 
 ## 
@@ -1042,7 +1059,7 @@ capturar esa tendencia residual mejorando la precisión del modelo</p>
 ## Training set 0.03036668 99.58887 49.69831 -0.6577668 5.776874 0.1651458
 ##                      ACF1
 ## Training set -0.001224591</code></pre>
-<div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb63-1"><a href="análisis-de-estacionariedad.html#cb63-1" tabindex="-1"></a>modelo_arima_drift</span></code></pre></div>
+<div class="sourceCode" id="cb64"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb64-1"><a href="análisis-de-estacionariedad.html#cb64-1" tabindex="-1"></a>modelo_arima_drift</span></code></pre></div>
 <pre><code>## Series: serie_tiempo 
 ## ARIMA(1,1,1) with drift 
 ## 
@@ -1054,7 +1071,7 @@ capturar esa tendencia residual mejorando la precisión del modelo</p>
 ## sigma^2 = 9952:  log likelihood = -6948.08
 ## AIC=13904.16   AICc=13904.2   BIC=13924.37</code></pre>
 <p><strong>Diagnostico del modelo</strong></p>
-<div class="sourceCode" id="cb65"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb65-1"><a href="análisis-de-estacionariedad.html#cb65-1" tabindex="-1"></a><span class="fu">tsdiag</span>(modelo_arima_drift)</span></code></pre></div>
+<div class="sourceCode" id="cb66"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb66-1"><a href="análisis-de-estacionariedad.html#cb66-1" tabindex="-1"></a><span class="fu">tsdiag</span>(modelo_arima_drift)</span></code></pre></div>
 <p><img src="Series-de-Tiempo_files/figure-html/driftman-1.png" width="672" /></p>
 <p><strong>Residuos estandar</strong>: Se pueden ver los residuos distribuidos
 aleatoriamente alrededor de cero , con algunos outlier <strong>Residuos ACF</strong>
@@ -1064,7 +1081,7 @@ capturando bien la serie temporal <strong>P values de Ljung-Box</strong>: Los va
 estan por encima de la línea de significancia , lo que indica que los
 residuos no tienen autocorrelación, por lo tanto el modelo es adecuado</p>
 <p><strong>Prueba de Lgung-Box</strong></p>
-<div class="sourceCode" id="cb66"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb66-1"><a href="análisis-de-estacionariedad.html#cb66-1" tabindex="-1"></a><span class="fu">Box.test</span>(<span class="fu">residuals</span>(modelo_arima_drift),<span class="at">type =</span><span class="st">&quot;Ljung-Box&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb67"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb67-1"><a href="análisis-de-estacionariedad.html#cb67-1" tabindex="-1"></a><span class="fu">Box.test</span>(<span class="fu">residuals</span>(modelo_arima_drift),<span class="at">type =</span><span class="st">&quot;Ljung-Box&quot;</span>)</span></code></pre></div>
 <pre><code>## 
 ##  Box-Ljung test
 ## 
@@ -1075,13 +1092,13 @@ residuos no tienen autocorrelación, por lo tanto el modelo es adecuado</p>
 lo cual se ajusta bien el modelo</p>
 <p><strong>Validación de residuos</strong></p>
 <p>En este gráfico podemos observar que la media es igual a cero</p>
-<div class="sourceCode" id="cb68"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb68-1"><a href="análisis-de-estacionariedad.html#cb68-1" tabindex="-1"></a>error<span class="ot">=</span><span class="fu">residuals</span>(modelo_arima_drift)</span>
-<span id="cb68-2"><a href="análisis-de-estacionariedad.html#cb68-2" tabindex="-1"></a><span class="fu">plot</span> (error)</span></code></pre></div>
+<div class="sourceCode" id="cb69"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb69-1"><a href="análisis-de-estacionariedad.html#cb69-1" tabindex="-1"></a>error<span class="ot">=</span><span class="fu">residuals</span>(modelo_arima_drift)</span>
+<span id="cb69-2"><a href="análisis-de-estacionariedad.html#cb69-2" tabindex="-1"></a><span class="fu">plot</span> (error)</span></code></pre></div>
 <p><img src="Series-de-Tiempo_files/figure-html/error_arimadee-1.png" width="672" /></p>
 <p><strong>Pronóstico</strong></p>
-<div class="sourceCode" id="cb69"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb69-1"><a href="análisis-de-estacionariedad.html#cb69-1" tabindex="-1"></a><span class="co"># Pronóstico utilizando el modelo ARIMA con drift</span></span>
-<span id="cb69-2"><a href="análisis-de-estacionariedad.html#cb69-2" tabindex="-1"></a>pronostico_arima_drift <span class="ot">&lt;-</span> <span class="fu">forecast</span>(modelo_arima_drift, <span class="at">h=</span><span class="dv">150</span>)</span>
-<span id="cb69-3"><a href="análisis-de-estacionariedad.html#cb69-3" tabindex="-1"></a>pronostico_arima_drift</span></code></pre></div>
+<div class="sourceCode" id="cb70"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb70-1"><a href="análisis-de-estacionariedad.html#cb70-1" tabindex="-1"></a><span class="co"># Pronóstico utilizando el modelo ARIMA con drift</span></span>
+<span id="cb70-2"><a href="análisis-de-estacionariedad.html#cb70-2" tabindex="-1"></a>pronostico_arima_drift <span class="ot">&lt;-</span> <span class="fu">forecast</span>(modelo_arima_drift, <span class="at">h=</span><span class="dv">150</span>)</span>
+<span id="cb70-3"><a href="análisis-de-estacionariedad.html#cb70-3" tabindex="-1"></a>pronostico_arima_drift</span></code></pre></div>
 <pre><code>##           Point Forecast    Lo 80    Hi 80    Lo 95    Hi 95
 ## 2024.1644       877.8586 750.0088 1005.708 682.3291 1073.388
 ## 2024.1671       885.1545 752.8600 1017.449 682.8276 1087.481
@@ -1233,7 +1250,7 @@ lo cual se ajusta bien el modelo</p>
 ## 2024.5671       950.2737 637.0124 1263.535 471.1820 1429.365
 ## 2024.5699       950.7145 636.5736 1264.855 470.2774 1431.151
 ## 2024.5726       951.1552 636.1372 1266.173 469.3767 1432.934</code></pre>
-<div class="sourceCode" id="cb71"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb71-1"><a href="análisis-de-estacionariedad.html#cb71-1" tabindex="-1"></a><span class="fu">plot</span>(pronostico_arima_drift)</span></code></pre></div>
+<div class="sourceCode" id="cb72"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb72-1"><a href="análisis-de-estacionariedad.html#cb72-1" tabindex="-1"></a><span class="fu">plot</span>(pronostico_arima_drift)</span></code></pre></div>
 <p><img src="Series-de-Tiempo_files/figure-html/arimanamnualdrif-1.png" width="672" /></p>
 <p>Podemos ver como en los puntos de Predicción ya no tiene una tendencia
 lineal,ya los valores presentan una tendencia</p>
@@ -1243,8 +1260,8 @@ lineal,ya los valores presentan una tendencia</p>
 <p>El AUTOARIMA utilizavarios modelos y selecciona los mejores AIC/BIC
 buscando el mejor modelo que ajuste los datos y la el mas simple
 utilizando la menor cantidad de parámetros</p>
-<div class="sourceCode" id="cb72"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb72-1"><a href="análisis-de-estacionariedad.html#cb72-1" tabindex="-1"></a>modelo<span class="ot">&lt;-</span><span class="fu">auto.arima</span>(serie_tiempo)</span>
-<span id="cb72-2"><a href="análisis-de-estacionariedad.html#cb72-2" tabindex="-1"></a>modelo</span></code></pre></div>
+<div class="sourceCode" id="cb73"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb73-1"><a href="análisis-de-estacionariedad.html#cb73-1" tabindex="-1"></a>modelo<span class="ot">&lt;-</span><span class="fu">auto.arima</span>(serie_tiempo)</span>
+<span id="cb73-2"><a href="análisis-de-estacionariedad.html#cb73-2" tabindex="-1"></a>modelo</span></code></pre></div>
 <pre><code>## Series: serie_tiempo 
 ## ARIMA(0,1,2) 
 ## 
@@ -1260,12 +1277,12 @@ utilizando la menor cantidad de parámetros</p>
 tienen efecto sobre los valores futuros **Diferenciación*: Se
 necesita una diferenciación para hacer la serie estacionaria . Esta fue
 la observación realizada anteriormente con una diferencia a la serie
-original <strong>Media Móvil</strong>: Indica que con 2 medias moviles seria
+original <strong>Media Móvil</strong>: Indica que con 2 medias móviles seria
 suficiene, ya que maneja la influencia de error de predicción de
 penúltimo periodo, esta elección tambien es dado porque el valor del
 error(-0.0767) es menor respecto al periodo anterior (-0.7636)</p>
 <p><strong>Diagnóstico del Modelo</strong></p>
-<div class="sourceCode" id="cb74"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb74-1"><a href="análisis-de-estacionariedad.html#cb74-1" tabindex="-1"></a><span class="fu">tsdiag</span>(modelo)</span></code></pre></div>
+<div class="sourceCode" id="cb75"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb75-1"><a href="análisis-de-estacionariedad.html#cb75-1" tabindex="-1"></a><span class="fu">tsdiag</span>(modelo)</span></code></pre></div>
 <p><img src="Series-de-Tiempo_files/figure-html/tsdiagautoarima-1.png" width="672" /></p>
 <p><strong>Residuos estandar</strong> se pueden ver los residuso distribuidos
 aleatoriamente alrededor de cero , con algunos outlier <strong>Residuos ACF</strong>
@@ -1276,7 +1293,7 @@ Los valores estan po rencima de la linea de significancia , lo que
 indica que los residuos no tienen autocorrelación por lo tanto el modelo
 es adecuado</p>
 <p><strong>Prueba de Lgung-Box</strong></p>
-<div class="sourceCode" id="cb75"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb75-1"><a href="análisis-de-estacionariedad.html#cb75-1" tabindex="-1"></a><span class="fu">Box.test</span>(<span class="fu">residuals</span>(modelo),<span class="at">type =</span><span class="st">&quot;Ljung-Box&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb76"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb76-1"><a href="análisis-de-estacionariedad.html#cb76-1" tabindex="-1"></a><span class="fu">Box.test</span>(<span class="fu">residuals</span>(modelo),<span class="at">type =</span><span class="st">&quot;Ljung-Box&quot;</span>)</span></code></pre></div>
 <pre><code>## 
 ##  Box-Ljung test
 ## 
@@ -1287,12 +1304,12 @@ es adecuado</p>
 Ruido Blanco y se ajusta bien el modelo</p>
 <p><strong>Validación de residuos</strong></p>
 <p>En este gráfico podemos observar que la media es igual a cero</p>
-<div class="sourceCode" id="cb77"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb77-1"><a href="análisis-de-estacionariedad.html#cb77-1" tabindex="-1"></a>error<span class="ot">=</span><span class="fu">residuals</span>(modelo)</span>
-<span id="cb77-2"><a href="análisis-de-estacionariedad.html#cb77-2" tabindex="-1"></a><span class="fu">plot</span> (error)</span></code></pre></div>
+<div class="sourceCode" id="cb78"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb78-1"><a href="análisis-de-estacionariedad.html#cb78-1" tabindex="-1"></a>error<span class="ot">=</span><span class="fu">residuals</span>(modelo)</span>
+<span id="cb78-2"><a href="análisis-de-estacionariedad.html#cb78-2" tabindex="-1"></a><span class="fu">plot</span> (error)</span></code></pre></div>
 <p><img src="Series-de-Tiempo_files/figure-html/errorres-1.png" width="672" /></p>
 <p><strong>Pronóstico</strong></p>
-<div class="sourceCode" id="cb78"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb78-1"><a href="análisis-de-estacionariedad.html#cb78-1" tabindex="-1"></a>pronostico <span class="ot">&lt;-</span> forecast<span class="sc">::</span><span class="fu">forecast</span>(modelo ,<span class="at">h=</span><span class="dv">100</span>)</span>
-<span id="cb78-2"><a href="análisis-de-estacionariedad.html#cb78-2" tabindex="-1"></a>pronostico</span></code></pre></div>
+<div class="sourceCode" id="cb79"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb79-1"><a href="análisis-de-estacionariedad.html#cb79-1" tabindex="-1"></a>pronostico <span class="ot">&lt;-</span> forecast<span class="sc">::</span><span class="fu">forecast</span>(modelo ,<span class="at">h=</span><span class="dv">100</span>)</span>
+<span id="cb79-2"><a href="análisis-de-estacionariedad.html#cb79-2" tabindex="-1"></a>pronostico</span></code></pre></div>
 <pre><code>##           Point Forecast    Lo 80    Hi 80    Lo 95    Hi 95
 ## 2024.1644       875.3455 747.5016 1003.189 679.8252 1070.866
 ## 2024.1671       881.2991 749.0635 1013.535 679.0622 1083.536
@@ -1401,9 +1418,9 @@ del indice (2024.1671)</p>
 <h3><span class="header-section-number">5.5.4</span> AUTOARIMA con Drift<a href="análisis-de-estacionariedad.html#autoarima-con-drift" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>AL igual que el ARIMA anterior vamos a incluir el parametro Drift para
 ajustar la linealidad</p>
-<div class="sourceCode" id="cb80"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb80-1"><a href="análisis-de-estacionariedad.html#cb80-1" tabindex="-1"></a><span class="fu">library</span>(forecast)</span>
-<span id="cb80-2"><a href="análisis-de-estacionariedad.html#cb80-2" tabindex="-1"></a>modelo_auto_con_drift <span class="ot">&lt;-</span> <span class="fu">auto.arima</span>(serie_tiempo, <span class="at">d=</span><span class="dv">1</span>, <span class="at">D=</span><span class="dv">0</span>, <span class="at">seasonal=</span><span class="cn">FALSE</span>, <span class="at">allowdrift=</span><span class="cn">TRUE</span>)</span>
-<span id="cb80-3"><a href="análisis-de-estacionariedad.html#cb80-3" tabindex="-1"></a><span class="fu">summary</span>(modelo_auto_con_drift)</span></code></pre></div>
+<div class="sourceCode" id="cb81"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb81-1"><a href="análisis-de-estacionariedad.html#cb81-1" tabindex="-1"></a><span class="fu">library</span>(forecast)</span>
+<span id="cb81-2"><a href="análisis-de-estacionariedad.html#cb81-2" tabindex="-1"></a>modelo_auto_con_drift <span class="ot">&lt;-</span> <span class="fu">auto.arima</span>(serie_tiempo, <span class="at">d=</span><span class="dv">1</span>, <span class="at">D=</span><span class="dv">0</span>, <span class="at">seasonal=</span><span class="cn">FALSE</span>, <span class="at">allowdrift=</span><span class="cn">TRUE</span>)</span>
+<span id="cb81-3"><a href="análisis-de-estacionariedad.html#cb81-3" tabindex="-1"></a><span class="fu">summary</span>(modelo_auto_con_drift)</span></code></pre></div>
 <pre><code>## Series: serie_tiempo 
 ## ARIMA(0,1,2) 
 ## 
@@ -1420,7 +1437,7 @@ ajustar la linealidad</p>
 ## Training set 2.35706 99.62746 49.73352 -0.3545638 5.770395 0.1652628
 ##                      ACF1
 ## Training set 0.0003058902</code></pre>
-<div class="sourceCode" id="cb82"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb82-1"><a href="análisis-de-estacionariedad.html#cb82-1" tabindex="-1"></a>modelo_auto_con_drift</span></code></pre></div>
+<div class="sourceCode" id="cb83"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb83-1"><a href="análisis-de-estacionariedad.html#cb83-1" tabindex="-1"></a>modelo_auto_con_drift</span></code></pre></div>
 <pre><code>## Series: serie_tiempo 
 ## ARIMA(0,1,2) 
 ## 
@@ -1433,8 +1450,8 @@ ajustar la linealidad</p>
 ## AIC=13903.05   AICc=13903.07   BIC=13918.2</code></pre>
 <p>Se puede ver en el pronóstico una linealidad de (881.29) a parir del
 segundo Indice</p>
-<div class="sourceCode" id="cb84"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb84-1"><a href="análisis-de-estacionariedad.html#cb84-1" tabindex="-1"></a>pronostico_auto_con_drift <span class="ot">&lt;-</span> <span class="fu">forecast</span>(modelo_auto_con_drift, <span class="at">h=</span><span class="dv">150</span>) </span>
-<span id="cb84-2"><a href="análisis-de-estacionariedad.html#cb84-2" tabindex="-1"></a>pronostico_auto_con_drift</span></code></pre></div>
+<div class="sourceCode" id="cb85"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb85-1"><a href="análisis-de-estacionariedad.html#cb85-1" tabindex="-1"></a>pronostico_auto_con_drift <span class="ot">&lt;-</span> <span class="fu">forecast</span>(modelo_auto_con_drift, <span class="at">h=</span><span class="dv">150</span>) </span>
+<span id="cb85-2"><a href="análisis-de-estacionariedad.html#cb85-2" tabindex="-1"></a>pronostico_auto_con_drift</span></code></pre></div>
 <pre><code>##           Point Forecast    Lo 80    Hi 80    Lo 95    Hi 95
 ## 2024.1644       875.3455 747.5016 1003.189 679.8252 1070.866
 ## 2024.1671       881.2991 749.0635 1013.535 679.0622 1083.536
@@ -1586,7 +1603,7 @@ segundo Indice</p>
 ## 2024.5671       881.2991 562.6974 1199.901 394.0399 1368.558
 ## 2024.5699       881.2991 561.7956 1200.803 392.6606 1369.938
 ## 2024.5726       881.2991 560.8963 1201.702 391.2852 1371.313</code></pre>
-<div class="sourceCode" id="cb86"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb86-1"><a href="análisis-de-estacionariedad.html#cb86-1" tabindex="-1"></a><span class="fu">plot</span>(pronostico_auto_con_drift)</span></code></pre></div>
+<div class="sourceCode" id="cb87"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb87-1"><a href="análisis-de-estacionariedad.html#cb87-1" tabindex="-1"></a><span class="fu">plot</span>(pronostico_auto_con_drift)</span></code></pre></div>
 <p><img src="Series-de-Tiempo_files/figure-html/plot_drift-1.png" width="672" /></p>
 </div>
 <div id="conclusión" class="section level3 hasAnchor" number="5.5.5">
@@ -1595,6 +1612,167 @@ segundo Indice</p>
 serie temporal , como una tendencia residual . Por otro lado al incluir
 el parámetro <strong>drift¨</strong> en el modelo ARIMA(1,1,1) ayudo a capturar esta
 tendencia mejorando el ajuste y la interpretación del modelo</p>
+</div>
+</div>
+<div id="facebook-prophet" class="section level2 hasAnchor" number="5.6">
+<h2><span class="header-section-number">5.6</span> Facebook Prophet<a href="análisis-de-estacionariedad.html#facebook-prophet" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Usaremos la libreria Prophet esta herramienta fue desarrollada por Facebook, el cual se basa en un modelo aditivo , donde las tendencias no lineales se ajustan con la estacionariedad diaria, semanal y anual teniendo encuenta los días festivos.</p>
+<div id="carque-de-datos" class="section level3 hasAnchor" number="5.6.1">
+<h3><span class="header-section-number">5.6.1</span> Carque de datos<a href="análisis-de-estacionariedad.html#carque-de-datos" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Cargamos los datos desde data_sitio.csv para incluir las colunas de ferias y fiestas “FIESTAS”</p>
+<div class="sourceCode" id="cb88"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb88-1"><a href="análisis-de-estacionariedad.html#cb88-1" tabindex="-1"></a>data_sitio <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;data_sitio.csv&quot;</span>, <span class="at">sep =</span> <span class="st">&quot;;&quot;</span>)</span>
+<span id="cb88-2"><a href="análisis-de-estacionariedad.html#cb88-2" tabindex="-1"></a>data_sitio<span class="sc">$</span>M_FECHA_DIA <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(data_sitio<span class="sc">$</span>M_FECHA_DIA)</span>
+<span id="cb88-3"><a href="análisis-de-estacionariedad.html#cb88-3" tabindex="-1"></a>data_sitio <span class="ot">&lt;-</span> data_sitio[<span class="fu">order</span>(data_sitio<span class="sc">$</span>M_FECHA_DIA), ]</span>
+<span id="cb88-4"><a href="análisis-de-estacionariedad.html#cb88-4" tabindex="-1"></a><span class="fu">head</span>(data_sitio,<span class="dv">5</span>)</span></code></pre></div>
+<pre><code>##                                M_SITIO M_FECHA_DIA FIESTA PAYLOAD_4G
+## 1 d5a15865-7b2e-4261-af83-2117ec105843  2021-01-01      0     393.57
+## 2 d5a15865-7b2e-4261-af83-2117ec105843  2021-01-02      0     314.84
+## 3 d5a15865-7b2e-4261-af83-2117ec105843  2021-01-03      0     341.93
+## 4 d5a15865-7b2e-4261-af83-2117ec105843  2021-01-04      0     375.91
+## 5 d5a15865-7b2e-4261-af83-2117ec105843  2021-01-05      0     368.37
+##   THROUGHPUT_4G OBJETIVOCOBERTURA_Mixta.Rural.Carretera
+## 1      12173.83                                   False
+## 2      11059.94                                   False
+## 3      11338.95                                   False
+## 4      11377.40                                   False
+## 5      11183.67                                   False
+##   OBJETIVOCOBERTURA_Mixta.Urbana.Carretera OBJETIVOCOBERTURA_Rural
+## 1                                    False                    True
+## 2                                    False                    True
+## 3                                    False                    True
+## 4                                    False                    True
+## 5                                    False                    True
+##   OBJETIVOCOBERTURA_Urbana TIPO_Calidad TIPO_Cobertura TIPO_Reubicacion
+## 1                    False        False          False            False
+## 2                    False        False          False            False
+## 3                    False        False          False            False
+## 4                    False        False          False            False
+## 5                    False        False          False            False
+##   TIPO_Trafico
+## 1         True
+## 2         True
+## 3         True
+## 4         True
+## 5         True</code></pre>
+<div class="sourceCode" id="cb90"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb90-1"><a href="análisis-de-estacionariedad.html#cb90-1" tabindex="-1"></a>df <span class="ot">&lt;-</span> data_sitio[, <span class="fu">c</span>(<span class="st">&quot;M_FECHA_DIA&quot;</span>, <span class="st">&quot;PAYLOAD_4G&quot;</span>,<span class="st">&quot;FIESTA&quot;</span>)]</span>
+<span id="cb90-2"><a href="análisis-de-estacionariedad.html#cb90-2" tabindex="-1"></a><span class="fu">head</span>(df,<span class="dv">5</span>)</span></code></pre></div>
+<pre><code>##   M_FECHA_DIA PAYLOAD_4G FIESTA
+## 1  2021-01-01     393.57      0
+## 2  2021-01-02     314.84      0
+## 3  2021-01-03     341.93      0
+## 4  2021-01-04     375.91      0
+## 5  2021-01-05     368.37      0</code></pre>
+</div>
+<div id="alistamiento-de-datos-para-el-modelo" class="section level3 hasAnchor" number="5.6.2">
+<h3><span class="header-section-number">5.6.2</span> Alistamiento de datos para el modelo<a href="análisis-de-estacionariedad.html#alistamiento-de-datos-para-el-modelo" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Para preparar los datos para usar la libreria Prophet colocando la columna “M_FECHA_DIA” en “ds” y la variable a predecir en este caso “PAYLOAD 4G” en la variable “y”</p>
+<div class="sourceCode" id="cb92"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb92-1"><a href="análisis-de-estacionariedad.html#cb92-1" tabindex="-1"></a>df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
+<span id="cb92-2"><a href="análisis-de-estacionariedad.html#cb92-2" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">ds =</span> M_FECHA_DIA, <span class="at">y =</span> PAYLOAD_4G)</span></code></pre></div>
+<p>Aseguramos el tipo de dato para “ds” y “y”</p>
+<div class="sourceCode" id="cb93"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb93-1"><a href="análisis-de-estacionariedad.html#cb93-1" tabindex="-1"></a>df<span class="sc">$</span>ds <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(df<span class="sc">$</span>ds) </span>
+<span id="cb93-2"><a href="análisis-de-estacionariedad.html#cb93-2" tabindex="-1"></a>df<span class="sc">$</span>y <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(df<span class="sc">$</span>y)</span></code></pre></div>
+<p>Se crea un nuevo dataframe “holydays” para los días de ferias y fiestas de nuestro proyecto, este se usa para mejorar el ajuste del proyecto</p>
+<div class="sourceCode" id="cb94"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb94-1"><a href="análisis-de-estacionariedad.html#cb94-1" tabindex="-1"></a>holidays <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
+<span id="cb94-2"><a href="análisis-de-estacionariedad.html#cb94-2" tabindex="-1"></a>  <span class="fu">filter</span>(FIESTA <span class="sc">==</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb94-3"><a href="análisis-de-estacionariedad.html#cb94-3" tabindex="-1"></a>  <span class="fu">select</span>(ds) <span class="sc">%&gt;%</span></span>
+<span id="cb94-4"><a href="análisis-de-estacionariedad.html#cb94-4" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">holiday =</span> <span class="st">&#39;fiesta&#39;</span>)</span></code></pre></div>
+</div>
+<div id="creación-de-modelo" class="section level3 hasAnchor" number="5.6.3">
+<h3><span class="header-section-number">5.6.3</span> Creación de modelo<a href="análisis-de-estacionariedad.html#creación-de-modelo" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Creamos el modelo teniendo encuenta los festivos incluidos en “holidays” , y definimos que no tenemos estacionalidad horaria , ya que la minima expresión en fechas es el dia entero</p>
+<div class="sourceCode" id="cb95"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb95-1"><a href="análisis-de-estacionariedad.html#cb95-1" tabindex="-1"></a>modelo_prophet <span class="ot">&lt;-</span> <span class="fu">prophet</span>(<span class="at">holidays =</span> holidays, <span class="at">daily.seasonality =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb95-2"><a href="análisis-de-estacionariedad.html#cb95-2" tabindex="-1"></a></span>
+<span id="cb95-3"><a href="análisis-de-estacionariedad.html#cb95-3" tabindex="-1"></a>modelo_prophet <span class="ot">&lt;-</span> <span class="fu">fit.prophet</span>(modelo_prophet, df)</span></code></pre></div>
+</div>
+<div id="descomposición" class="section level3 hasAnchor" number="5.6.4">
+<h3><span class="header-section-number">5.6.4</span> Descomposición<a href="análisis-de-estacionariedad.html#descomposición" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<pre class="r_descomposicion"><code>prophet_plot_components(modelo_prophet, pronostico)</code></pre>
+<p><strong>Trend:</strong> La tendencia muestra como el “PAYLOAD 4G” aumenta a lo largo del tiempo , desde el 2021 al 2023 hay una tendencia creciente , luego en 2023 se estabiliza</p>
+<p><strong>Holydays:</strong> Este gráfico muestra el impacto de los festivo en el tráfico. Se ve un impacto en significativo en el 2022. En los otros años el impacto parece ser menor o inexistente.</p>
+<p><strong>Weekly:</strong>Muestra como en los días viernes sabado y domingo aumenta el tráfico, mientras que en los días lunes es mas bajo.</p>
+<p><strong>Yearly</strong> Este gráfico muestra que hay mayor tráfico los meses de Julio y Diciembre, mientras que Enero y Octubre tienen menor tráfico</p>
+</div>
+<div id="pronóstico" class="section level3 hasAnchor" number="5.6.5">
+<h3><span class="header-section-number">5.6.5</span> Pronóstico<a href="análisis-de-estacionariedad.html#pronóstico" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Creamos un dataset con fechas futuras y las incluimos en el pronóstico 365 días</p>
+<div class="sourceCode" id="cb97"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb97-1"><a href="análisis-de-estacionariedad.html#cb97-1" tabindex="-1"></a>futuro <span class="ot">&lt;-</span> <span class="fu">make_future_dataframe</span>(modelo_prophet, <span class="at">periods =</span> <span class="dv">365</span>)</span>
+<span id="cb97-2"><a href="análisis-de-estacionariedad.html#cb97-2" tabindex="-1"></a>pronostico <span class="ot">&lt;-</span> <span class="fu">predict</span>(modelo_prophet, futuro)</span>
+<span id="cb97-3"><a href="análisis-de-estacionariedad.html#cb97-3" tabindex="-1"></a><span class="fu">head</span>(pronostico,<span class="dv">5</span>)</span></code></pre></div>
+<pre><code>##           ds    trend additive_terms additive_terms_lower additive_terms_upper
+## 1 2021-01-01 458.6323     -117.43361           -117.43361           -117.43361
+## 2 2021-01-02 459.1472     -109.43608           -109.43608           -109.43608
+## 3 2021-01-03 459.6621     -104.57724           -104.57724           -104.57724
+## 4 2021-01-04 460.1770     -119.08533           -119.08533           -119.08533
+## 5 2021-01-05 460.6919      -98.67877            -98.67877            -98.67877
+##   fiesta fiesta_lower fiesta_upper holidays holidays_lower holidays_upper
+## 1      0            0            0        0              0              0
+## 2      0            0            0        0              0              0
+## 3      0            0            0        0              0              0
+## 4      0            0            0        0              0              0
+## 5      0            0            0        0              0              0
+##       weekly weekly_lower weekly_upper    yearly yearly_lower yearly_upper
+## 1   9.148061     9.148061     9.148061 -126.5817    -126.5817    -126.5817
+## 2  10.215260    10.215260    10.215260 -119.6513    -119.6513    -119.6513
+## 3   7.650530     7.650530     7.650530 -112.2278    -112.2278    -112.2278
+## 4 -14.661578   -14.661578   -14.661578 -104.4238    -104.4238    -104.4238
+## 5  -2.321971    -2.321971    -2.321971  -96.3568     -96.3568     -96.3568
+##   multiplicative_terms multiplicative_terms_lower multiplicative_terms_upper
+## 1                    0                          0                          0
+## 2                    0                          0                          0
+## 3                    0                          0                          0
+## 4                    0                          0                          0
+## 5                    0                          0                          0
+##   yhat_lower yhat_upper trend_lower trend_upper     yhat
+## 1   203.7420   458.9756    458.6323    458.6323 341.1987
+## 2   200.7909   478.5230    459.1472    459.1472 349.7111
+## 3   229.1562   496.0774    459.6621    459.6621 355.0849
+## 4   202.2198   475.4462    460.1770    460.1770 341.0917
+## 5   222.6373   504.7201    460.6919    460.6919 362.0131</code></pre>
+<p><strong>Linea Azul:</strong>: prediccion de Payload 4G, la cual nos muestra una tendencia ascendente hasta 2023 , despues de este año se estabiliza</p>
+<p><strong>Banda Azul Clara:</strong> Estas bandas corresponde al nivel de confianza que normalmente es del (80% al 95%)</p>
+<p><strong>Puntos Negros:</strong> Valores reales de Payload</p>
+<p><strong>Lineas Rojas:</strong> son los Changepoint o puntos de cambio detectados por el modelo Prophet,son puntos donde el modelo detecta un cambio de tendencia de Payload 4G</p>
+<p><strong>Puntos negros:</strong> son los valores reales de Payload 4g, nos permite visualmente comparar las predicciones del modelo , con los observados</p>
+<p><strong>Visualización de resultados</strong></p>
+<div class="sourceCode" id="cb99"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb99-1"><a href="análisis-de-estacionariedad.html#cb99-1" tabindex="-1"></a><span class="fu">plot</span>(modelo_prophet, pronostico) <span class="sc">+</span></span>
+<span id="cb99-2"><a href="análisis-de-estacionariedad.html#cb99-2" tabindex="-1"></a>  <span class="fu">add_changepoints_to_plot</span>(modelo_prophet)</span></code></pre></div>
+<p><img src="Series-de-Tiempo_files/figure-html/ph_plot_pronostico-1.png" width="672" /></p>
+</div>
+<div id="métricas-de-error" class="section level3 hasAnchor" number="5.6.6">
+<h3><span class="header-section-number">5.6.6</span> Métricas de Error<a href="análisis-de-estacionariedad.html#métricas-de-error" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Calculamos los errores</p>
+<p><strong>MAE (Mean Absolute Error):</strong> Esto significa que en promedio las predicciones estan con una difrenciade 59 unidades</p>
+<p><strong>MSE (Mean Squared Error):</strong> Penaliza los errores grandes</p>
+<p><strong>RMSE (Root Mean Squared Error):</strong> Esta es la raiz cuadrada del MSE proporcioando la medida de de error en las mismas unidades de los datos originales</p>
+<div class="sourceCode" id="cb100"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb100-1"><a href="análisis-de-estacionariedad.html#cb100-1" tabindex="-1"></a>actual <span class="ot">&lt;-</span> df<span class="sc">$</span>y</span>
+<span id="cb100-2"><a href="análisis-de-estacionariedad.html#cb100-2" tabindex="-1"></a>predicted <span class="ot">&lt;-</span> <span class="fu">predict</span>(modelo_prophet, df)<span class="sc">$</span>yhat</span>
+<span id="cb100-3"><a href="análisis-de-estacionariedad.html#cb100-3" tabindex="-1"></a></span>
+<span id="cb100-4"><a href="análisis-de-estacionariedad.html#cb100-4" tabindex="-1"></a>mae <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">abs</span>(actual <span class="sc">-</span> predicted), <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb100-5"><a href="análisis-de-estacionariedad.html#cb100-5" tabindex="-1"></a>mse <span class="ot">&lt;-</span> <span class="fu">mean</span>((actual <span class="sc">-</span> predicted)<span class="sc">^</span><span class="dv">2</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb100-6"><a href="análisis-de-estacionariedad.html#cb100-6" tabindex="-1"></a>rmse <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(mse)</span>
+<span id="cb100-7"><a href="análisis-de-estacionariedad.html#cb100-7" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">sprintf</span>(<span class="st">&quot;RESULTADO MAE: %.4f&quot;</span>, mae))</span></code></pre></div>
+<pre><code>## [1] &quot;RESULTADO MAE: 59.7680&quot;</code></pre>
+<div class="sourceCode" id="cb102"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb102-1"><a href="análisis-de-estacionariedad.html#cb102-1" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">sprintf</span>(<span class="st">&quot;RESULTADO MSE: %.4f&quot;</span>, mse))</span></code></pre></div>
+<pre><code>## [1] &quot;RESULTADO MSE: 11149.2553&quot;</code></pre>
+<div class="sourceCode" id="cb104"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb104-1"><a href="análisis-de-estacionariedad.html#cb104-1" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">sprintf</span>(<span class="st">&quot;RESULTADO RMSE: %.4f&quot;</span>, rmse))</span></code></pre></div>
+<pre><code>## [1] &quot;RESULTADO RMSE: 105.5900&quot;</code></pre>
+<p><strong>R² (Coeficiente de Determinación):</strong> este Indica que el modelo explica el 86.6% de la variabilidad en los datos</p>
+<div class="sourceCode" id="cb106"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb106-1"><a href="análisis-de-estacionariedad.html#cb106-1" tabindex="-1"></a>ss_res <span class="ot">&lt;-</span> <span class="fu">sum</span>((actual <span class="sc">-</span> predicted)<span class="sc">^</span><span class="dv">2</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb106-2"><a href="análisis-de-estacionariedad.html#cb106-2" tabindex="-1"></a>ss_tot <span class="ot">&lt;-</span> <span class="fu">sum</span>((actual <span class="sc">-</span> <span class="fu">mean</span>(actual))<span class="sc">^</span><span class="dv">2</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb106-3"><a href="análisis-de-estacionariedad.html#cb106-3" tabindex="-1"></a>r_squared <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">-</span> (ss_res <span class="sc">/</span> ss_tot)</span>
+<span id="cb106-4"><a href="análisis-de-estacionariedad.html#cb106-4" tabindex="-1"></a>r_squared <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(r_squared)</span>
+<span id="cb106-5"><a href="análisis-de-estacionariedad.html#cb106-5" tabindex="-1"></a></span>
+<span id="cb106-6"><a href="análisis-de-estacionariedad.html#cb106-6" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">sprintf</span>(<span class="st">&quot;RESULTADO R²: %.4f&quot;</span>, r_squared))</span></code></pre></div>
+<pre><code>## [1] &quot;RESULTADO R²: 0.8662&quot;</code></pre>
+<p><strong>MAPE (Mean Absolute Percentage Error:)</strong>: Este indica que el error promedio es del 7.2%, proporciOna una medida relativa del error respecto a los valores reales</p>
+<div class="sourceCode" id="cb108"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb108-1"><a href="análisis-de-estacionariedad.html#cb108-1" tabindex="-1"></a>mape <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">abs</span>((actual <span class="sc">-</span> predicted) <span class="sc">/</span> actual), <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">*</span> <span class="dv">100</span></span>
+<span id="cb108-2"><a href="análisis-de-estacionariedad.html#cb108-2" tabindex="-1"></a>mape <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(mape)</span>
+<span id="cb108-3"><a href="análisis-de-estacionariedad.html#cb108-3" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">sprintf</span>(<span class="st">&quot;RESULTADO MAPE: %.4f&quot;</span>, mape))</span></code></pre></div>
+<pre><code>## [1] &quot;RESULTADO MAPE: 7.2883&quot;</code></pre>
+</div>
+<div id="conclusiones" class="section level3 hasAnchor" number="5.6.7">
+<h3><span class="header-section-number">5.6.7</span> Conclusiones<a href="análisis-de-estacionariedad.html#conclusiones" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Las métricas de error (MAE,MSE,RMSE,R², MAPE) muestran que modelo captura tendencias y patrones de tráfico “Payload 4G”. La incorporación de las festividades en “Holidays” ha mejorado la precisión del modelo permitiendo ajusta el tráfico duarante estos dias feriados</p>
 
 </div>
 </div>

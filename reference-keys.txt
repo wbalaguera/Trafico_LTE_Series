@@ -68,3 +68,12 @@ autoarima
 autoarima-con-drift
 conclusión
 análisis-de-estacionariedad-v2
+facebook-prophet
+carque-de-datos
+alistamiento-de-datos-para-el-modelo
+cración-de-modelo
+descomposición
+pronóstico
+métricas-de-error
+creación-de-modelo
+conclusiones
