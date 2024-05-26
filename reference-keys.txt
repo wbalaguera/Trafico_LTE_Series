@@ -82,3 +82,4 @@ modelo-arima-con-regresión
 predicción
 conclusiones-1
 preparación-de-datos
+analisis-de-residuos
