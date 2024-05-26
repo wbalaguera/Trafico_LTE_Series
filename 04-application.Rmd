@@ -324,7 +324,7 @@ esto significa que los residuos no son completamente aleatorios por lo
 tanto el modelo Holt - Winters puede no estar capturando toda la
 estructura dependiente en los datos
 
-Se realiza la prueba de Ljung-Box cun un mayor de retrasos de 30 podria
+Se realiza la prueba de Ljung-Box con un mayor de retrasos de 30 podria
 proporcionar una vision mas clara de la estructura de autocorrelación en
 los residuos
 
@@ -709,9 +709,9 @@ df <- df %>%
 
 Aseguramos el tipo de dato para "ds" y "y"
 ```{r ph_tipovalor}
-df$ds <- as.Date(df$ds) 
-df$y <- as.numeric(df$y)
-
+#df$ds <- as.Date(df$ds) 
+#df$y <- as.numeric(df$y)
+df
 ```
 
 
@@ -733,30 +733,19 @@ holidays <- df %>%
 Creamos el modelo teniendo encuenta los festivos incluidos en "holidays" , y definimos que no tenemos estacionalidad horaria , ya que la minima expresión en fechas es el dia entero
 
 ```{r ph_modelo}
-modelo_prophet <- prophet(holidays = holidays, daily.seasonality = FALSE)
+modelo_prophet <- prophet(holidays = holidays, daily.seasonality = FALSE,weekly.seasonality=TRUE)
 
 modelo_prophet <- fit.prophet(modelo_prophet, df)
 
 
 ```
 
-### Descomposición
-
-```{r_descomposicion}
-prophet_plot_components(modelo_prophet, pronostico)
-```
-**Trend:**  La tendencia muestra como el "PAYLOAD 4G" aumenta a lo largo del tiempo , desde el 2021  al 2023 hay una tendencia creciente , luego en 2023 se estabiliza
-
-**Holydays:** Este gráfico muestra el impacto de los festivo en el tráfico. Se ve un impacto en significativo en el 2022. En los otros años el impacto parece ser menor o inexistente.
-
-**Weekly:**Muestra como en los días viernes sabado y domingo aumenta el tráfico, mientras que en los días lunes es mas bajo.
-
-**Yearly** Este gráfico muestra que hay mayor tráfico  los meses de Julio y Diciembre, mientras que Enero y Octubre tienen menor tráfico
 
 
 ### Pronóstico
 
 Creamos un dataset con fechas futuras  y las incluimos en el pronóstico 365 días
+
 ```{r ph_pronostico}
 futuro <- make_future_dataframe(modelo_prophet, periods = 365)
 pronostico <- predict(modelo_prophet, futuro)
@@ -779,6 +768,20 @@ plot(modelo_prophet, pronostico) +
   add_changepoints_to_plot(modelo_prophet)
 
 ```
+### Descomposición
+
+```{r ph_descomposicion}
+prophet_plot_components(modelo_prophet, pronostico)
+
+```
+**Trend:**  La tendencia muestra como el "PAYLOAD 4G" aumenta a lo largo del tiempo , desde el 2021  al 2023 hay una tendencia creciente , luego en 2023 se estabiliza
+
+**Holydays:** Este gráfico muestra el impacto de los festivo en el tráfico. Se ve un impacto en significativo en el 2022. En los otros años el impacto parece ser menor o inexistente.
+
+**Weekly:**Muestra como en los días Domingo viernes  y sabado , aumenta el tráfico, mientras que en los días lunes es mas bajo.
+
+**Yearly** Este gráfico muestra que hay mayor tráfico  los meses de Julio hasta Diciembre, mientras que Febrero y Octubre tienen menor tráfico
+
 
 
 
@@ -788,7 +791,7 @@ plot(modelo_prophet, pronostico) +
 Calculamos los errores 
 
 
-**MAE (Mean Absolute Error):** Esto significa que en promedio las predicciones estan con una difrenciade 59 unidades 
+**MAE (Mean Absolute Error):** Esto significa que en promedio las predicciones estan con una diferencia de 234 unidades 
 
 **MSE (Mean Squared Error):** Penaliza los errores grandes 
 
@@ -808,7 +811,7 @@ print(sprintf("RESULTADO RMSE: %.4f", rmse))
 ```
 
 
-**R² (Coeficiente de Determinación):** este Indica que el modelo explica el 86.6%  de la variabilidad  en los datos 
+**R² (Coeficiente de Determinación):** este Indica que el modelo explica el 6%  de la variabilidad  en los datos 
 
 
 
@@ -822,7 +825,7 @@ print(sprintf("RESULTADO R²: %.4f", r_squared))
 ```
 
 
-**MAPE (Mean Absolute Percentage Error:)**: Este indica que el error promedio es del 7.2%, proporciOna una medida relativa del error respecto a los  valores reales
+**MAPE (Mean Absolute Percentage Error:)**: Este indica que el error promedio es del 31.5%, proporciOna una medida relativa del error respecto a los  valores reales
 
 
 
@@ -835,5 +838,141 @@ print(sprintf("RESULTADO MAPE: %.4f", mape))
 ```
 
 ### Conclusiones 
-Las métricas de error (MAE,MSE,RMSE,R², MAPE) muestran que modelo captura tendencias y patrones de tráfico "Payload 4G". La incorporación de las festividades en "Holidays" ha mejorado la precisión del modelo permitiendo ajusta el tráfico duarante estos dias feriados
+Las métricas de error (MAE,MSE,RMSE,R², MAPE) muestran que modelo NO captura tendencias y patrones de tráfico "Payload 4G". La incorporación de las festividades en "Holidays" no ha mejorado la precisión del modelo
+
+
+## Regresión lineal en series de tiempo
+
+### Preparación de datos
+
+```{r df_head}
+head(df,5)
+```
+
+
+```{r rs, echo=FALSE,message=FALSE,warning=FALSE}
+library(dynlm)
+library(zoo)
+library(fpp3)
+
+```
+
+
+```{r}
+data_sitio <- read.csv("data_sitio.csv", sep = ";")
+data_sitio$M_FECHA_DIA <- as.Date(data_sitio$M_FECHA_DIA)
+data_sitio <- data_sitio[order(data_sitio$M_FECHA_DIA), ]
+df2 <- data_sitio[, c("M_FECHA_DIA", "PAYLOAD_4G","FIESTA")]
+df <- df2
+df <- df %>%
+  rename(ds = M_FECHA_DIA, y = PAYLOAD_4G)
+#df$ds <- as.Date(df$ds) 
+#df$y <- as.numeric(df$y)
+```
+
+```{r}
+library(tsibble)
+
+# Encuentra las filas duplicadas según el índice
+duplicated_rows <- duplicates(df, index = ds)
+print(duplicated_rows)
+
+```
+
+
+Convertimos los datos a un objeto tsibble, usando como indice la fecha "ds"
+
+```{r rs_ts}
+df_tsibble <- as_tsibble(df, index = ds)
+```
+
+### Modelo ARIMA con regresión
+
+Ajustamos el modelo ARIMA ala serie temporal usando la variable  "y" (PAYLOAD_4G)  , y utilizando un regresor "FIESTA"
+
+```{r rs_ar}
+fit <- df_tsibble %>%
+  model(ARIMA(y ~ FIESTA))
+```
+
+```{r rs_fit}
+report(fit)
+```
+ARIMA(0,1,2): No hay terminos autoregresivos(AR=0) ,se realiza una diferencia (I=1), y hay dos medias moviles (MA=2).
+
+En el ma2 al tener un error de 0.0292 revertira con t-2 en el tiempo es decir los eventos pasados tienen repercusión sobre la serie de tiempo .
+
+El coeficiente de "FIESTA "es negativo , por cada unidad de aumento en "FIESTA"   el "PAYLOAD_4G " disminuye 4.4 unidades , el error de 63.2 indica que esta relación no es significativa
+
+
+### Predicción
+
+
+Replicamos la variable FIESTAS en el ultimo año
+```{r rs_fiesta}
+ultimo_anio <- max(df$ds) - years(1)
+fechas_festividades_ultimo_anio <- df %>%
+  filter(ds > ultimo_anio & FIESTA == 1) %>%
+  pull(ds)
+
+# Crear un tsibble con fechas futuras y replicar las festividades en estas fechas
+futuro <- new_data(df_tsibble, 365) %>%
+  mutate(FIESTA = ifelse(format(ds, "%m-%d") %in% format(fechas_festividades_ultimo_anio, "%m-%d"), 1, 0))
+
+```
+
+
+Realizamos la prediccion teniendo encuenta los días de fiesta
+
+```{r rs_predic}
+predicciones <- fit %>%
+  forecast(new_data = futuro)
+
+```
+
+```{r rs_plotpredec}
+autoplot(predicciones, df_tsibble) +
+  ggtitle("Predicciones ARIMA con FIESTA como Regresor Externo") +
+  xlab("Fecha") + ylab("PAYLOAD_4G")
+```
+### Analisis de residuos
+
+
+Podemos ver que los residuos se parecen al "ruido blanco" ya que  estan bien distribuidos alrededor de cero .Podemos ver que el ARIMA  se ajusta bien alos datos ,aunque hay atipicos que toca investigar 
+```{r rs_residuals}
+residuos <- residuals(fit)
+
+# Gráfica de los residuos
+autoplot(residuos) +
+  ggtitle("Residuos del Modelo ARIMA")
+```
+**ACF**:Se puede observar que hay un pico en el lag 7  , ya que esta por encima de los limites , esto indica que hayuna correlación alos 7 días
+
+```{r rs_acf}
+autoplot(ACF(residuos)) +
+  ggtitle("ACF de los Residuos")
+
+```
+**PACF:** Al igual que el anterior tiene un pico en el lag 7, esto indica que hay una correlación parcial de los residuos alos 7 dias
+```{r rs_pacf}
+autoplot(PACF(residuos)) +
+  ggtitle("PACF de los Residuos")
+```
+**Prueba Ljung_box_test:**
+```{r rs_lgung}
+ljung_box_test <- residuos %>%
+  features(.resid, ljung_box, lag = 10)
+
+ljung_box_test
+```
+
+
+Dado que el valor -p es menor que 0.05 se rechaza la hipotesis nula que
+no existe autocorrelaciones significativas en los residuos del modelo ,
+esto significa que los residuos no son completamente aleatorios por lo
+tanto el modelo puede no estar capturando toda la estructura dependiente en los datos
+
+### Conclusiones
+
+Aunque el modelo ARIMA con la variable de regrsion "FIESTA" , la evidencia de autocorrelación residual y la periocidad semana sugiere realizar ajustes en el modelo para obtener predicciones más precisas
 
