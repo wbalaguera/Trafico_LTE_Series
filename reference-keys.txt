@@ -77,3 +77,8 @@ pronóstico
 métricas-de-error
 creación-de-modelo
 conclusiones
+regresión-lineal-en-series-de-tiempo
+modelo-arima-con-regresión
+predicción
+conclusiones-1
+preparación-de-datos
