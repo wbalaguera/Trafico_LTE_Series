@@ -1429,6 +1429,9 @@ slogN <- cbind(y, inputs)
 slogN1 <- slogN[-(1:lags), ]
 DT::datatable(slogN1)
 ```
+```{r}
+head(slogN1,5)
+```
 
 **Definición de Inputs y Outputs**
 
