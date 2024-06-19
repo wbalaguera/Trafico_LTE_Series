@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Capítulo 4 Preparación y análisis | Análisis de tráfico en las redes telecomunicaciones móviles LTE en los municipios de Cundinamarca</title>
   <meta name="description" content="This is a minimal example of using the bookdown package to write a book. The output format for this example is bookdown::gitbook." />
-  <meta name="generator" content="bookdown 0.38 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.39 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Capítulo 4 Preparación y análisis | Análisis de tráfico en las redes telecomunicaciones móviles LTE en los municipios de Cundinamarca" />
   <meta property="og:type" content="book" />
@@ -23,7 +23,7 @@
 <meta name="author" content="Paula Gonzalez , Cristian Ibañez , Wilson Balaguera" />
 
 
-<meta name="date" content="2024-05-26" />
+<meta name="date" content="2024-06-18" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -167,35 +167,59 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="5.3.1" data-path="análisis-de-estacionariedad.html"><a href="análisis-de-estacionariedad.html#logaritmos"><i class="fa fa-check"></i><b>5.3.1</b> Logaritmos</a></li>
 <li class="chapter" data-level="5.3.2" data-path="análisis-de-estacionariedad.html"><a href="análisis-de-estacionariedad.html#diferencias"><i class="fa fa-check"></i><b>5.3.2</b> Diferencias</a></li>
 </ul></li>
-<li class="chapter" data-level="5.4" data-path="análisis-de-estacionariedad.html"><a href="análisis-de-estacionariedad.html#método-de-holt-winters"><i class="fa fa-check"></i><b>5.4</b> Método de Holt Winters</a></li>
+<li class="chapter" data-level="5.4" data-path="análisis-de-estacionariedad.html"><a href="análisis-de-estacionariedad.html#método-de-holt-winters"><i class="fa fa-check"></i><b>5.4</b> Método de Holt Winters</a>
+<ul>
+<li class="chapter" data-level="5.4.1" data-path="análisis-de-estacionariedad.html"><a href="análisis-de-estacionariedad.html#preparación-de-los-datos"><i class="fa fa-check"></i><b>5.4.1</b> Preparación de los datos</a></li>
+<li class="chapter" data-level="5.4.2" data-path="análisis-de-estacionariedad.html"><a href="análisis-de-estacionariedad.html#selección-del-modelo"><i class="fa fa-check"></i><b>5.4.2</b> Selección del Modelo</a></li>
+<li class="chapter" data-level="5.4.3" data-path="análisis-de-estacionariedad.html"><a href="análisis-de-estacionariedad.html#predicción"><i class="fa fa-check"></i><b>5.4.3</b> Predicción</a></li>
+<li class="chapter" data-level="5.4.4" data-path="análisis-de-estacionariedad.html"><a href="análisis-de-estacionariedad.html#métricas-de-error"><i class="fa fa-check"></i><b>5.4.4</b> Métricas de error</a></li>
+<li class="chapter" data-level="5.4.5" data-path="análisis-de-estacionariedad.html"><a href="análisis-de-estacionariedad.html#conclusión"><i class="fa fa-check"></i><b>5.4.5</b> Conclusión</a></li>
+</ul></li>
 <li class="chapter" data-level="5.5" data-path="análisis-de-estacionariedad.html"><a href="análisis-de-estacionariedad.html#arima"><i class="fa fa-check"></i><b>5.5</b> ARIMA</a>
 <ul>
 <li class="chapter" data-level="5.5.1" data-path="análisis-de-estacionariedad.html"><a href="análisis-de-estacionariedad.html#arima-manual"><i class="fa fa-check"></i><b>5.5.1</b> ARIMA Manual</a></li>
 <li class="chapter" data-level="5.5.2" data-path="análisis-de-estacionariedad.html"><a href="análisis-de-estacionariedad.html#arima-con-drift"><i class="fa fa-check"></i><b>5.5.2</b> ARIMA con Drift</a></li>
-<li class="chapter" data-level="5.5.3" data-path="análisis-de-estacionariedad.html"><a href="análisis-de-estacionariedad.html#autoarima"><i class="fa fa-check"></i><b>5.5.3</b> AUTOARIMA</a></li>
-<li class="chapter" data-level="5.5.4" data-path="análisis-de-estacionariedad.html"><a href="análisis-de-estacionariedad.html#autoarima-con-drift"><i class="fa fa-check"></i><b>5.5.4</b> AUTOARIMA con Drift</a></li>
-<li class="chapter" data-level="5.5.5" data-path="análisis-de-estacionariedad.html"><a href="análisis-de-estacionariedad.html#conclusión"><i class="fa fa-check"></i><b>5.5.5</b> Conclusión</a></li>
+<li class="chapter" data-level="5.5.3" data-path="análisis-de-estacionariedad.html"><a href="análisis-de-estacionariedad.html#métricas-de-error-1"><i class="fa fa-check"></i><b>5.5.3</b> Métricas de error</a></li>
 </ul></li>
 <li class="chapter" data-level="5.6" data-path="análisis-de-estacionariedad.html"><a href="análisis-de-estacionariedad.html#facebook-prophet"><i class="fa fa-check"></i><b>5.6</b> Facebook Prophet</a>
 <ul>
-<li class="chapter" data-level="5.6.1" data-path="análisis-de-estacionariedad.html"><a href="análisis-de-estacionariedad.html#carque-de-datos"><i class="fa fa-check"></i><b>5.6.1</b> Carque de datos</a></li>
+<li class="chapter" data-level="5.6.1" data-path="análisis-de-estacionariedad.html"><a href="análisis-de-estacionariedad.html#carga-y-preparación-de-datos"><i class="fa fa-check"></i><b>5.6.1</b> Carga y preparación de datos</a></li>
 <li class="chapter" data-level="5.6.2" data-path="análisis-de-estacionariedad.html"><a href="análisis-de-estacionariedad.html#alistamiento-de-datos-para-el-modelo"><i class="fa fa-check"></i><b>5.6.2</b> Alistamiento de datos para el modelo</a></li>
 <li class="chapter" data-level="5.6.3" data-path="análisis-de-estacionariedad.html"><a href="análisis-de-estacionariedad.html#creación-de-modelo"><i class="fa fa-check"></i><b>5.6.3</b> Creación de modelo</a></li>
 <li class="chapter" data-level="5.6.4" data-path="análisis-de-estacionariedad.html"><a href="análisis-de-estacionariedad.html#pronóstico"><i class="fa fa-check"></i><b>5.6.4</b> Pronóstico</a></li>
 <li class="chapter" data-level="5.6.5" data-path="análisis-de-estacionariedad.html"><a href="análisis-de-estacionariedad.html#descomposición"><i class="fa fa-check"></i><b>5.6.5</b> Descomposición</a></li>
-<li class="chapter" data-level="5.6.6" data-path="análisis-de-estacionariedad.html"><a href="análisis-de-estacionariedad.html#métricas-de-error"><i class="fa fa-check"></i><b>5.6.6</b> Métricas de Error</a></li>
-<li class="chapter" data-level="5.6.7" data-path="análisis-de-estacionariedad.html"><a href="análisis-de-estacionariedad.html#conclusiones"><i class="fa fa-check"></i><b>5.6.7</b> Conclusiones</a></li>
+<li class="chapter" data-level="5.6.6" data-path="análisis-de-estacionariedad.html"><a href="análisis-de-estacionariedad.html#validación-con-modelo-de-entrenamiento-y-prueba"><i class="fa fa-check"></i><b>5.6.6</b> Validación con Modelo de Entrenamiento y Prueba</a></li>
+<li class="chapter" data-level="5.6.7" data-path="análisis-de-estacionariedad.html"><a href="análisis-de-estacionariedad.html#validación-cruzada"><i class="fa fa-check"></i><b>5.6.7</b> Validación Cruzada</a></li>
+<li class="chapter" data-level="5.6.8" data-path="análisis-de-estacionariedad.html"><a href="análisis-de-estacionariedad.html#entrenamiento-con-todos-los-datos"><i class="fa fa-check"></i><b>5.6.8</b> Entrenamiento con todos los datos</a></li>
+<li class="chapter" data-level="5.6.9" data-path="análisis-de-estacionariedad.html"><a href="análisis-de-estacionariedad.html#conclusiones"><i class="fa fa-check"></i><b>5.6.9</b> Conclusiones</a></li>
 </ul></li>
 <li class="chapter" data-level="5.7" data-path="análisis-de-estacionariedad.html"><a href="análisis-de-estacionariedad.html#regresión-lineal-en-series-de-tiempo"><i class="fa fa-check"></i><b>5.7</b> Regresión lineal en series de tiempo</a>
 <ul>
 <li class="chapter" data-level="5.7.1" data-path="análisis-de-estacionariedad.html"><a href="análisis-de-estacionariedad.html#preparación-de-datos"><i class="fa fa-check"></i><b>5.7.1</b> Preparación de datos</a></li>
 <li class="chapter" data-level="5.7.2" data-path="análisis-de-estacionariedad.html"><a href="análisis-de-estacionariedad.html#modelo-arima-con-regresión"><i class="fa fa-check"></i><b>5.7.2</b> Modelo ARIMA con regresión</a></li>
-<li class="chapter" data-level="5.7.3" data-path="análisis-de-estacionariedad.html"><a href="análisis-de-estacionariedad.html#predicción"><i class="fa fa-check"></i><b>5.7.3</b> Predicción</a></li>
-<li class="chapter" data-level="5.7.4" data-path="análisis-de-estacionariedad.html"><a href="análisis-de-estacionariedad.html#analisis-de-residuos"><i class="fa fa-check"></i><b>5.7.4</b> Analisis de residuos</a></li>
+<li class="chapter" data-level="5.7.3" data-path="análisis-de-estacionariedad.html"><a href="análisis-de-estacionariedad.html#predicción-1"><i class="fa fa-check"></i><b>5.7.3</b> Predicción</a></li>
+<li class="chapter" data-level="5.7.4" data-path="análisis-de-estacionariedad.html"><a href="análisis-de-estacionariedad.html#validacion-con-todo-los-datos"><i class="fa fa-check"></i><b>5.7.4</b> Validacion con todo los datos</a></li>
 <li class="chapter" data-level="5.7.5" data-path="análisis-de-estacionariedad.html"><a href="análisis-de-estacionariedad.html#conclusiones-1"><i class="fa fa-check"></i><b>5.7.5</b> Conclusiones</a></li>
 </ul></li>
+<li class="chapter" data-level="5.8" data-path="análisis-de-estacionariedad.html"><a href="análisis-de-estacionariedad.html#redes-neuronales-de-elman"><i class="fa fa-check"></i><b>5.8</b> Redes Neuronales de Elman</a>
+<ul>
+<li class="chapter" data-level="5.8.1" data-path="análisis-de-estacionariedad.html"><a href="análisis-de-estacionariedad.html#elman-con-temporalidad-diaria"><i class="fa fa-check"></i><b>5.8.1</b> Elman con temporalidad diaria</a></li>
+<li class="chapter" data-level="5.8.2" data-path="análisis-de-estacionariedad.html"><a href="análisis-de-estacionariedad.html#elman-con-temporalidad-semanal"><i class="fa fa-check"></i><b>5.8.2</b> Elman con temporalidad Semanal</a></li>
+<li class="chapter" data-level="5.8.3" data-path="análisis-de-estacionariedad.html"><a href="análisis-de-estacionariedad.html#elman-con-temporalidad-diaria-con-regresor"><i class="fa fa-check"></i><b>5.8.3</b> Elman con temporalidad diaria con Regresor</a></li>
+<li class="chapter" data-level="5.8.4" data-path="análisis-de-estacionariedad.html"><a href="análisis-de-estacionariedad.html#conclusiones-2"><i class="fa fa-check"></i><b>5.8.4</b> Conclusiones</a></li>
 </ul></li>
-<li class="chapter" data-level="6" data-path="pasos-siguientes.html"><a href="pasos-siguientes.html"><i class="fa fa-check"></i><b>6</b> Pasos siguientes</a></li>
+<li class="chapter" data-level="5.9" data-path="análisis-de-estacionariedad.html"><a href="análisis-de-estacionariedad.html#redes-neuronales-jordan"><i class="fa fa-check"></i><b>5.9</b> Redes Neuronales Jordan</a>
+<ul>
+<li class="chapter" data-level="5.9.1" data-path="análisis-de-estacionariedad.html"><a href="análisis-de-estacionariedad.html#jordan-con-temporalidad-diaria"><i class="fa fa-check"></i><b>5.9.1</b> Jordan con temporalidad diaria</a></li>
+<li class="chapter" data-level="5.9.2" data-path="análisis-de-estacionariedad.html"><a href="análisis-de-estacionariedad.html#jordan-con-temporalidad-semanal"><i class="fa fa-check"></i><b>5.9.2</b> Jordan con temporalidad Semanal</a></li>
+<li class="chapter" data-level="5.9.3" data-path="análisis-de-estacionariedad.html"><a href="análisis-de-estacionariedad.html#jordan-con-temporalidad-diaria-y-regresor"><i class="fa fa-check"></i><b>5.9.3</b> Jordan con temporalidad diaria y regresor</a></li>
+</ul></li>
+<li class="chapter" data-level="5.10" data-path="análisis-de-estacionariedad.html"><a href="análisis-de-estacionariedad.html#métricas-de-error-7"><i class="fa fa-check"></i><b>5.10</b> Métricas de Error</a>
+<ul>
+<li class="chapter" data-level="5.10.1" data-path="análisis-de-estacionariedad.html"><a href="análisis-de-estacionariedad.html#conclusiones-3"><i class="fa fa-check"></i><b>5.10.1</b> Conclusiones</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="conclusiones-finales.html"><a href="conclusiones-finales.html"><i class="fa fa-check"></i><b>6</b> Conclusiones Finales</a></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
 <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
@@ -221,7 +245,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h1><span class="header-section-number">Capítulo 4</span> Preparación y análisis<a href="preparación-y-análisis.html#preparación-y-análisis" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <div id="cargue-de-datos" class="section level2 hasAnchor" number="4.1">
 <h2><span class="header-section-number">4.1</span> Cargue de datos<a href="preparación-y-análisis.html#cargue-de-datos" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>Importamos la información de tráfico de una Estación base del municipio de Cundinamarca, esta información ya viene anonimizada en sus nombres por motivos de confidiencialidad de la empresa</p>
+<p>Importamos la información de tráfico de una Estación base del municipio de Cundinamarca, esta información ya viene anonimizada en sus nombres por motivos de confidencialidad de la empresa</p>
 <p>Realizamos el cargue de los datos csv</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="preparación-y-análisis.html#cb1-1" tabindex="-1"></a>data_sitio <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;data_sitio.csv&quot;</span>, <span class="at">sep =</span> <span class="st">&quot;;&quot;</span>)</span></code></pre></div>
 <div id="formato-de-fechas" class="section level3 hasAnchor" number="4.1.1">
@@ -236,13 +260,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb3-4"><a href="preparación-y-análisis.html#cb3-4" tabindex="-1"></a>fecha_inicio</span></code></pre></div>
 <pre><code>## [1] &quot;2021-01-01&quot;</code></pre>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="preparación-y-análisis.html#cb5-1" tabindex="-1"></a>fecha_max</span></code></pre></div>
-<pre><code>## [1] &quot;2024-02-29&quot;</code></pre>
+<pre><code>## [1] &quot;2024-05-31&quot;</code></pre>
 <p>Verificamos el día mínimo y el máximo de nuestro dataset</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="preparación-y-análisis.html#cb7-1" tabindex="-1"></a>fecha_inicio</span></code></pre></div>
 <pre><code>## [1] &quot;2021-01-01&quot;</code></pre>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="preparación-y-análisis.html#cb9-1" tabindex="-1"></a>fecha_max</span></code></pre></div>
-<pre><code>## [1] &quot;2024-02-29&quot;</code></pre>
-<p>Verificamos si la serie no tiene datos faltantes entre días para poder usar la funcion “ts”</p>
+<pre><code>## [1] &quot;2024-05-31&quot;</code></pre>
+<p>Verificamos si la serie no tiene datos faltantes entre días para poder usar la función “ts”</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="preparación-y-análisis.html#cb11-1" tabindex="-1"></a>fechas_completas <span class="ot">&lt;-</span> <span class="fu">seq</span>(fecha_inicio, <span class="at">by =</span> <span class="st">&quot;day&quot;</span>, <span class="at">length.out =</span> n_dias)</span>
 <span id="cb11-2"><a href="preparación-y-análisis.html#cb11-2" tabindex="-1"></a><span class="cf">if</span>(<span class="fu">length</span>(fechas_completas) <span class="sc">!=</span> <span class="fu">nrow</span>(data_sitio)) {</span>
 <span id="cb11-3"><a href="preparación-y-análisis.html#cb11-3" tabindex="-1"></a>  <span class="fu">warning</span>(<span class="st">&quot;Hay fechas faltantes en los datos. Deberás interpolar o manejar los valores faltantes antes de continuar.&quot;</span>)</span>
@@ -251,35 +275,82 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="selección-de-campos" class="section level3 hasAnchor" number="4.1.2">
 <h3><span class="header-section-number">4.1.2</span> Selección de campos<a href="preparación-y-análisis.html#selección-de-campos" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Seleccionamos las columnas de interés de fecha (“M_FECHA_DIA”) y tráfico en LTE () “PAYLOAD_4G”)</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="preparación-y-análisis.html#cb12-1" tabindex="-1"></a>selected_columns <span class="ot">&lt;-</span> data_sitio[, <span class="fu">c</span>(<span class="st">&quot;M_FECHA_DIA&quot;</span>, <span class="st">&quot;PAYLOAD_4G&quot;</span>)]</span>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="preparación-y-análisis.html#cb12-1" tabindex="-1"></a>selected_columns <span class="ot">&lt;-</span> data_sitio[, <span class="fu">c</span>(<span class="st">&quot;M_FECHA_DIA&quot;</span>, <span class="st">&quot;PAYLOAD_4G&quot;</span>,<span class="st">&quot;FIESTA&quot;</span>)]</span>
 <span id="cb12-2"><a href="preparación-y-análisis.html#cb12-2" tabindex="-1"></a><span class="fu">head</span>(selected_columns)</span></code></pre></div>
-<pre><code>##   M_FECHA_DIA PAYLOAD_4G
-## 1  2021-01-01     393.57
-## 2  2021-01-02     314.84
-## 3  2021-01-03     341.93
-## 4  2021-01-04     375.91
-## 5  2021-01-05     368.37
-## 6  2021-01-06     353.49</code></pre>
+<pre><code>##   M_FECHA_DIA PAYLOAD_4G FIESTA
+## 1  2021-01-01     648.99      0
+## 2  2021-01-02     747.42      0
+## 3  2021-01-03     698.03      0
+## 4  2021-01-04     650.74      0
+## 5  2021-01-05     610.65      0
+## 6  2021-01-06     580.37      0</code></pre>
+<p><strong>Suavizado de Outliers</strong></p>
+<p>Por medio de la filtro de Hampel se identificara los outliers en una ventana deslizante de 7 días(k=7) con la mediana y la media , donde “t0” controla el umbral de sensibilidad a los outlier al establecer 5 ,el filtro considera como un outlier si la desviación de la mediana o la media de la ventana es 5 veces mayor que 5 veces la desviación estándar absoluta(MAD ajustado ) de la ventana .Como el objetivo no es desaparecer los outlier se utiliza la media ya que los outliers quedan suavizados pero no anulados</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="preparación-y-análisis.html#cb14-1" tabindex="-1"></a><span class="co">#Mediana</span></span>
+<span id="cb14-2"><a href="preparación-y-análisis.html#cb14-2" tabindex="-1"></a>data<span class="ot">&lt;-</span>selected_columns</span>
+<span id="cb14-3"><a href="preparación-y-análisis.html#cb14-3" tabindex="-1"></a>hampel_filter <span class="ot">&lt;-</span> <span class="cf">function</span>(x, <span class="at">k =</span> <span class="dv">7</span>, <span class="at">t0 =</span> <span class="dv">5</span>) {  </span>
+<span id="cb14-4"><a href="preparación-y-análisis.html#cb14-4" tabindex="-1"></a>  n <span class="ot">&lt;-</span> <span class="fu">length</span>(x)</span>
+<span id="cb14-5"><a href="preparación-y-análisis.html#cb14-5" tabindex="-1"></a>  y <span class="ot">&lt;-</span> x</span>
+<span id="cb14-6"><a href="preparación-y-análisis.html#cb14-6" tabindex="-1"></a>  L <span class="ot">&lt;-</span> <span class="fl">1.4826</span></span>
+<span id="cb14-7"><a href="preparación-y-análisis.html#cb14-7" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> (k <span class="sc">+</span> <span class="dv">1</span>)<span class="sc">:</span>(n <span class="sc">-</span> k)) {</span>
+<span id="cb14-8"><a href="preparación-y-análisis.html#cb14-8" tabindex="-1"></a>    x0 <span class="ot">&lt;-</span> <span class="fu">median</span>(x[(i <span class="sc">-</span> k)<span class="sc">:</span>(i <span class="sc">+</span> k)])</span>
+<span id="cb14-9"><a href="preparación-y-análisis.html#cb14-9" tabindex="-1"></a>    S0 <span class="ot">&lt;-</span> L <span class="sc">*</span> <span class="fu">mad</span>(x[(i <span class="sc">-</span> k)<span class="sc">:</span>(i <span class="sc">+</span> k)], <span class="at">constant =</span> <span class="dv">1</span>)</span>
+<span id="cb14-10"><a href="preparación-y-análisis.html#cb14-10" tabindex="-1"></a>    <span class="cf">if</span> (<span class="fu">abs</span>(x[i] <span class="sc">-</span> x0) <span class="sc">&gt;</span> t0 <span class="sc">*</span> S0) {</span>
+<span id="cb14-11"><a href="preparación-y-análisis.html#cb14-11" tabindex="-1"></a>      y[i] <span class="ot">&lt;-</span> x0</span>
+<span id="cb14-12"><a href="preparación-y-análisis.html#cb14-12" tabindex="-1"></a>    }</span>
+<span id="cb14-13"><a href="preparación-y-análisis.html#cb14-13" tabindex="-1"></a>  }</span>
+<span id="cb14-14"><a href="preparación-y-análisis.html#cb14-14" tabindex="-1"></a>  <span class="fu">return</span>(y)</span>
+<span id="cb14-15"><a href="preparación-y-análisis.html#cb14-15" tabindex="-1"></a>}</span>
+<span id="cb14-16"><a href="preparación-y-análisis.html#cb14-16" tabindex="-1"></a><span class="co">#Media</span></span>
+<span id="cb14-17"><a href="preparación-y-análisis.html#cb14-17" tabindex="-1"></a>hampel_filter_mean <span class="ot">&lt;-</span> <span class="cf">function</span>(x, <span class="at">k =</span> <span class="dv">7</span>, <span class="at">t0 =</span> <span class="dv">5</span>) {</span>
+<span id="cb14-18"><a href="preparación-y-análisis.html#cb14-18" tabindex="-1"></a>  n <span class="ot">&lt;-</span> <span class="fu">length</span>(x)</span>
+<span id="cb14-19"><a href="preparación-y-análisis.html#cb14-19" tabindex="-1"></a>  y <span class="ot">&lt;-</span> x</span>
+<span id="cb14-20"><a href="preparación-y-análisis.html#cb14-20" tabindex="-1"></a>  L <span class="ot">&lt;-</span> <span class="fl">1.4826</span></span>
+<span id="cb14-21"><a href="preparación-y-análisis.html#cb14-21" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> (k <span class="sc">+</span> <span class="dv">1</span>)<span class="sc">:</span>(n <span class="sc">-</span> k)) {</span>
+<span id="cb14-22"><a href="preparación-y-análisis.html#cb14-22" tabindex="-1"></a>    x0 <span class="ot">&lt;-</span> <span class="fu">mean</span>(x[(i <span class="sc">-</span> k)<span class="sc">:</span>(i <span class="sc">+</span> k)])  </span>
+<span id="cb14-23"><a href="preparación-y-análisis.html#cb14-23" tabindex="-1"></a>    S0 <span class="ot">&lt;-</span> L <span class="sc">*</span> <span class="fu">mad</span>(x[(i <span class="sc">-</span> k)<span class="sc">:</span>(i <span class="sc">+</span> k)], <span class="at">constant =</span> <span class="dv">1</span>)</span>
+<span id="cb14-24"><a href="preparación-y-análisis.html#cb14-24" tabindex="-1"></a>    <span class="cf">if</span> (<span class="fu">abs</span>(x[i] <span class="sc">-</span> x0) <span class="sc">&gt;</span> t0 <span class="sc">*</span> S0) {</span>
+<span id="cb14-25"><a href="preparación-y-análisis.html#cb14-25" tabindex="-1"></a>      y[i] <span class="ot">&lt;-</span> x0</span>
+<span id="cb14-26"><a href="preparación-y-análisis.html#cb14-26" tabindex="-1"></a>    }</span>
+<span id="cb14-27"><a href="preparación-y-análisis.html#cb14-27" tabindex="-1"></a>  }</span>
+<span id="cb14-28"><a href="preparación-y-análisis.html#cb14-28" tabindex="-1"></a>  <span class="fu">return</span>(y)</span>
+<span id="cb14-29"><a href="preparación-y-análisis.html#cb14-29" tabindex="-1"></a>}</span>
+<span id="cb14-30"><a href="preparación-y-análisis.html#cb14-30" tabindex="-1"></a></span>
+<span id="cb14-31"><a href="preparación-y-análisis.html#cb14-31" tabindex="-1"></a>data<span class="sc">$</span>PAYLOAD_4G_smoo_mean<span class="ot">&lt;-</span> <span class="fu">hampel_filter_mean</span>(data<span class="sc">$</span>PAYLOAD_4G, <span class="at">k =</span> <span class="dv">7</span>, <span class="at">t0 =</span> <span class="dv">5</span>)</span>
+<span id="cb14-32"><a href="preparación-y-análisis.html#cb14-32" tabindex="-1"></a>data<span class="sc">$</span>PAYLOAD_4G_smoothed <span class="ot">&lt;-</span> <span class="fu">hampel_filter</span>(data<span class="sc">$</span>PAYLOAD_4G, <span class="at">k =</span> <span class="dv">7</span>, <span class="at">t0 =</span> <span class="dv">5</span>)</span>
+<span id="cb14-33"><a href="preparación-y-análisis.html#cb14-33" tabindex="-1"></a>data<span class="sc">$</span>year <span class="ot">&lt;-</span> <span class="fu">year</span>(data<span class="sc">$</span>M_FECHA_DIA)</span>
+<span id="cb14-34"><a href="preparación-y-análisis.html#cb14-34" tabindex="-1"></a>years <span class="ot">&lt;-</span> <span class="fu">unique</span>(data<span class="sc">$</span>year)</span>
+<span id="cb14-35"><a href="preparación-y-análisis.html#cb14-35" tabindex="-1"></a></span>
+<span id="cb14-36"><a href="preparación-y-análisis.html#cb14-36" tabindex="-1"></a><span class="cf">for</span> (y <span class="cf">in</span> years) {</span>
+<span id="cb14-37"><a href="preparación-y-análisis.html#cb14-37" tabindex="-1"></a>  yearly_data <span class="ot">&lt;-</span> <span class="fu">subset</span>(data, year <span class="sc">==</span> y)</span>
+<span id="cb14-38"><a href="preparación-y-análisis.html#cb14-38" tabindex="-1"></a>  <span class="fu">plot</span>(yearly_data<span class="sc">$</span>M_FECHA_DIA, yearly_data<span class="sc">$</span>PAYLOAD_4G, <span class="at">type =</span> <span class="st">&quot;l&quot;</span>, <span class="at">col =</span> <span class="st">&quot;red&quot;</span>, <span class="at">xlab =</span> <span class="st">&quot;Fecha&quot;</span>, <span class="at">ylab =</span> <span class="st">&quot;PAYLOAD_4G&quot;</span>, <span class="at">main =</span>  <span class="fu">paste</span>(<span class="st">&quot;PAYLOAD_4G - Original vs Suavizado (&quot;</span>, y, <span class="st">&quot;)&quot;</span>, <span class="at">sep =</span> <span class="st">&quot;&quot;</span>))</span>
+<span id="cb14-39"><a href="preparación-y-análisis.html#cb14-39" tabindex="-1"></a>  <span class="fu">lines</span>(yearly_data<span class="sc">$</span>M_FECHA_DIA, yearly_data<span class="sc">$</span>PAYLOAD_4G_smoo_mean, <span class="at">col =</span> <span class="st">&quot;blue&quot;</span>)</span>
+<span id="cb14-40"><a href="preparación-y-análisis.html#cb14-40" tabindex="-1"></a>  <span class="fu">lines</span>(yearly_data<span class="sc">$</span>M_FECHA_DIA, yearly_data<span class="sc">$</span>PAYLOAD_4G_smoothed, <span class="at">col =</span> <span class="st">&quot;green&quot;</span>)</span>
+<span id="cb14-41"><a href="preparación-y-análisis.html#cb14-41" tabindex="-1"></a>  <span class="fu">legend</span>(<span class="st">&quot;topleft&quot;</span>, <span class="at">legend =</span> <span class="fu">c</span>(<span class="st">&quot;Original&quot;</span>, <span class="st">&quot;Suavizado promedio&quot;</span>,<span class="st">&quot;Suavisado Mediana&quot;</span>), <span class="at">col =</span> <span class="fu">c</span>(<span class="st">&quot;red&quot;</span>, <span class="st">&quot;blue&quot;</span>,<span class="st">&quot;green&quot;</span>), <span class="at">lty =</span> <span class="dv">1</span>)</span>
+<span id="cb14-42"><a href="preparación-y-análisis.html#cb14-42" tabindex="-1"></a>  </span>
+<span id="cb14-43"><a href="preparación-y-análisis.html#cb14-43" tabindex="-1"></a>}</span></code></pre></div>
+<p><img src="Series-de-Tiempo_files/figure-html/31a_hampel-1.png" width="672" /><img src="Series-de-Tiempo_files/figure-html/31a_hampel-2.png" width="672" /><img src="Series-de-Tiempo_files/figure-html/31a_hampel-3.png" width="672" /><img src="Series-de-Tiempo_files/figure-html/31a_hampel-4.png" width="672" /></p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="preparación-y-análisis.html#cb15-1" tabindex="-1"></a><span class="fu">write.csv</span>(data, <span class="st">&quot;data_sitio_smoothed.csv&quot;</span>, <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
 <p>Creamos la serie de tiempo con la función “ts” donde le indicamos la fecha de inicio con una frecuencia diaria</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="preparación-y-análisis.html#cb14-1" tabindex="-1"></a>serie_tiempo <span class="ot">&lt;-</span> <span class="fu">ts</span>(</span>
-<span id="cb14-2"><a href="preparación-y-análisis.html#cb14-2" tabindex="-1"></a>    data_sitio<span class="sc">$</span>PAYLOAD_4G, </span>
-<span id="cb14-3"><a href="preparación-y-análisis.html#cb14-3" tabindex="-1"></a>    <span class="at">start=</span><span class="fu">c</span>(<span class="fu">as.numeric</span>(<span class="fu">format</span>(fecha_inicio, <span class="st">&quot;%Y&quot;</span>)), <span class="fu">as.numeric</span>(<span class="fu">format</span>(fecha_inicio, <span class="st">&quot;%j&quot;</span>))),</span>
-<span id="cb14-4"><a href="preparación-y-análisis.html#cb14-4" tabindex="-1"></a>    <span class="at">frequency=</span><span class="dv">365</span></span>
-<span id="cb14-5"><a href="preparación-y-análisis.html#cb14-5" tabindex="-1"></a>    )</span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="preparación-y-análisis.html#cb16-1" tabindex="-1"></a>serie_tiempo <span class="ot">&lt;-</span> <span class="fu">ts</span>(</span>
+<span id="cb16-2"><a href="preparación-y-análisis.html#cb16-2" tabindex="-1"></a>    data<span class="sc">$</span>PAYLOAD_4G_smoo_mean, </span>
+<span id="cb16-3"><a href="preparación-y-análisis.html#cb16-3" tabindex="-1"></a>    <span class="at">start=</span><span class="fu">c</span>(<span class="fu">as.numeric</span>(<span class="fu">format</span>(fecha_inicio, <span class="st">&quot;%Y&quot;</span>)), <span class="fu">as.numeric</span>(<span class="fu">format</span>(fecha_inicio, <span class="st">&quot;%j&quot;</span>))),</span>
+<span id="cb16-4"><a href="preparación-y-análisis.html#cb16-4" tabindex="-1"></a>    <span class="at">frequency=</span><span class="dv">365</span></span>
+<span id="cb16-5"><a href="preparación-y-análisis.html#cb16-5" tabindex="-1"></a>    )</span></code></pre></div>
 <p>Verificamos el tipo de datos de la serie de tiempo</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="preparación-y-análisis.html#cb15-1" tabindex="-1"></a><span class="fu">class</span>(serie_tiempo)</span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="preparación-y-análisis.html#cb17-1" tabindex="-1"></a><span class="fu">class</span>(serie_tiempo)</span></code></pre></div>
 <pre><code>## [1] &quot;ts&quot;</code></pre>
 <p>Validación de fecha mínima y máxima de la serie</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="preparación-y-análisis.html#cb17-1" tabindex="-1"></a>start_time <span class="ot">&lt;-</span> <span class="fu">start</span>(serie_tiempo)</span>
-<span id="cb17-2"><a href="preparación-y-análisis.html#cb17-2" tabindex="-1"></a>end_time <span class="ot">&lt;-</span> <span class="fu">end</span>(serie_tiempo)</span>
-<span id="cb17-3"><a href="preparación-y-análisis.html#cb17-3" tabindex="-1"></a>frequency <span class="ot">&lt;-</span> <span class="fu">frequency</span>(serie_tiempo)</span>
-<span id="cb17-4"><a href="preparación-y-análisis.html#cb17-4" tabindex="-1"></a>min_date <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(<span class="fu">paste</span>(start_time[<span class="dv">1</span>], start_time[<span class="dv">2</span>], <span class="at">sep=</span><span class="st">&quot;-&quot;</span>), <span class="st">&quot;%Y-%j&quot;</span>)</span>
-<span id="cb17-5"><a href="preparación-y-análisis.html#cb17-5" tabindex="-1"></a>max_date <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(<span class="fu">paste</span>(end_time[<span class="dv">1</span>], (end_time[<span class="dv">2</span>]<span class="sc">-</span><span class="dv">1</span>) <span class="sc">/</span> frequency <span class="sc">*</span> <span class="dv">365</span>, <span class="at">sep=</span><span class="st">&quot;-&quot;</span>), <span class="st">&quot;%Y-%j&quot;</span>)</span>
-<span id="cb17-6"><a href="preparación-y-análisis.html#cb17-6" tabindex="-1"></a></span>
-<span id="cb17-7"><a href="preparación-y-análisis.html#cb17-7" tabindex="-1"></a>min_date</span></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="preparación-y-análisis.html#cb19-1" tabindex="-1"></a>start_time <span class="ot">&lt;-</span> <span class="fu">start</span>(serie_tiempo)</span>
+<span id="cb19-2"><a href="preparación-y-análisis.html#cb19-2" tabindex="-1"></a>end_time <span class="ot">&lt;-</span> <span class="fu">end</span>(serie_tiempo)</span>
+<span id="cb19-3"><a href="preparación-y-análisis.html#cb19-3" tabindex="-1"></a>frequency <span class="ot">&lt;-</span> <span class="fu">frequency</span>(serie_tiempo)</span>
+<span id="cb19-4"><a href="preparación-y-análisis.html#cb19-4" tabindex="-1"></a>min_date <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(<span class="fu">paste</span>(start_time[<span class="dv">1</span>], start_time[<span class="dv">2</span>], <span class="at">sep=</span><span class="st">&quot;-&quot;</span>), <span class="st">&quot;%Y-%j&quot;</span>)</span>
+<span id="cb19-5"><a href="preparación-y-análisis.html#cb19-5" tabindex="-1"></a>max_date <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(<span class="fu">paste</span>(end_time[<span class="dv">1</span>], (end_time[<span class="dv">2</span>]<span class="sc">-</span><span class="dv">1</span>) <span class="sc">/</span> frequency <span class="sc">*</span> <span class="dv">365</span>, <span class="at">sep=</span><span class="st">&quot;-&quot;</span>), <span class="st">&quot;%Y-%j&quot;</span>)</span>
+<span id="cb19-6"><a href="preparación-y-análisis.html#cb19-6" tabindex="-1"></a></span>
+<span id="cb19-7"><a href="preparación-y-análisis.html#cb19-7" tabindex="-1"></a>min_date</span></code></pre></div>
 <pre><code>## [1] &quot;2021-01-01&quot;</code></pre>
-<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="preparación-y-análisis.html#cb19-1" tabindex="-1"></a>max_date</span></code></pre></div>
-<pre><code>## [1] &quot;2024-02-28&quot;</code></pre>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="preparación-y-análisis.html#cb21-1" tabindex="-1"></a>max_date</span></code></pre></div>
+<pre><code>## [1] &quot;2024-05-30&quot;</code></pre>
 </div>
 </div>
 <div id="análisis-series-de-tiempo" class="section level2 hasAnchor" number="4.2">
@@ -287,67 +358,62 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="análisis-descriptivo" class="section level3 hasAnchor" number="4.2.1">
 <h3><span class="header-section-number">4.2.1</span> Análisis descriptivo<a href="preparación-y-análisis.html#análisis-descriptivo" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Al visualizar la serie de tiempo se puede visualizar la tendencia del tráfico con una pendiente positiva, al tener una población en constante crecimiento es normal que aumente la demanda de datos móviles en redes LTE</p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="preparación-y-análisis.html#cb21-1" tabindex="-1"></a><span class="fu">plot</span>(serie_tiempo)</span></code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="preparación-y-análisis.html#cb23-1" tabindex="-1"></a><span class="fu">plot</span>(serie_tiempo)</span></code></pre></div>
 <p><img src="Series-de-Tiempo_files/figure-html/3_trafico-1.png" width="672" /></p>
 <p><strong>Tráfico por Año</strong>
 El tráfico año por año va incrementando al detallarlo mes por mes se denota el aumento</p>
-<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="preparación-y-análisis.html#cb22-1" tabindex="-1"></a><span class="fu">seasonplot</span>(serie_tiempo,<span class="at">col=</span><span class="fu">rainbow</span>(<span class="dv">4</span>),<span class="at">year.labels =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="preparación-y-análisis.html#cb24-1" tabindex="-1"></a><span class="fu">seasonplot</span>(serie_tiempo,<span class="at">col=</span><span class="fu">rainbow</span>(<span class="dv">4</span>),<span class="at">year.labels =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
 <p><img src="Series-de-Tiempo_files/figure-html/3_1_trafico_a%C3%B1o-1.png" width="672" /></p>
 <p>El tráfico al verlo en una gráfica circular se puede ver como crece año tras año , sin importar al mes , cabe destacar los valores de alto tráfico</p>
-<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="preparación-y-análisis.html#cb23-1" tabindex="-1"></a><span class="co"># Cargar las bibliotecas necesarias</span></span>
-<span id="cb23-2"><a href="preparación-y-análisis.html#cb23-2" tabindex="-1"></a><span class="fu">library</span>(forecast)</span>
-<span id="cb23-3"><a href="preparación-y-análisis.html#cb23-3" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb23-4"><a href="preparación-y-análisis.html#cb23-4" tabindex="-1"></a></span>
-<span id="cb23-5"><a href="preparación-y-análisis.html#cb23-5" tabindex="-1"></a><span class="co"># Asegurar que serie_tiempo es una serie de tiempo con la frecuencia correcta</span></span>
-<span id="cb23-6"><a href="preparación-y-análisis.html#cb23-6" tabindex="-1"></a><span class="co"># (opcional: ajustar la serie a una frecuencia de 365 días por año)</span></span>
-<span id="cb23-7"><a href="preparación-y-análisis.html#cb23-7" tabindex="-1"></a>serie_tiempo <span class="ot">&lt;-</span> <span class="fu">ts</span>(serie_tiempo, <span class="at">frequency =</span> <span class="dv">365</span>)</span>
-<span id="cb23-8"><a href="preparación-y-análisis.html#cb23-8" tabindex="-1"></a></span>
-<span id="cb23-9"><a href="preparación-y-análisis.html#cb23-9" tabindex="-1"></a><span class="co"># Usar ggseasonplot para visualizar la serie de tiempo</span></span>
-<span id="cb23-10"><a href="preparación-y-análisis.html#cb23-10" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">ggseasonplot</span>(serie_tiempo, <span class="at">polar =</span> <span class="cn">TRUE</span>, <span class="at">year.labels =</span> <span class="cn">TRUE</span>, <span class="at">year.labels.left =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
-<span id="cb23-11"><a href="preparación-y-análisis.html#cb23-11" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">&quot;Valores&quot;</span>, <span class="at">title =</span> <span class="st">&quot;Tráfico LTE por Mes&quot;</span>) <span class="sc">+</span></span>
-<span id="cb23-12"><a href="preparación-y-análisis.html#cb23-12" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb23-13"><a href="preparación-y-análisis.html#cb23-13" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>))  <span class="co"># Ajustar los textos del eje x si necesario</span></span>
-<span id="cb23-14"><a href="preparación-y-análisis.html#cb23-14" tabindex="-1"></a></span>
-<span id="cb23-15"><a href="preparación-y-análisis.html#cb23-15" tabindex="-1"></a><span class="co"># Imprimir el plot</span></span>
-<span id="cb23-16"><a href="preparación-y-análisis.html#cb23-16" tabindex="-1"></a><span class="fu">print</span>(p)</span></code></pre></div>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="preparación-y-análisis.html#cb25-1" tabindex="-1"></a><span class="fu">library</span>(forecast)</span>
+<span id="cb25-2"><a href="preparación-y-análisis.html#cb25-2" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb25-3"><a href="preparación-y-análisis.html#cb25-3" tabindex="-1"></a></span>
+<span id="cb25-4"><a href="preparación-y-análisis.html#cb25-4" tabindex="-1"></a>serie_tiempo <span class="ot">&lt;-</span> <span class="fu">ts</span>(serie_tiempo, <span class="at">frequency =</span> <span class="dv">365</span>)</span>
+<span id="cb25-5"><a href="preparación-y-análisis.html#cb25-5" tabindex="-1"></a></span>
+<span id="cb25-6"><a href="preparación-y-análisis.html#cb25-6" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">ggseasonplot</span>(serie_tiempo, <span class="at">polar =</span> <span class="cn">TRUE</span>, <span class="at">year.labels =</span> <span class="cn">TRUE</span>, <span class="at">year.labels.left =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb25-7"><a href="preparación-y-análisis.html#cb25-7" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">&quot;Valores&quot;</span>, <span class="at">title =</span> <span class="st">&quot;Tráfico LTE por Mes&quot;</span>) <span class="sc">+</span></span>
+<span id="cb25-8"><a href="preparación-y-análisis.html#cb25-8" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb25-9"><a href="preparación-y-análisis.html#cb25-9" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>))  <span class="co"># Ajustar los textos del eje x si necesario</span></span>
+<span id="cb25-10"><a href="preparación-y-análisis.html#cb25-10" tabindex="-1"></a></span>
+<span id="cb25-11"><a href="preparación-y-análisis.html#cb25-11" tabindex="-1"></a><span class="fu">print</span>(p)</span></code></pre></div>
 <p><img src="Series-de-Tiempo_files/figure-html/3_1a_radar-1.png" width="672" /></p>
 <p><strong>Box Plot</strong> Podemos apreciar una tendencia creciente mirando el diagrama de cajas , la única diferencia es en el año 2024 ya que tiene 2 meses</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="preparación-y-análisis.html#cb24-1" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb24-2"><a href="preparación-y-análisis.html#cb24-2" tabindex="-1"></a>time_index <span class="ot">&lt;-</span> <span class="fu">time</span>(serie_tiempo)</span>
-<span id="cb24-3"><a href="preparación-y-análisis.html#cb24-3" tabindex="-1"></a>years <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(<span class="fu">floor</span>(time_index))</span>
-<span id="cb24-4"><a href="preparación-y-análisis.html#cb24-4" tabindex="-1"></a>values <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(serie_tiempo)</span>
-<span id="cb24-5"><a href="preparación-y-análisis.html#cb24-5" tabindex="-1"></a>serie_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">Year =</span> <span class="fu">as.factor</span>(years), <span class="at">Value =</span> values)</span>
-<span id="cb24-6"><a href="preparación-y-análisis.html#cb24-6" tabindex="-1"></a><span class="fu">ggplot</span>(serie_df, <span class="fu">aes</span>(<span class="at">x =</span> Year, <span class="at">y =</span> Value)) <span class="sc">+</span> <span class="fu">geom_boxplot</span>()</span></code></pre></div>
-<p><img src="Series-de-Tiempo_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="preparación-y-análisis.html#cb26-1" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb26-2"><a href="preparación-y-análisis.html#cb26-2" tabindex="-1"></a>time_index <span class="ot">&lt;-</span> <span class="fu">time</span>(serie_tiempo)</span>
+<span id="cb26-3"><a href="preparación-y-análisis.html#cb26-3" tabindex="-1"></a>years <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(<span class="fu">floor</span>(time_index))</span>
+<span id="cb26-4"><a href="preparación-y-análisis.html#cb26-4" tabindex="-1"></a>values <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(serie_tiempo)</span>
+<span id="cb26-5"><a href="preparación-y-análisis.html#cb26-5" tabindex="-1"></a>serie_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">Year =</span> <span class="fu">as.factor</span>(years), <span class="at">Value =</span> values)</span>
+<span id="cb26-6"><a href="preparación-y-análisis.html#cb26-6" tabindex="-1"></a><span class="fu">ggplot</span>(serie_df, <span class="fu">aes</span>(<span class="at">x =</span> Year, <span class="at">y =</span> Value)) <span class="sc">+</span> <span class="fu">geom_boxplot</span>()</span></code></pre></div>
+<p><img src="Series-de-Tiempo_files/figure-html/3_1a_boxplot-1.png" width="672" /></p>
 <p>**Histograma* No se puede observar ningún tipo de distribución en el gráfico.</p>
-<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="preparación-y-análisis.html#cb25-1" tabindex="-1"></a><span class="fu">hist</span>(serie_tiempo, <span class="at">breaks =</span> <span class="dv">30</span>, <span class="at">main =</span> <span class="st">&quot;Histograma de serie_tiempo&quot;</span>, <span class="at">xlab =</span> <span class="st">&quot;Valores&quot;</span>)</span></code></pre></div>
-<p><img src="Series-de-Tiempo_files/figure-html/unnamed-chunk-13-1.png" width="672" />
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="preparación-y-análisis.html#cb27-1" tabindex="-1"></a><span class="fu">hist</span>(serie_tiempo, <span class="at">breaks =</span> <span class="dv">30</span>, <span class="at">main =</span> <span class="st">&quot;Histograma de serie_tiempo&quot;</span>, <span class="at">xlab =</span> <span class="st">&quot;Valores&quot;</span>)</span></code></pre></div>
+<p><img src="Series-de-Tiempo_files/figure-html/3_1a_histograma-1.png" width="672" />
 **Densidad* Podemos ver un gráfico parecido al histograma pero suavizado.</p>
-<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="preparación-y-análisis.html#cb26-1" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">density</span>(serie_tiempo), <span class="at">main =</span> <span class="st">&quot;Densidad de serie_tiempo&quot;</span>, <span class="at">xlab =</span> <span class="st">&quot;Valores&quot;</span>, <span class="at">ylab =</span> <span class="st">&quot;Densidad&quot;</span>)</span></code></pre></div>
-<p><img src="Series-de-Tiempo_files/figure-html/unnamed-chunk-14-1.png" width="672" />
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="preparación-y-análisis.html#cb28-1" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">density</span>(serie_tiempo), <span class="at">main =</span> <span class="st">&quot;Densidad de serie_tiempo&quot;</span>, <span class="at">xlab =</span> <span class="st">&quot;Valores&quot;</span>, <span class="at">ylab =</span> <span class="st">&quot;Densidad&quot;</span>)</span></code></pre></div>
+<p><img src="Series-de-Tiempo_files/figure-html/3_1a_densidad-1.png" width="672" />
 <strong>Gráfico de dispersión con Lags(Autocorrelación)</strong></p>
-<p>Aca podemos observar la autocorrelación entre los datos observados actuales versus un dato anterior(lag=1), solo hay unos atípicos en la parte superior y en el extremo derecho.</p>
-<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="preparación-y-análisis.html#cb27-1" tabindex="-1"></a>lag <span class="ot">&lt;-</span> <span class="dv">1</span>  <span class="co"># Cambia esto para diferentes lags</span></span>
-<span id="cb27-2"><a href="preparación-y-análisis.html#cb27-2" tabindex="-1"></a><span class="fu">plot</span>(serie_tiempo[<span class="sc">-</span>(<span class="dv">1</span><span class="sc">:</span>lag)], serie_tiempo[<span class="sc">-</span>((<span class="fu">length</span>(serie_tiempo)<span class="sc">-</span>(lag<span class="dv">-1</span>))<span class="sc">:</span><span class="fu">length</span>(serie_tiempo))],</span>
-<span id="cb27-3"><a href="preparación-y-análisis.html#cb27-3" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="fu">paste</span>(<span class="st">&quot;Lag&quot;</span>, lag), <span class="at">ylab =</span> <span class="st">&quot;serie_tiempo&quot;</span>)</span></code></pre></div>
-<p><img src="Series-de-Tiempo_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+<p>Acá podemos observar la auto correlación entre los datos observados actuales versus un dato anterior(lag=1), solo hay unos atípicos en la parte superior y en el extremo derecho.</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="preparación-y-análisis.html#cb29-1" tabindex="-1"></a>lag <span class="ot">&lt;-</span> <span class="dv">1</span>  <span class="co"># Cambia esto para diferentes lags</span></span>
+<span id="cb29-2"><a href="preparación-y-análisis.html#cb29-2" tabindex="-1"></a><span class="fu">plot</span>(serie_tiempo[<span class="sc">-</span>(<span class="dv">1</span><span class="sc">:</span>lag)], serie_tiempo[<span class="sc">-</span>((<span class="fu">length</span>(serie_tiempo)<span class="sc">-</span>(lag<span class="dv">-1</span>))<span class="sc">:</span><span class="fu">length</span>(serie_tiempo))],</span>
+<span id="cb29-3"><a href="preparación-y-análisis.html#cb29-3" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="fu">paste</span>(<span class="st">&quot;Lag&quot;</span>, lag), <span class="at">ylab =</span> <span class="st">&quot;serie_tiempo&quot;</span>)</span></code></pre></div>
+<p><img src="Series-de-Tiempo_files/figure-html/3_1a_graf_dispersion-1.png" width="672" /></p>
 </div>
 <div id="análisis-de-promedio-móvil" class="section level3 hasAnchor" number="4.2.2">
 <h3><span class="header-section-number">4.2.2</span> Análisis de Promedio Móvil<a href="preparación-y-análisis.html#análisis-de-promedio-móvil" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Con la función “rollmean” suavizamos la serie usando una ventana de 7 días, en la gráfica
 podemos observar como el promedio Móvil representado por la línea roja ,el cual suaviza los outlier que salían en la serie original representado con la linea negra</p>
-<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="preparación-y-análisis.html#cb28-1" tabindex="-1"></a>promedio_movil <span class="ot">&lt;-</span> <span class="fu">rollmean</span>(serie_tiempo, <span class="dv">7</span>, <span class="at">fill =</span> <span class="cn">NA</span>)</span>
-<span id="cb28-2"><a href="preparación-y-análisis.html#cb28-2" tabindex="-1"></a></span>
-<span id="cb28-3"><a href="preparación-y-análisis.html#cb28-3" tabindex="-1"></a><span class="fu">plot</span>(serie_tiempo, <span class="at">main=</span><span class="st">&quot;Serie Temporal con Promedio Móvil&quot;</span>, <span class="at">xlab=</span><span class="st">&quot;Fecha&quot;</span>, <span class="at">ylab=</span><span class="st">&quot;PAYLOAD_4G&quot;</span>)</span>
-<span id="cb28-4"><a href="preparación-y-análisis.html#cb28-4" tabindex="-1"></a><span class="fu">lines</span>(promedio_movil, <span class="at">col=</span><span class="st">&quot;red&quot;</span>)</span>
-<span id="cb28-5"><a href="preparación-y-análisis.html#cb28-5" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">&quot;topright&quot;</span>, <span class="at">legend=</span><span class="fu">c</span>(<span class="st">&quot;Serie Original&quot;</span>, <span class="st">&quot;Promedio Móvil&quot;</span>), <span class="at">col=</span><span class="fu">c</span>(<span class="st">&quot;black&quot;</span>, <span class="st">&quot;red&quot;</span>), <span class="at">lty=</span><span class="dv">1</span>)</span></code></pre></div>
-<p><img src="Series-de-Tiempo_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="preparación-y-análisis.html#cb30-1" tabindex="-1"></a>promedio_movil <span class="ot">&lt;-</span> <span class="fu">rollmean</span>(serie_tiempo, <span class="dv">7</span>, <span class="at">fill =</span> <span class="cn">NA</span>)</span>
+<span id="cb30-2"><a href="preparación-y-análisis.html#cb30-2" tabindex="-1"></a></span>
+<span id="cb30-3"><a href="preparación-y-análisis.html#cb30-3" tabindex="-1"></a><span class="fu">plot</span>(serie_tiempo, <span class="at">main=</span><span class="st">&quot;Serie Temporal con Promedio Móvil&quot;</span>, <span class="at">xlab=</span><span class="st">&quot;Fecha&quot;</span>, <span class="at">ylab=</span><span class="st">&quot;PAYLOAD_4G&quot;</span>)</span>
+<span id="cb30-4"><a href="preparación-y-análisis.html#cb30-4" tabindex="-1"></a><span class="fu">lines</span>(promedio_movil, <span class="at">col=</span><span class="st">&quot;red&quot;</span>)</span>
+<span id="cb30-5"><a href="preparación-y-análisis.html#cb30-5" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">&quot;topright&quot;</span>, <span class="at">legend=</span><span class="fu">c</span>(<span class="st">&quot;Serie Original&quot;</span>, <span class="st">&quot;Promedio Móvil&quot;</span>), <span class="at">col=</span><span class="fu">c</span>(<span class="st">&quot;black&quot;</span>, <span class="st">&quot;red&quot;</span>), <span class="at">lty=</span><span class="dv">1</span>)</span></code></pre></div>
+<p><img src="Series-de-Tiempo_files/figure-html/3_1a_prommovil-1.png" width="672" /></p>
 </div>
 <div id="análisis-de-rezagos" class="section level3 hasAnchor" number="4.2.3">
 <h3><span class="header-section-number">4.2.3</span> Análisis de Rezagos<a href="preparación-y-análisis.html#análisis-de-rezagos" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>En este análisis podemos observar como los valores pasados de una serie afectan sus valores futuros
 En la imagen podemos observar como todas las barras superan el umbral de líneas azules (+/-)1.96, lo que demuestra una alta autocorrelación en todos los rezagos. Esta autocorrelación demuestra que la serie no es aleatoria y puede ser una señal de estacionariedad o de tendencia</p>
-<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="preparación-y-análisis.html#cb29-1" tabindex="-1"></a><span class="fu">acf</span>(serie_tiempo)</span></code></pre></div>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="preparación-y-análisis.html#cb31-1" tabindex="-1"></a><span class="fu">acf</span>(serie_tiempo)</span></code></pre></div>
 <p><img src="Series-de-Tiempo_files/figure-html/3_2_acf-1.png" width="672" /></p>
 </div>
 <div id="análisis-de-estacionalidad" class="section level3 hasAnchor" number="4.2.4">
@@ -355,15 +421,15 @@ En la imagen podemos observar como todas las barras superan el umbral de líneas
 <p>Dentro la imagen podemos observar lo siguiente</p>
 <ol style="list-style-type: decimal">
 <li><p><strong>Observed:</strong>: Nos muestra la serie original , es decir la serie de tráfico LTE sin modificaciones.</p></li>
-<li><p><strong>Tred:</strong> En la tendencia nos muestra la eliminacion del ruido y estacionarie sin embargo se observan los picos de tráfico al final.</p></li>
-<li><p><strong>Seasonal:</strong>: En la Estacionariedad podemos observar un patrón claro y repetitivo , lo cual indica que existe estacionariedad en los datos del tráfico en esta de serie de tiempo.</p></li>
-<li><p><strong>Random</strong>: Este gráfico muestra residuales o fluctuaciones que nos se pueden explicar , ya que puede ser atípicos o ruido, para estos casos particulares en tráfico hay que hacer investigaciones de las causas de estas anomalias.</p></li>
+<li><p><strong>Tred:</strong> En la tendencia nos muestra la eliminación del ruido y estacionariedad sin embargo se observan los picos de tráfico al final.</p></li>
+<li><p><strong>Seasonal:</strong>: En la estacionariedad podemos observar un patrón claro y repetitivo , lo cual indica que existe estacionariedad en los datos del tráfico en esta de serie de tiempo.</p></li>
+<li><p><strong>Random</strong>: Este gráfico muestra residuales o fluctuaciones que nos se pueden explicar , ya que puede ser atípicos o ruido, para estos casos particulares en tráfico hay que hacer investigaciones de las causas de estas anomalías.</p></li>
 </ol>
-<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="preparación-y-análisis.html#cb30-1" tabindex="-1"></a>descomposicion <span class="ot">&lt;-</span> <span class="fu">decompose</span>(serie_tiempo)</span>
-<span id="cb30-2"><a href="preparación-y-análisis.html#cb30-2" tabindex="-1"></a></span>
-<span id="cb30-3"><a href="preparación-y-análisis.html#cb30-3" tabindex="-1"></a><span class="fu">plot</span>(descomposicion)</span></code></pre></div>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="preparación-y-análisis.html#cb32-1" tabindex="-1"></a>descomposicion <span class="ot">&lt;-</span> <span class="fu">decompose</span>(serie_tiempo)</span>
+<span id="cb32-2"><a href="preparación-y-análisis.html#cb32-2" tabindex="-1"></a></span>
+<span id="cb32-3"><a href="preparación-y-análisis.html#cb32-3" tabindex="-1"></a><span class="fu">plot</span>(descomposicion)</span></code></pre></div>
 <p><img src="Series-de-Tiempo_files/figure-html/3_3_descomposicion-1.png" width="672" /></p>
-<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="preparación-y-análisis.html#cb31-1" tabindex="-1"></a><span class="fu">write.csv</span>(serie_tiempo, <span class="st">&quot;serie_tiempo.csv&quot;</span>, <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="preparación-y-análisis.html#cb33-1" tabindex="-1"></a><span class="fu">write.csv</span>(serie_tiempo, <span class="st">&quot;serie_tiempo.csv&quot;</span>, <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
 
 </div>
 </div>
