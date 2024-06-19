@@ -17,7 +17,7 @@ description: "This is a minimal example of using the bookdown package to write a
 # Introducción
 ![](banner1.jpg){witdh=80%}
 
-La importancia de este pronóstico es debido a la creciente necesidad de mejorar los recursos de infraestructura en las redes de telecomunicaciones móviles puntualmente en las de tecnologia LTE, debido al constante aumento de la demanda de datos móviles. El lugar del estudio son los municipios de Cundinamarca, el cual presenta reto por su dispersión en ubicaciones urbanas y rurales , y además presenta unos cambios drásticos en algunas fechas festivas cuando se presentan las fiestas y ferias de sus respectivos municipios
+La importancia de este pronóstico es debido a la creciente necesidad de mejorar los recursos de infraestructura en las redes de telecomunicaciones móviles puntualmente en las de tecnología LTE, debido al constante aumento de la demanda de datos móviles. El lugar del estudio son los municipios de Cundinamarca, el cual presenta reto por su dispersión en ubicaciones urbanas y rurales , y además presenta unos cambios drásticos en algunas fechas festivas cuando se presentan las fiestas y ferias de sus respectivos municipios
 
 
 

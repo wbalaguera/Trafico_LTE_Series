@@ -5,9 +5,9 @@ Las fuentes de información serán anonimizadas en Python por me dio de la bibli
 
 Las fuentes de información son las siguientes:
 
-**Nokia:**  Se tiene  la información del tráfico ( Payload) y  velocidad (Throughput) por cada estación base con periodicidad diaria desde Enero 2021 a febrero 2023
+**Nokia:**  Se tiene  la información del tráfico ( Payload)  por cada estación base con periodicidad diaria desde Enero 2021 a febrero 2023
 
-**Dane:** Información de municipios de la cantidad de población , los municipios selecionados fueron los categorizados por el dane como de "poblacion media"
+**Dane:** Información de municipios de la cantidad de población , los municipios seleccionados fueron los categorizados por el dane como de "poblacion media"
 
 **Paginas Web:** Información de las fechas de las ferias y fiestas de los municipios de Cundinamarca
 

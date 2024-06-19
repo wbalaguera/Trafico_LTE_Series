@@ -25,17 +25,6 @@ class(precio.ts)
 plot (decompose(precio.ts))
 
 
-# Cargar la librería tibble
-library(tibble)
-
-# Convertir un data frame a tibble
-df <- data.frame(x = 1:5, y = letters[1:5])
-df
-tb <- as_tibble(df)
-
-print(tb)
-
-
 ##con la funcion autoplot realizamos un analisis
 #para identificar la estacionalidad del modelo
 autoplot(precio.ts,ts.colour="blue",ts.linetype="dashed")

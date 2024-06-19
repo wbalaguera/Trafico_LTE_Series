@@ -2,7 +2,7 @@
 
 ## Cargue de datos
 
-Importamos la información de tráfico de una Estación base del municipio de Cundinamarca, esta información ya viene anonimizada en sus nombres por motivos de confidiencialidad de la empresa
+Importamos la información de tráfico de una Estación base del municipio de Cundinamarca, esta información ya viene anonimizada en sus nombres por motivos de confidencialidad de la empresa
 
 Realizamos el cargue de los datos csv
 
@@ -18,8 +18,15 @@ library(zoo)
 library(TTR) # libreria promedios móviles
 library(forecast) #  libreria estacionalidad y rezagos
 library(tseries)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
 
 ```
+
+
+
+
 
 
 Para el manejo de datos en la columna "M_FECHA_DIA" damos formato con  "as.Date" y lo ordenamos
@@ -46,7 +53,7 @@ fecha_max
 ```
 
 
-Verificamos si la serie no tiene datos faltantes entre días para poder usar la funcion "ts"
+Verificamos si la serie no tiene datos faltantes entre días para poder usar la función "ts"
 ```{r}
 fechas_completas <- seq(fecha_inicio, by = "day", length.out = n_dias)
 if(length(fechas_completas) != nrow(data_sitio)) {
@@ -61,23 +68,71 @@ Seleccionamos  las columnas de interés  de fecha ("M_FECHA_DIA") y tráfico en 
 
 ```{r}
 
-selected_columns <- data_sitio[, c("M_FECHA_DIA", "PAYLOAD_4G")]
+selected_columns <- data_sitio[, c("M_FECHA_DIA", "PAYLOAD_4G","FIESTA")]
 head(selected_columns)
 ```
 
+**Suavizado de Outliers**
+
+Por medio de la filtro de Hampel  se identificara los outliers en una ventana deslizante de 7 días(k=7) con la mediana y la media , donde "t0" controla el umbral de sensibilidad a los outlier  al establecer 5 ,el filtro considera como un outlier si la desviación de la mediana o la media de la ventana es 5 veces mayor que 5 veces la desviación estándar absoluta(MAD ajustado ) de la ventana .Como el objetivo no es desaparecer los outlier se utiliza la media ya que los outliers quedan suavizados pero no anulados
 
 
+```{r 31a_hampel}
+#Mediana
+data<-selected_columns
+hampel_filter <- function(x, k = 7, t0 = 5) {  
+  n <- length(x)
+  y <- x
+  L <- 1.4826
+  for (i in (k + 1):(n - k)) {
+    x0 <- median(x[(i - k):(i + k)])
+    S0 <- L * mad(x[(i - k):(i + k)], constant = 1)
+    if (abs(x[i] - x0) > t0 * S0) {
+      y[i] <- x0
+    }
+  }
+  return(y)
+}
+#Media
+hampel_filter_mean <- function(x, k = 7, t0 = 5) {
+  n <- length(x)
+  y <- x
+  L <- 1.4826
+  for (i in (k + 1):(n - k)) {
+    x0 <- mean(x[(i - k):(i + k)])  
+    S0 <- L * mad(x[(i - k):(i + k)], constant = 1)
+    if (abs(x[i] - x0) > t0 * S0) {
+      y[i] <- x0
+    }
+  }
+  return(y)
+}
 
+data$PAYLOAD_4G_smoo_mean<- hampel_filter_mean(data$PAYLOAD_4G, k = 7, t0 = 5)
+data$PAYLOAD_4G_smoothed <- hampel_filter(data$PAYLOAD_4G, k = 7, t0 = 5)
+data$year <- year(data$M_FECHA_DIA)
+years <- unique(data$year)
+
+for (y in years) {
+  yearly_data <- subset(data, year == y)
+  plot(yearly_data$M_FECHA_DIA, yearly_data$PAYLOAD_4G, type = "l", col = "red", xlab = "Fecha", ylab = "PAYLOAD_4G", main =  paste("PAYLOAD_4G - Original vs Suavizado (", y, ")", sep = ""))
+  lines(yearly_data$M_FECHA_DIA, yearly_data$PAYLOAD_4G_smoo_mean, col = "blue")
+  lines(yearly_data$M_FECHA_DIA, yearly_data$PAYLOAD_4G_smoothed, col = "green")
+  legend("topleft", legend = c("Original", "Suavizado promedio","Suavisado Mediana"), col = c("red", "blue","green"), lty = 1)
+  
+}
+
+write.csv(data, "data_sitio_smoothed.csv", row.names = FALSE)
+
+```
 
 Creamos la serie de tiempo con la función  "ts" donde le indicamos la fecha de inicio con una frecuencia diaria
 ```{r}
-
 serie_tiempo <- ts(
-    data_sitio$PAYLOAD_4G, 
+    data$PAYLOAD_4G_smoo_mean, 
     start=c(as.numeric(format(fecha_inicio, "%Y")), as.numeric(format(fecha_inicio, "%j"))),
     frequency=365
     )
-
 ```
 
 Verificamos el tipo de datos de la serie de tiempo 
@@ -100,6 +155,10 @@ max_date
 
 ```
 
+
+
+
+
 ## Análisis Series de tiempo
 
 ### Análisis descriptivo
@@ -108,6 +167,9 @@ Al visualizar la serie de tiempo se puede visualizar  la tendencia del tráfico 
 ```{r 3_trafico}
 plot(serie_tiempo)
 ```
+
+
+
 
 **Tráfico por Año**
 El tráfico año por año va incrementando al detallarlo mes por mes se denota el aumento
@@ -125,21 +187,16 @@ El tráfico al verlo en una gráfica circular se  puede ver como  crece año tra
 
 ```{r 3_1a_radar}
 
-# Cargar las bibliotecas necesarias
 library(forecast)
 library(ggplot2)
 
-# Asegurar que serie_tiempo es una serie de tiempo con la frecuencia correcta
-# (opcional: ajustar la serie a una frecuencia de 365 días por año)
 serie_tiempo <- ts(serie_tiempo, frequency = 365)
 
-# Usar ggseasonplot para visualizar la serie de tiempo
 p <- ggseasonplot(serie_tiempo, polar = TRUE, year.labels = TRUE, year.labels.left = TRUE) +
   labs(y = "Valores", title = "Tráfico LTE por Mes") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Ajustar los textos del eje x si necesario
 
-# Imprimir el plot
 print(p)
 
 
@@ -150,7 +207,7 @@ print(p)
 
 **Box Plot** Podemos apreciar una tendencia creciente  mirando el diagrama de cajas , la única diferencia es en el año 2024 ya que tiene 2  meses
 
-```{r}
+```{r 3_1a_boxplot}
 library(ggplot2)
 time_index <- time(serie_tiempo)
 years <- as.integer(floor(time_index))
@@ -164,7 +221,7 @@ ggplot(serie_df, aes(x = Year, y = Value)) + geom_boxplot()
 **Histograma* No se puede observar  ningún tipo de distribución en el gráfico.
 
 
-```{r}
+```{r 3_1a_histograma}
 
 hist(serie_tiempo, breaks = 30, main = "Histograma de serie_tiempo", xlab = "Valores")
 
@@ -172,7 +229,7 @@ hist(serie_tiempo, breaks = 30, main = "Histograma de serie_tiempo", xlab = "Val
 ```
 **Densidad* Podemos ver un gráfico parecido al histograma pero suavizado.
 
-```{r}
+```{r 3_1a_densidad}
 
 plot(density(serie_tiempo), main = "Densidad de serie_tiempo", xlab = "Valores", ylab = "Densidad")
 
@@ -180,9 +237,9 @@ plot(density(serie_tiempo), main = "Densidad de serie_tiempo", xlab = "Valores",
 ```
 **Gráfico de dispersión con Lags(Autocorrelación)**
 
-Aca podemos observar la autocorrelación entre los datos observados actuales versus un  dato anterior(lag=1), solo hay unos atípicos en la parte superior y en el extremo derecho.
+Acá podemos observar la auto correlación entre los datos observados actuales versus un  dato anterior(lag=1), solo hay unos atípicos en la parte superior y en el extremo derecho.
 
-```{r}
+```{r 3_1a_graf_dispersion}
 lag <- 1  # Cambia esto para diferentes lags
 plot(serie_tiempo[-(1:lag)], serie_tiempo[-((length(serie_tiempo)-(lag-1)):length(serie_tiempo))],
      xlab = paste("Lag", lag), ylab = "serie_tiempo")
@@ -197,7 +254,7 @@ Con la función "rollmean" suavizamos la serie usando una ventana de 7 días, en
 podemos observar como el promedio Móvil representado por la línea roja ,el cual suaviza los outlier que salían en la serie original representado con la linea negra
 
 
-```{r}
+```{r 3_1a_prommovil}
 promedio_movil <- rollmean(serie_tiempo, 7, fill = NA)
 
 plot(serie_tiempo, main="Serie Temporal con Promedio Móvil", xlab="Fecha", ylab="PAYLOAD_4G")
@@ -223,11 +280,11 @@ Dentro la imagen podemos observar lo siguiente
 
 1. **Observed:**: Nos muestra la serie original , es decir la serie de tráfico LTE  sin modificaciones.
     
-2. **Tred:** En la tendencia nos muestra la  eliminacion del ruido y estacionarie sin embargo se observan los  picos de tráfico al final.
+2. **Tred:** En la tendencia nos muestra la  eliminación del ruido y estacionariedad sin embargo se observan los  picos de tráfico al final.
   
-3. **Seasonal:**: En la Estacionariedad podemos observar un patrón claro y repetitivo , lo cual indica  que existe estacionariedad en los datos del tráfico en esta de serie de tiempo.
+3. **Seasonal:**: En la estacionariedad podemos observar un patrón claro y repetitivo , lo cual indica  que existe estacionariedad en los datos del tráfico en esta de serie de tiempo.
 
-3. **Random**: Este gráfico muestra residuales o fluctuaciones que nos se pueden explicar , ya que puede ser atípicos o ruido, para estos casos particulares en tráfico hay que hacer investigaciones de las causas de estas anomalias.
+3. **Random**: Este gráfico muestra residuales o fluctuaciones que nos se pueden explicar , ya que puede ser atípicos o ruido, para estos casos particulares en tráfico hay que hacer investigaciones de las causas de estas anomalías.
 
 
 ```{r 3_3_descomposicion}
@@ -238,8 +295,3 @@ plot(descomposicion)
 
 write.csv(serie_tiempo, "serie_tiempo.csv", row.names = FALSE)
 ```
-
-
-
-
-

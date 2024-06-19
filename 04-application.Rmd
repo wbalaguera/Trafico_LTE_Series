@@ -25,7 +25,7 @@ datos <- read.csv("serie_tiempo.csv")
 head(datos,5)
 ```
 
-```{r}
+```{r feini}
 fecha_inicio <- as.Date("2021-01-01")
 serie_tiempo <- ts(datos$x, start = c(format(fecha_inicio, "%Y"), format(fecha_inicio, "%j")), frequency = 365)
 ```
@@ -77,7 +77,7 @@ de logaritmos o diferencias
 
 ### Logaritmos
 
-La función logaritmica es una función continua deja los mínimos y
+La función logarítmica es una función continua deja los mínimos y
 máximos bajo logaritmo, estabilizando la varianza .
 
 Para el caso de logaritmos usamos la función "log"
@@ -88,21 +88,40 @@ plot(serielog)
 ```
 
 Al ver la gráfica no podemos apreciar estacionariedad ya que se ven
-caidas y bajadas y su media es diferente de cero.
+caídas y bajadas y su media es diferente de cero.
 
 Verificamos si es estacionaria por medio de la prueba de "Dickey-Fuller"
-con la libreria "adf"
+con la librería "adf"
+
+Al ser una función logarítmica validamos los valores infinitos
 
 ```{r 4_1_log_test}
-adf.test(serielog,alternative = "stationary")
+non_finite_indices <- which(!is.finite(serielog))
+
+#mostramos infinitos
+if (length(non_finite_indices) > 0) {
+  print(non_finite_indices)
+  #Removemos valores infinitos
+  serielog_clean <- serielog[is.finite(serielog)]
+} else {
+  serielog_clean <- serielog
+}
+adf_result <- adf.test(serielog_clean, alternative = "stationary")
+print(adf_result)
 ```
 
-El resultado de es p-value = 0.2829 al ser mayor a 0.05 se puede
-determinar que es una serie no estacionaria
+El resultado de es p-value = 0.01 al ser mayor a 0.05 se puede
+determinar que es una serie Si estacionaria
 
-Con logaritmo no logramos conseguir Estacionariedad
+Con logaritmo logramos conseguir Estacionariedad
 
 ### Diferencias
+
+Las diferencia son utilizadas para convertir una serie no estacionaria
+en estacionaria, este es muy importante para modelos de series de
+tiempo. Esto nos ayuda a calcular la diferencia entre valores
+consecutivos de la serie. Esto ayuda a eliminar tendencias,, hacer la
+serie estacionaria y simplifica el modelo
 
 Antes de realizar las diferencias podemos ejecutar el comando "ndiffs"
 para saber cuantas diferencias necesitamos
@@ -118,7 +137,7 @@ seriedif=diff(serie_tiempo)
 plot(seriedif,lty="dashed",col="red",main="Serie de Tiempo de Tráfico LTE")
 ```
 
-Al ver la gráfica podemos apreciar que los datos estan alrededor de la
+Al ver la gráfica podemos apreciar que los datos están alrededor de la
 misma media , en este caso de "cero"
 
 Para verificar si es estacionaria lo hacemos por medio de la prueba de
@@ -140,7 +159,7 @@ ndiffs(seriedif)
 
 El resultado es cero por lo cuál no necesitamos más diferenciaciones
 
-**Análisis de autocorrelación**
+**Análisis de auto correlación**
 
 ```{r 4_8_Autocorr}
 par(mfrow=c(2,2),mar=c(4,4,4,1)+.1)
@@ -152,21 +171,23 @@ acf(seriedif,main="Serie Estacionaria")
 ```
 
 Podemos observar que el primer gráfico " no es estacionario" tiene una
-tendencia , la cual es verificada por la autocorrelación de la derecha .
-el cual supera el umbral de líneas azules (+/-)1.96
+tendencia , la cual es verificada por la auto correlación de la derecha
+. el cual supera el umbral de líneas azules (+/-)1.96
 
 En los gráficos inferiores se puede ver una media constante , varianza
 constante, y se puede ver en la gráfica de la derecha la comprobación de
-autocorrelacion donde se visualiza que no supera el umbral de (+/-)1.96
+auto correlación donde se visualiza que no supera el umbral de (+/-)1.96
 
 ## Método de Holt Winters
 
-Para hacer prediciones utilizando datos con tendencia y estacionalidad,
-recurrimos al método estacional de Holt-Winters . Este método se puede
-implementar con una estructura "Aditiva" o una estrucutra
-"multiplicativa"
+### Preparación de los datos
 
-El modelo aditivo se utliza mejor cuando la tendencia estacional es la
+Para hacer predicciones utilizando datos con tendencia y estacionalidad,
+recurrimos al método estacional de Holt-Winters . Este método se puede
+implementar con una estructura "Aditiva" o una estructura
+"Multiplicativa"
+
+El modelo aditivo se utiliza mejor cuando la tendencia estacional es la
 misma magnitud en todo el conjunto de datos, mientras que el modelo
 multiplicativo cuando la magnitud de la estacionalidad cambia a medida
 que aumenta o disminuye el tiempo el tiempo
@@ -175,13 +196,11 @@ que aumenta o disminuye el tiempo el tiempo
 plot(serie_tiempo)
 ```
 
-Al ver la gráfica al tener una periocidad diaria no es claro si usar el
-modelo aditivo o multiplicativo por lo cual evaluamos la
+Al ver la gráfica al tener una periodicidad diaria no es claro si usar
+el modelo aditivo o multiplicativo por lo cual evaluamos la
 homocedasticidad de los residuos .
 
-```{r reqserietiempo}
-frequency(serie_tiempo)
-```
+### Selección del Modelo
 
 **Modelo Aditivo**
 
@@ -200,8 +219,8 @@ plot(modelo_multiplicativo)
 ```
 
 Al revisar los dos modelos en la parte de **residuos** podemos ver que
-el multiplicativo es mas viable ya que parecen mas aleatorios y con
-menos patrones sistematicos que el modelo aditivo
+el Modelo Multiplicativo es mas viable ya que aparecen mas aleatorios y
+con menos patrones sistemáticos que el modelo aditivo
 
 Para volver a verificar vamos a usa la descomposición STL (Seasonal and
 Trend decomposition using Loess) y un modelo ETS(Error, Trend ,
@@ -213,15 +232,13 @@ plot(resultado_forecast)
 ```
 
 En la gráfica la linea negra representa los datos observados , la linea
-azul y las bandas al final representan los pronosticos y sus intervalos
-de confianza , la predicion muestra picos y cambios abruptos lo que
-sugiere una variabilidad de los datos lo que podria estar relacionado
+azul y las bandas al final representan los pronósticos y sus intervalos
+de confianza , la predicción muestra picos y cambios abruptos lo que
+sugiere una variabilidad de los datos lo que podría estar relacionado
 con el nivel dela serie . El modelo utilizado es una ETS(M,N,N)
-(Multiplicativo ,Sin Tendencia(N), Sin estacionalidad (N) ) , esto
-indica que el modelo asume qu los errores se multiplican por el nivel de
-la serie para mejorar la variabilidad de los datos
+(Multiplicativo ,Sin Tendencia(N), Sin estacionalidad (N) )
 
-Aplicamos el metodo Holt Winteres especificando el un modelo
+Aplicamos el método Holt-Winters especificando el un modelo
 multiplicativo
 
 ```{r hw_mul}
@@ -229,64 +246,124 @@ hw <- HoltWinters(serie_tiempo, seasonal="multiplicative")
 plot(hw)
 ```
 
-La linea represnta los datos orginales de la serie de tiempo, la linea
-roja indica la serie ajustada obtenida desde el metodo de Holt-Winters ,
+La linea representa los datos originales de la serie de tiempo, la linea
+roja indica la serie ajustada obtenida desde el método de Holt-Winters ,
 el cual se puede ver como se suaviza las fluctuaciones ,el modelo se
-centra enla tendencia general y los patrones de estaciones regulares
+centra en la tendencia general y los patrones de estaciones regulares
 
-\*\* Lectura de Alpha, Beta y Gama\*\*
+### Predicción
 
-```{r alpha}
+Realizamos la predicción con periodicidad diaria
 
-alpha <- hw$alpha
-beta <- hw$beta
-gamma <- hw$gamma
-
-# Imprimir los parámetros
-cat("Alpha (nivel):", alpha, "\n")
-cat("Beta (tendencia):", beta, "\n")
-cat("Gamma (estacionalidad):", gamma, "\n")
+```{r ht_pred}
+predicciones_hw <- forecast(hw, h = 365)  # Predicciones para el próximo año (365 días)
 
 ```
 
-**Alpha:** va tomar valores pasados **Beta** como da cero no existe
-tendencia **Gama** al estar cercano a 0.5 representa estacionalidad
+Para poder revertir la diferenciación tomamos el ultimo valor de la
+serie original "ultimo_valor_original antes de la diferenciación . En la
+variable"predicciones_revertidas", reconvertimos las predicciones
+diferenciada al nivel original utilizando la sum acumulada
+
+```{r hw_pred2}
+
+
+
+start_predicciones <- end(serie_tiempo)[1] + 1 / frequency(serie_tiempo)
+predicciones_original_ts <- ts(predicciones_hw$mean, start = start_predicciones, frequency = frequency(serie_tiempo))
+
+
+```
+
+```{r hw_pred}
+
+plot(serie_tiempo, xlim = c(start(serie_tiempo)[1], end(predicciones_original_ts)[1]), ylim = range(c(serie_tiempo, predicciones_original_ts)),
+     main = "Serie Temporal Original y Predicciones", ylab = "Valores", xlab = "Tiempo")
+lines(predicciones_original_ts, col = "blue")
+legend("topright", legend = c("Serie Original", "Predicciones"),
+       col = c("black", "blue"), lty = 1)
+
+
+```
+
+```{r hwfore}
+#head(predicciones_hw,10)
+
+```
+
+Al mirar el Point Forecast a lo largo del tiempo se ver que aumenta y
+disminuyee los valores predichos , lo que podría indicar que no hay una
+tendencia clara en la serie_temporal
+
+Al ver la predicción podemos ver entre más ampliamos la confianza se
+amplia el rango y y aumenta la incertidumbre de los pronósticos que
+cubren el valor real , con esto se puede hacer un análisis de riesgos
+para la empresa
+
+### Métricas de error
+
+\*\* Lectura de Alpha, Beta y Gama\*\*
+
+```{r hw_alpha_beta}
+# Imprimir los parámetros del modelo
+cat("Alpha (nivel):", hw$alpha, "\n")
+cat("Beta (tendencia):", hw$beta, "\n")
+cat("Gamma (estacionalidad):", hw$gamma, "\n")
+
+# Verificar si los parámetros son adecuados
+if (hw$alpha == 0 || hw$beta == 0) {
+  cat("Advertencia: Los parámetros alpha o beta son cero, lo que puede indicar que el modelo no está capturando adecuadamente el nivel o la tendencia.\n")
+}
+
+```
+
+**Alpha:** controla la suavización del nivel de la serie temporal ,el
+modelo esta actualizando 0.592 cada nueva observaciónva tomar valores
+pasados
+
+**Beta** controla la visualización de la tendencia de la serie de
+tiempo, El valor al ser cero(0) indica que no esta capturando la
+tendencia en la serie temporal
+
+**Gama** controla la suavización de la componente estacional de la serie
+temporal, al estar cercano a 0.5 representa que esta capturando la
+estacionalidad
 
 **Componentes de modelo**
 
-```{r hw varr}
+```{r hw_varr}
 print(str(hw$fitted))
 ```
 
 **Componente de Nivel**
 
-Este grafico se ajusta para ver la tendencia general excluyendo la
-estacionalidad y los valores irregurales
+Este gráfico se ajusta para ver la tendencia general excluyendo la
+estacionalidad y los valores irregulares
 
 ```{r hwniveles}
 plot(hw$fitted[, "level"], main="Componente de nivel")
 ```
 
-Al ver la gráfica podemos ver que empiza en 600 pero sigue creciendo
-hasta 1800 , lo que demuestra una tendencia creciente. Tambien se
+Al ver la gráfica podemos ver que empieza en 600 pero sigue creciendo
+hasta 2500 , lo que demuestra una tendencia creciente. También se
 denotan variaciones y periodos donde tiene incrementos y descensos
-temporales , por ejemplo para finales de 2023 e inicios de 2024 se
-observa una voltatilidad , estos cambios son importantes investigarlos
-ya pueden ser factores externos
+temporales , por ejemplo para mediados de 2023 e inicios de 2024 se
+observa una volatilidad , estos cambios son importantes investigarlos ya
+pueden ser factores externos
 
 **Componente de tendencia**
 
-Este componenen nos indica como evoluciona la serie temporal sin tomar
+Este componente nos indica como evoluciona la serie temporal sin tomar
 las variaciones estacionales
 
 ```{r hwtendee}
 plot(hw$fitted[, "trend"], main="Componente de tendencia")
 ```
 
-La linea horizaontal nos muestra que la tendencia es constante a lo
-largo del tiempo , no se observan cambios ,esto indicaria que los
-cambios vistos en los Compenentes de nivel son estacionales o
-irregulares, no tendenciales.
+La linea horizontal nos muestra que la tendencia es constante a lo largo
+del tiempo , no se observan cambios ,esto indicaría que los cambios
+vistos en los Componentes de nivel son estacionales o irregulares, no
+tendenciales.
 
 **Componente de estacionalidad**
 
@@ -298,8 +375,8 @@ plot(hw$fitted[, "season"], main="Componente estacional")
 ```
 
 El gráfico muestra cambios claros a lo largo del tiempo , evidenciando
-patrones estacionales. La amplitud de los cambios oscilan entre 0.6 y
-1.4 , la subidas y bajadas reflejan periodicos especificos del año donde
+patrones estacionales. La amplitud de los cambios oscilan entre 0.7 y
+1.3 , la subidas y bajadas reflejan periódicos específicos del año donde
 se espera que en cierto periodo suba o baje el tráfico , para nuestro
 caso puntual serian los periodos donde se realizan las fiestas y ferias.
 Con este componente se puede realizar el diseño e implementación de
@@ -308,7 +385,7 @@ mejoras de la red previniendo los periodos de alto tráfico
 **Verificación**
 
 **Prueba de Ljung-Box:** l esta herramienta nos sirve para verificar si
-hay autocorrelaciones significativas en una serie de residuos en
+hay auto correlaciones significativas en una serie de residuos en
 distintos retrasos
 
 ```{r rsss}
@@ -318,15 +395,14 @@ print(ljung_box_result)
 
 ```
 
-Dado que el valor -p es menor que 0.05 se rechaza la hipotesis nula que
-no existe autocorrelaciones significativas en los residuos del modelo ,
-esto significa que los residuos no son completamente aleatorios por lo
-tanto el modelo Holt - Winters puede no estar capturando toda la
-estructura dependiente en los datos
+Dado que el valor -p es mayor que 0.05 no hay evidencia que hay auto
+correlación entre los residuos, lo que se puede considera como ruido
+blanco, por lo cual se conisdera que esta capturano bien la
+estacionariedad.
 
-Se realiza la prueba de Ljung-Box con un mayor de retrasos de 30 podria
-proporcionar una vision mas clara de la estructura de autocorrelación en
-los residuos
+Se realiza la prueba de Ljung-Box con un mayor de retrasos de 30 podría
+proporcionar una visión mas clara de la estructura de auto correlación
+en los residuos
 
 ```{r ressshw}
 residuos_hw2 <- residuals(hw)
@@ -335,48 +411,18 @@ print(ljung_box_result_30)
 
 ```
 
-Al ser el valor -p menor a 0.05 se rechaza la hipotesis nula de que no
-hay autocorrelaciones en los residuos del modelo a los 30 retrasos lo
+Al ser el valor -p menor a 0.05 se rechaza la hipótesis nula de que no
+hay auto correlaciones en los residuos del modelo a los 30 retrasos lo
 que implica que el modelo no esta capturando la estructura actual de los
 datos
 
-**Predicción**
+### Conclusión
 
-Por medio de la funcion "forecast" realizamos la predicción del modelo
-,en la linea azul se ven los valores originales, en la linea verde los
-valores de la serie ajustada, en la linea rojas los valores predicidos .
-
-```{r  forecastt}
-hw_forecast <- forecast(hw, h=365)
-plot(serie_tiempo, type = "l", col = "blue", xlab = "Tiempo", ylab = "Valores", main = "Datos Originales, Ajuste y Pronóstico de Holt-Winters", ylim = range(c(serie_tiempo, hw$fitted[, "xhat"], hw_forecast$mean, hw_forecast$lower, hw_forecast$upper)))
-lines(hw$fitted[, "xhat"], col = "green")
-lines(hw_forecast$mean, col = "red")
-matlines(hw_forecast$mean, hw_forecast$lower[, "80%"], col = "red", lty = 2)
-matlines(hw_forecast$mean, hw_forecast$upper[, "80%"], col = "red", lty = 2)
-matlines(hw_forecast$mean, hw_forecast$lower[, "95%"], col = "red", lty = 2)
-matlines(hw_forecast$mean, hw_forecast$upper[, "95%"], col = "red", lty = 2)
-legend("topright", legend = c("Datos Originales", "Ajuste HW", "Pronóstico HW", "Intervalo 80%", "Intervalo 95%"), col = c("blue", "green", "red", "red", "red"), lty = c(1, 1, 1, 2, 2), merge = TRUE)
-
-```
-
-```{r hwfore}
-hw_forecast
-
-```
-
-Al mirar el Point Forecast a lo largo del tiempo se ve el aumento de los
-valores predichos , lo que podria indicar una tendencia ascendente
-esperada en la serie temporal
-
-Al ver la prediccion podemos ver entre más ampliamos la confianza se
-amplia el rango y y aumenta la incertidumbre de los pronósticos que
-cubren el valor real , con esto se puede hacer un análisis de riesgos
-para la empresa
-
-**Conclusión de Holt Winters** EL metodo Holt-Winters si bien es
-aplicado a la estacionalidad encontrando patrones del tráfico , no es
-suficiente para tener un modelo confiable ya que al aplicar la prueba de
-residuos de Ljung_box rechaza la Hipotesisi nula de no tener
+EL metodo Holt-Winters al revisar el valor de Beta al ser cero(0) indica
+que no esta capturando la tendencia en la serie temporal lo que pudimos
+confirmar observar al descomponer el modelo hw en la cual no existía
+tendencia. El modelo no es confiable ya que al aplicar la prueba de
+residuos de Ljung_box rechaza la Hipotesis nula de no tener
 autocorrelacion de los residuos por lo cual no permite captar la
 estructura de los datos ,
 
@@ -395,7 +441,7 @@ plot(seriedif)
 
 **ACF**
 
-Este gráfico nos muestra la correlación en la serie (seriediff) y sus
+Este gráfico nos muestra la correlación en la serie (seriedif) y sus
 retrasos
 
 ```{r acf}
@@ -424,88 +470,228 @@ sugerir un **AR(1)**
 
 Vamos a realizar varios modelos ARIMA teniendo como precedente que según
 el análisis anterior de diferencias(1) , ACF(1) y el PACF(1) , por medio
-del analisis de AIC y BIC seleccionaremos el mejor modelo
+del análisis de AIC y BIC seleccionaremos el mejor modelo
 
-```{r}
-arima1<- Arima(serie_tiempo,order =c(0,1,0) )
-arima2<- Arima(serie_tiempo,order =c(0,1,0) )
-arima3<- Arima(serie_tiempo,order =c(1,0,0) )
-arima4<- Arima(serie_tiempo,order =c(2,2,1) )
-arima5<- Arima(serie_tiempo,order =c(0,1,1) )
-arima6<- Arima(serie_tiempo,order =c(2,2,0) )
-arima7<- Arima(serie_tiempo,order =c(2,1,0) )
-arima8<- Arima(serie_tiempo,order =c(3,2,2) )
-arima9<- Arima(serie_tiempo,order =c(1,1,1) )
-arima10<- Arima(serie_tiempo,order =c(1,1,2) )
-arima11<- Arima(serie_tiempo,order =c(1,1,3) )
-arima12<- Arima(serie_tiempo,order =c(0,1,2) )
-arima13<- Arima(serie_tiempo,order =c(1,1,0))
-AIC(arima1,arima2,arima3,arima4,arima5,arima6,arima7,arima8,arima9,arima10,arima11,arima12,arima13)
-BIC(arima1,arima2,arima3,arima4,arima5,arima6,arima7,arima8,arima9,arima10,arima11,arima12,arima13)
+```{r arimastodos}
+
+
+# Ajustar los modelos ARIMA
+arima1 <- Arima(serie_tiempo, order = c(0, 1, 0))
+arima2 <- Arima(serie_tiempo, order = c(0, 1, 0))
+arima3 <- Arima(serie_tiempo, order = c(1, 0, 0))
+arima4 <- Arima(serie_tiempo, order = c(2, 2, 1))
+arima5 <- Arima(serie_tiempo, order = c(0, 1, 1))
+arima6 <- Arima(serie_tiempo, order = c(2, 2, 0))
+arima7 <- Arima(serie_tiempo, order = c(2, 1, 0))
+arima8 <- Arima(serie_tiempo, order = c(3, 2, 2))
+arima9 <- Arima(serie_tiempo, order = c(1, 1, 1))
+arima10 <- Arima(serie_tiempo, order = c(1, 1, 2))
+arima11 <- Arima(serie_tiempo, order = c(1, 1, 3))
+arima12 <- Arima(serie_tiempo, order = c(0, 1, 2))
+arima13 <- Arima(serie_tiempo, order = c(1, 1, 0))
+arima14 <- Arima(serie_tiempo, order = c(3, 1, 1))
+arima15 <- Arima(serie_tiempo, order = c(2, 1, 2))
+
+# Función para realizar el test de Ljung-Box y calcular AIC y BIC
+eval_model <- function(model) {
+  residuos <- residuals(model)
+  ljung_box_result <- Box.test(residuos, lag = 30, type = "Ljung-Box")
+  aic <- AIC(model)
+  bic <- BIC(model)
+  return(list(ljung_box = ljung_box_result, AIC = aic, BIC = bic))
+}
+
+# Evaluar cada modelo
+results <- list(
+  arima1 = eval_model(arima1),
+  arima2 = eval_model(arima2),
+  arima3 = eval_model(arima3),
+  arima4 = eval_model(arima4),
+  arima5 = eval_model(arima5),
+  arima6 = eval_model(arima6),
+  arima7 = eval_model(arima7),
+  arima8 = eval_model(arima8),
+  arima9 = eval_model(arima9),
+  arima10 = eval_model(arima10),
+  arima11 = eval_model(arima11),
+  arima12 = eval_model(arima12),
+  arima13 = eval_model(arima13),
+  arima14 = eval_model(arima14),
+  arima15 = eval_model(arima15)
+)
+
+
+# Comparar AIC y BIC de los modelos
+aic_values <- sapply(results, function(res) res$AIC)
+bic_values <- sapply(results, function(res) res$BIC)
+
+cat("\nComparación de AIC:\n")
+print(aic_values)
+
+cat("\nComparación de BIC:\n")
+print(bic_values)
+
 
 ```
 
-Realizando varios modelos encontramos que el modelo "arima9" es el mejor
-con **AR(1), DIFF(1) y MA(1)** ,ya que al verificar AIC y BIC nos pueden
-definir que tan bien se ajusta el modelo alos datos ,y la otra evalua su
-complejidad, entre mas sencillo el modelo mejor, ya que entre mas
-parametros puede ocasionar más sobreajuste.
+Realizando varios modelos encontramos que el modelo "arima14" es el
+mejor con **AR(3), DIFF(1) y MA(1)** ,ya que al verificar AIC y BIC nos
+pueden definir que tan bien se ajusta el modelo a los datos ,y la otra
+evalúa su complejidad, entre mas sencillo el modelo mejor, ya que entre
+mas parámetros puede ocasionar más sobre ajuste.
 
-El arima indicaria lo siguiente: **AR:**Se necesita un componentes
-AR(1), lo que indica que los datos pasados tienen efecto sobre los
+El Arima indicaria lo siguiente: **AR:**Se necesita un componentes
+AR(3), lo que indica que los datos pasados tienen efecto sobre los
 valores futuros \*\*Diferenciación\*: Se necesita una (1) diferenciación
 para hacer la serie estacionaria . Esta fue la observación realizada
-anteriormente con una diferencia a la serie original **Media Móvil**:
+anteriormente con dos diferencias a la serie original **Media Móvil**:
 Indica que con (1) media móvil seria suficiente, ya que maneja la
 influencia de error de predicción de penúltimo periodo
+
+El modelo se puede confirmar ejecutando el Auto Arima
+
+```{r rautoarima}
+modeloautoarima<-auto.arima(serie_tiempo)
+modeloautoarima
+```
 
 **Diagnóstico del Modelo**
 
 ```{r tsdiagarima9}
-tsdiag(arima9)
+tsdiag(arima14)
 ```
 
 **Residuos estandar**: Se pueden ver los residuos distribuidos
 aleatoriamente alrededor de cero , con algunos outlier **Residuos ACF**
 : Todas las autocorrelaciones estan dentro de la banda de confianza , lo
 que significa que no hay autocorrelación de residuos, es decir que esta
-capturando bien la serie temporal **P values de Ljung-Box**: Los valores
-estan por encima de la línea de significancia , lo que indica que los
-residuos no tienen autocorrelación, por lo tanto el modelo es adecuado
+capturando bien la serie temporal **P values de Ljung-Box**: Algunos
+valores están por encima de la línea de significancia , lo que se
+tendria confirmar ya que hay observaciones debajo del umbral
 
-**Prueba de Lgung-Box**
+**Pronóstico**
 
-```{r lgung box arima9}
-Box.test(residuals(arima9),type ="Ljung-Box")
+```{r proarima9}
+predicciones_arima <- forecast(arima14, h = 365)
+#predicciones_arima
 ```
 
-Prueba de Lgun Box la Hipótesis nos sirve para saber si hay Ruido Blanco
-,si el valor(0.9525) es mayor a (0.5), entonces si hay Ruido Blanco, por
-lo cual se ajusta bien el modelo
+Como podemos ver que como los valores predicho cambian através del
+tiempo
+
+```{r arima14}
+# Crear un objeto ts para las predicciones
+start_predicciones <- end(serie_tiempo)[1] + 1 / frequency(serie_tiempo)
+predicciones_arima_ts <- ts(predicciones_arima$mean, start = start_predicciones, frequency = frequency(serie_tiempo))
+
+# Graficar las predicciones junto con la serie original
+plot(serie_tiempo, xlim = c(start(serie_tiempo)[1], end(predicciones_arima_ts)[1]), ylim = range(c(serie_tiempo, predicciones_arima_ts)),
+     main = "Serie Temporal Original y Predicciones", ylab = "Valores", xlab = "Tiempo")
+lines(predicciones_arima_ts, col = "blue")
+legend("topright", legend = c("Serie Original", "Predicciones"),
+       col = c("black", "blue"), lty = 1)
+```
+
+**Métricas de Error**
 
 **Validación de residuos**
 
 En este gráfico podemos observar que la media es igual a cero
 
 ```{r error arima9}
-error=residuals(arima9)
-plot (error)
+residuos_arima <- residuals(arima14)
+plot (residuos_arima)
 ```
 
-**Pronóstico**
+**Prueba de Lgung-Box**
 
-```{r proarima9}
-pronostico_arima9 <- forecast(arima9 ,level=c(95),h=50)
-pronostico_arima9
+```{r lgung box arima9}
+Box.test(residuals(arima14),type ="Ljung-Box")
+```
+
+Prueba de Ljung-Box la Hipótesis nos sirve para saber si hay Ruido
+Blanco ,en este caso el valor(0.8521) es mayor a (0.5), entonces si hay
+Ruido Blanco, por lo cual se ajusta bien el modelo
+
+**Prueba de Lgung-Box con Retardos**
+
+```{r ljungnox arima}
+ljung_box_result_arima <- Box.test(residuos_arima, lag = 30, type = "Ljung-Box")
+print(ljung_box_result_arima)
+```
+
+Prueba de Ljung-Box la Hipótesis en este caso con 30 retardos el valor
+de p-values es menor a 0.05 por lo cual tiene una auto correlación
+significativa de lo residuos
+
+Se realiza exploración de todos los ARIMAS propuestos realizando las
+pruebas de Ljung-Box
+
+```{r prueba_lgung_box}
+eval_model <- function(model) {
+  residuos <- residuals(model)
+  ljung_box_result <- Box.test(residuos, lag = 30, type = "Ljung-Box")
+  aic <- AIC(model)
+  bic <- BIC(model)
+  return(list(ljung_box = ljung_box_result, AIC = aic, BIC = bic))
+}
+
+
+# Imprimir resultados
+for (i in 1:length(results)) {
+  cat("\nModelo ARIMA", names(results)[i], "\n")
+  print(results[[i]]$ljung_box)
+  cat("AIC:", results[[i]]$AIC, "\n")
+  cat("BIC:", results[[i]]$BIC, "\n")
+}
 
 ```
 
-Como podemos ver que el valor a partir del índice 2024.1808 se comporta
-constante con el valor de (882.3)
+Al revisar todos los modelos , se confirman que todos tiene una auto
+correlación significativa de residuos
 
-```{r arima9}
-plot(pronostico_arima9)
+**Métricas de error**
+
+```{r met_error_arima}
+
+n <- length(serie_tiempo)
+residuos_arima14 <- residuals(arima14)
+
+
+length_residuos <- length(residuos_arima14)
+length_serie <- length(serie_tiempo)
+
+if (length_residuos == length_serie) {
+  mse <- mean(residuos_arima14^2)
+  rmse <- sqrt(mse)
+  mae <- mean(abs(residuos_arima14))
+  mape <- mean(abs(residuos_arima14 / serie_tiempo)) * 100
+  r2 <- 1 - (sum(residuos_arima14^2) / sum((serie_tiempo - mean(serie_tiempo))^2))
+} else {
+  # Ajustar longitudes si no coinciden
+  residuos_arima14_adj <- residuos_arima14[1:n]
+  serie_tiempo_adj <- serie_tiempo[1:n]
+  
+  mse <- mean(residuos_arima14_adj^2)
+  rmse <- sqrt(mse)
+  mae <- mean(abs(residuos_arima14_adj))
+  mape <- mean(abs(residuos_arima14_adj / serie_tiempo_adj)) * 100
+  r2 <- 1 - (sum(residuos_arima14_adj^2) / sum((serie_tiempo_adj - mean(serie_tiempo_adj))^2))
+}
+
+cat("MSE:", mse, "\n")
+cat("RMSE:", rmse, "\n")
+cat("MAE:", mae, "\n")
+cat("MAPE:", mape, "%\n")
+cat("R^2:", r2, "\n")
+
 ```
+
+**Conclusiones**
+
+Si bien el modelo arima puede explicar el 86.6% de la variabilidad(R2) y
+sy porcentaje de error del 6.5% la prueba de Ljung-Box nnos confirma que
+hay una alta auto correlación entre los residuos
 
 ### ARIMA con Drift
 
@@ -514,8 +700,11 @@ de una constante que representa una tendencia lineal en la serie
 temporal después de la diferenciación. Al incluirlo , el modelo puedo
 capturar esa tendencia residual mejorando la precisión del modelo
 
+Utilizamos el modelo con mejores resultado de AIC y BIC anteriormente
+estudiados
+
 ```{r modesymmar}
-modelo_arima_drift <- Arima(serie_tiempo, order=c(1,1,1), include.drift=TRUE)
+modelo_arima_drift <- Arima(serie_tiempo, order=c(3,1,1), include.drift=TRUE)
 summary(modelo_arima_drift)
 modelo_arima_drift
 
@@ -528,153 +717,72 @@ tsdiag(modelo_arima_drift)
 ```
 
 **Residuos estandar**: Se pueden ver los residuos distribuidos
-aleatoriamente alrededor de cero , con algunos outlier **Residuos ACF**
-: Todas las autocorrelaciones estan dentro de la banda de confianza , lo
-que significa que no hay autocorrelación de residuos, es decir que esta
-capturando bien la serie temporal **P values de Ljung-Box**: Los valores
-estan por encima de la línea de significancia , lo que indica que los
-residuos no tienen autocorrelación, por lo tanto el modelo es adecuado
+aleatoriamente alrededor de cero , con algunos outlier
 
-**Prueba de Lgung-Box**
+**Residuos ACF:** Todas las autocorrelaciones estan dentro de la banda
+de confianza , lo que significa que no hay autocorrelación de residuos,
+es decir que esta capturando bien la serie temporal
 
-```{r bozta_arimadriftmanual}
-Box.test(residuals(modelo_arima_drift),type ="Ljung-Box")
-```
+**P values de Ljung-Box**: Los valores estan por encima de la línea de
+significancia , lo que indica que los residuos no tienen
+autocorrelación, por lo tanto el modelo es adecuado
 
-Prueba de Lgun Box la Hipótesis nos sirve para saber si hay Ruido Blanco
-,si el valor(0.9668) es mayor a (0.5), entonces si hay Ruido Blanco, por
-lo cual se ajusta bien el modelo
+### Métricas de error
 
 **Validación de residuos**
 
 En este gráfico podemos observar que la media es igual a cero
 
 ```{r error_arimadee}
-error=residuals(modelo_arima_drift)
-plot (error)
+residuos_arima_drift=residuals(modelo_arima_drift)
+plot (residuos_arima_drift)
 ```
+
+**Prueba de Ljung-Box**
+
+```{r bozta_arimadriftmanual}
+Box.test(residuals(modelo_arima_drift),type ="Ljung-Box")
+```
+
+Prueba de Lgun Box la Hipótesis nos sirve para saber si hay Ruido Blanco
+,si el valor(0.6979) es mayor a (0.5), entonces si hay Ruido Blanco, por
+lo cual se ajusta bien el modelo
+
+**Prueba de Ljung-Box con Retardos**
+
+```{r}
+ljung_box_result_arima <- Box.test(residuos_arima_drift, lag = 30, type = "Ljung-Box")
+print(ljung_box_result_arima)
+```
+
+Prueba de Ljung-Box la Hipótesis en este caso con 30 retardos el valor
+de p-values es menor a 0.05 por lo cual tiene una auto correlación
+significativa de lo residuos
 
 **Pronóstico**
 
 ```{r arimanamnualdrif}
 # Pronóstico utilizando el modelo ARIMA con drift
 pronostico_arima_drift <- forecast(modelo_arima_drift, h=150)
-pronostico_arima_drift
+#pronostico_arima_drift
 plot(pronostico_arima_drift)
 ```
 
-Podemos ver como en los puntos de Predicción ya no tiene una tendencia
-lineal,ya los valores presentan una tendencia
+**Conclusiones**
 
-### AUTOARIMA
+Al incluir el parámetro **drift¨** pudo capturar la tendencia residual
+mejorando la precisión el el modelo ARIMA(3,1,1), pero la prueba de
+Ljung-Box nos confirma que hay una alta auto correlación entre los
+residuos igual que el modelo anterior
 
-El AUTOARIMA utilizavarios modelos y selecciona los mejores AIC/BIC
-buscando el mejor modelo que ajuste los datos y la el mas simple
-utilizando la menor cantidad de parámetros
+## Facebook Prophet
 
-```{r autoarimaserietiem}
-modelo<-auto.arima(serie_tiempo)
-modelo
-```
+Usaremos la librería Prophet esta herramienta fue desarrollada por
+Facebook, el cual se basa en un modelo aditivo , donde las tendencias no
+lineales se ajustan con la estacionariedad diaria, semanal y anual
+teniendo en cuenta los días festivos.
 
-El resultado de AUTOARIMA sugiere un modelo (0,1,2).
-
-**AR:**No hay componentes AR lo que indica que los datos pasados no
-tienen efecto sobre los valores futuros \*\*Diferenciación\*: Se
-necesita una diferenciación para hacer la serie estacionaria . Esta fue
-la observación realizada anteriormente con una diferencia a la serie
-original **Media Móvil**: Indica que con 2 medias móviles seria
-suficiene, ya que maneja la influencia de error de predicción de
-penúltimo periodo, esta elección tambien es dado porque el valor del
-error(-0.0767) es menor respecto al periodo anterior (-0.7636)
-
-**Diagnóstico del Modelo**
-
-```{r tsdiagautoarima}
-tsdiag(modelo)
-```
-
-**Residuos estandar** se pueden ver los residuso distribuidos
-aleatoriamente alrededor de cero , con algunos outlier **Residuos ACF**
-: Todas las autocorrelaciones estan dentro de la banda de confianza ,
-loq ue significa que no hay autocorrelación de residuos, lo que sugiere
-que esta capturando bien la serie temporal **P values de Ljung-Box**:
-Los valores estan po rencima de la linea de significancia , lo que
-indica que los residuos no tienen autocorrelación por lo tanto el modelo
-es adecuado
-
-**Prueba de Lgung-Box**
-
-```{r boztaungbox}
-Box.test(residuals(modelo),type ="Ljung-Box")
-```
-
-Prueba de Lgun Box la Hipótesis nos sirve para saber si hay Ruido Blanco
-, en este caso el valor (0.9917) es mayor a (0.5) por lo cual si hay
-Ruido Blanco y se ajusta bien el modelo
-
-**Validación de residuos**
-
-En este gráfico podemos observar que la media es igual a cero
-
-```{r errorres}
-error=residuals(modelo)
-plot (error)
-```
-
-**Pronóstico**
-
-```{r proautoarimaa }
-pronostico <- forecast::forecast(modelo ,h=100)
-pronostico
-
-```
-
-En el caso del pronóstico el modelo empiza a mostrar linealidad apartir
-del indice (2024.1671)
-
-### AUTOARIMA con Drift
-
-AL igual que el ARIMA anterior vamos a incluir el parametro Drift para
-ajustar la linealidad
-
-```{r modeautodrif}
-library(forecast)
-modelo_auto_con_drift <- auto.arima(serie_tiempo, d=1, D=0, seasonal=FALSE, allowdrift=TRUE)
-summary(modelo_auto_con_drift)
-modelo_auto_con_drift
-
-```
-
-Se puede ver en el pronóstico una linealidad de (881.29) a parir del
-segundo Indice
-
-```{r autodfrifff}
-
-pronostico_auto_con_drift <- forecast(modelo_auto_con_drift, h=150) 
-pronostico_auto_con_drift
-```
-
-```{r plot_drift} 
-plot(pronostico_auto_con_drift)
-```
-
-### Conclusión
-
-El modelo AUTOARIMA puede no capturar todas las caraterisitcas de una
-serie temporal , como una tendencia residual . Por otro lado al incluir
-el parámetro **drift¨** en el modelo ARIMA(1,1,1) ayudo a capturar esta
-tendencia mejorando el ajuste y la interpretación del modelo
-
-
-
-
-## Facebook Prophet 
-
-Usaremos la libreria Prophet esta herramienta fue desarrollada por Facebook, el cual se basa en un modelo aditivo , donde las tendencias no lineales se ajustan con la estacionariedad diaria, semanal y anual teniendo encuenta los días festivos.
-
-
-### Carque de datos
+### Carga y preparación de datos
 
 ```{r ph,echo=FALSE , warning=FALSE, message=FALSE}
 library(prophet)
@@ -682,125 +790,256 @@ library(dplyr)
 
 ```
 
+Cargamos los datos desde data_sitio.csv para incluir las columnas de
+ferias y fiestas "FIESTAS" .
 
-Cargamos los datos desde data_sitio.csv para incluir las colunas de ferias y fiestas "FIESTAS"
+Para preparar los datos para usar la librería Prophet colocando la
+columna "M_FECHA_DIA" en "ds" y la variable a predecir en este caso
+"PAYLOAD 4G" en la variable "y"
 
 ```{r phdat}
-data_sitio <- read.csv("data_sitio.csv", sep = ";")
-data_sitio$M_FECHA_DIA <- as.Date(data_sitio$M_FECHA_DIA)
-data_sitio <- data_sitio[order(data_sitio$M_FECHA_DIA), ]
-head(data_sitio,5)
-```
-
-```{r ph_df}
-df <- data_sitio[, c("M_FECHA_DIA", "PAYLOAD_4G","FIESTA")]
+data_sitio_fiesta <- read.csv("data_sitio_smoothed.csv", sep = ",")
+data_sitio_fiesta$M_FECHA_DIA <- as.Date(data_sitio_fiesta$M_FECHA_DIA)
+data_sitio_fiesta <- data_sitio_fiesta[order(data_sitio_fiesta$M_FECHA_DIA), ]
+df <- data_sitio_fiesta %>%
+  select(M_FECHA_DIA, PAYLOAD_4G_smoo_mean, FIESTA) %>%
+  rename(ds = M_FECHA_DIA, y = PAYLOAD_4G_smoo_mean)
 head(df,5)
 ```
 
 ### Alistamiento de datos para el modelo
 
-Para preparar los datos para usar la libreria Prophet colocando la columna "M_FECHA_DIA" en "ds" y la variable a predecir en este caso "PAYLOAD 4G" en la variable "y" 
+Definimos los festivos para que la librería Prophet para aplicar los
+efectos especiales durante las festividades, para los parámetros
+"lower_window=0" lo usamos para indicar que la festividad empieza el
+mismo día y "upper_window=1" finaliza el día siguiente
 
-
-```{r ph_rename}
-df <- df %>%
-  rename(ds = M_FECHA_DIA, y = PAYLOAD_4G)
-```
-
-Aseguramos el tipo de dato para "ds" y "y"
-```{r ph_tipovalor}
-#df$ds <- as.Date(df$ds) 
-#df$y <- as.numeric(df$y)
-df
-```
-
-
-Se crea un nuevo dataframe "holydays" para los días de ferias y fiestas de nuestro proyecto, este se usa para mejorar el ajuste del proyecto 
-
-
-```{r ph_holydays}
-
+```{r ph_craholidays}
 holidays <- df %>%
   filter(FIESTA == 1) %>%
   select(ds) %>%
-  mutate(holiday = 'fiesta')
-
+  mutate(holiday = 'fiesta', lower_window = 0, upper_window = 1)
 ```
-
 
 ### Creación de modelo
 
-Creamos el modelo teniendo encuenta los festivos incluidos en "holidays" , y definimos que no tenemos estacionalidad horaria , ya que la minima expresión en fechas es el dia entero
+Creamos el modelo teniendo en cuenta los festivos incluidos en
+"holidays" , y definimos que no tenemos estacionalidad horaria , ya que
+la mínima expresión en fechas es el día entero al no tener fracción
+deshabilitamos "daily.seasonality"
 
 ```{r ph_modelo}
-modelo_prophet <- prophet(holidays = holidays, daily.seasonality = FALSE,weekly.seasonality=TRUE)
-
-modelo_prophet <- fit.prophet(modelo_prophet, df)
-
-
+model_prophet <- prophet(holidays = holidays, daily.seasonality = FALSE ,weekly.seasonality = TRUE,yearly.seasonality = TRUE, changepoint.prior.scale = 0.05, # Ajustar sensibilidad a los puntos de cambio
+  seasonality.mode = 'multiplicative' # Cambiar a modo multiplicativo si es más adecuado
+)
+model_prophet <- fit.prophet(model_prophet, df)
 ```
-
-
 
 ### Pronóstico
 
-Creamos un dataset con fechas futuras  y las incluimos en el pronóstico 365 días
+Creamos un dataset con fechas futuras con los mismos parámetros de
+festividades inicíales y las incluimos en el pronóstico 365 días
 
-```{r ph_pronostico}
-futuro <- make_future_dataframe(modelo_prophet, periods = 365)
-pronostico <- predict(modelo_prophet, futuro)
+```{r prophet futuro}
+futuro <- make_future_dataframe(model_prophet, periods = 365)
+
+# Añadir las futuras festividades
+future_holidays <- data.frame(
+  holiday = 'fiesta',
+  ds = as.Date(c('2024-10-10', '2024-10-11', '2024-10-12', '2024-10-13', '2024-10-14')),
+  lower_window = 0,
+  upper_window = 1
+)
+
+futuro <- bind_rows(futuro, future_holidays)
+pronostico <- predict(model_prophet, futuro)
 head(pronostico,5)
 ```
-**Linea Azul:**: prediccion de Payload 4G, la cual nos muestra una tendencia ascendente hasta 2023 , despues de este año se estabiliza
 
-**Banda Azul Clara:** Estas bandas corresponde  al nivel de confianza  que normalmente es del (80% al 95%)
+**Linea Azul:**: prediccion de Payload 4G, la cual nos muestra una
+tendencia ascendente hasta 2023 , despues de este año se estabiliza
 
-**Puntos Negros:** Valores reales de Payload 
+**Banda Azul Clara:** Estas bandas corresponde al nivel de confianza que
+normalmente es del (80% al 95%)
 
-**Lineas Rojas:** son los Changepoint o puntos de cambio detectados por el modelo Prophet,son puntos donde el modelo detecta un cambio de tendencia de Payload 4G
+**Puntos Negros:** Valores reales de Payload
 
-**Puntos negros:** son los valores reales  de Payload 4g, nos permite visualmente comparar las predicciones del modelo , con los observados
+**Lineas Rojas:** son los Changepoint o puntos de cambio detectados por
+el modelo Prophet,son puntos donde el modelo detecta un cambio de
+tendencia de Payload 4G
+
+**Puntos negros:** son los valores reales de Payload 4g, nos permite
+visualmente comparar las predicciones del modelo , con los observados
 
 **Visualización de resultados**
+
 ```{r ph_plot_pronostico}
 
-plot(modelo_prophet, pronostico) +
-  add_changepoints_to_plot(modelo_prophet)
+plot(model_prophet, pronostico) +
+  add_changepoints_to_plot(model_prophet, pronostico)
 
 ```
+
 ### Descomposición
 
 ```{r ph_descomposicion}
-prophet_plot_components(modelo_prophet, pronostico)
+prophet_plot_components(model_prophet, pronostico)
 
 ```
-**Trend:**  La tendencia muestra como el "PAYLOAD 4G" aumenta a lo largo del tiempo , desde el 2021  al 2023 hay una tendencia creciente , luego en 2023 se estabiliza
 
-**Holydays:** Este gráfico muestra el impacto de los festivo en el tráfico. Se ve un impacto en significativo en el 2022. En los otros años el impacto parece ser menor o inexistente.
+**Trend:** La tendencia muestra como el "PAYLOAD 4G" aumenta a lo largo
+del tiempo , desde el 2021 al 2023 hay una tendencia creciente , luego
+en 2023 se estabiliza
 
-**Weekly:**Muestra como en los días Domingo viernes  y sabado , aumenta el tráfico, mientras que en los días lunes es mas bajo.
+**Holydays:** Este gráfico muestra el impacto de los festivo en el
+tráfico. Se ve un impacto en significativo en cada año .
 
-**Yearly** Este gráfico muestra que hay mayor tráfico  los meses de Julio hasta Diciembre, mientras que Febrero y Octubre tienen menor tráfico
+**Weekly:**Muestra como en los días finales de la semana aumenta el
+tráfico, mientras que los primeros son los más bajos.
 
+**Yearly** Este gráfico muestra que hay mayor tráfico los meses de Junio
+y Octubre, mientras que Enero y Marzo tienen menor tráfico
 
+### Validación con Modelo de Entrenamiento y Prueba
 
+Particionamos los datos de entrenamiento de 01-01-2021 hasta 31-12-2022
+y los de pruebas desde el 01-01-2023 a 01-05-2024
 
+```{r ph_train}
+# Dividir los datos en conjunto de entrenamiento y prueba
+train <- df %>% filter(ds < as.Date("2023-01-01"))
+test <- df %>% filter(ds >= as.Date("2023-01-01"))
 
-### Métricas de Error
+```
 
-Calculamos los errores 
+Creamos un modelo para el conjunto de entrenamiento
 
+```{r ph_model}
+model_train <- prophet(
+  holidays = holidays, 
+  yearly.seasonality = TRUE, 
+  weekly.seasonality = TRUE, 
+  daily.seasonality = FALSE,
+  changepoint.prior.scale = 0.05, # Ajustar sensibilidad a los puntos de cambio
+  seasonality.mode = 'multiplicative' # Cambiar a modo multiplicativo si es más adecuado
+)
+model_train <- fit.prophet(model_train, train)
+```
 
-**MAE (Mean Absolute Error):** Esto significa que en promedio las predicciones estan con una diferencia de 234 unidades 
+Hacemos las predicciones del conjunto de prueba
 
-**MSE (Mean Squared Error):** Penaliza los errores grandes 
+```{r ph_future}
+# Hacer predicciones para el conjunto de prueba
+future_test <- make_future_dataframe(model_train, periods = nrow(test))
+forecast_test <- predict(model_train, future_test)
 
-**RMSE (Root Mean Squared Error):** Esta es la raiz cuadrada del MSE  proporcioando la medida de de error en las mismas unidades  de los datos originales
+```
 
+Unimos las predicciones al conjunto de prueba
+
+```{r ph_validation}
+validation <- test %>%
+  left_join(forecast_test %>% select(ds, yhat), by = "ds") %>%
+  mutate(residual = y - yhat)
+
+```
+
+**Métricas de error**
+
+```{r ph_train_err}
+
+# Calcular las métricas de error
+actual_p <- validation$y
+predicted_p <- validation$yhat
+mae <- mean(abs(actual_p - predicted_p), na.rm = TRUE)
+mse <- mean((actual_p - predicted_p)^2, na.rm = TRUE)
+rmse <- sqrt(mse)
+print(sprintf("RESULTADO MAE: %.4f", mae))
+print(sprintf("RESULTADO MSE: %.4f", mse))
+print(sprintf("RESULTADO RMSE: %.4f", rmse))
+
+ss_res <- sum((actual_p - predicted_p)^2, na.rm = TRUE)
+ss_tot <- sum((actual_p - mean(actual_p))^2, na.rm = TRUE)
+r_squared <- 1 - (ss_res / ss_tot)
+r_squared <- as.numeric(r_squared)
+print(sprintf("RESULTADO R²: %.4f", r_squared))
+
+mape <- mean(abs((actual_p - predicted_p) / actual_p), na.rm = TRUE) * 100
+mape <- as.numeric(mape)
+print(sprintf("RESULTADO MAPE: %.4f", mape))
+```
+
+Al dividir los datos de entrenamiento y prueba , los festivos no estan
+distribuidos uniformemente , por esto el modelo no aprende adecuadamente
+el impacto de los festivos y es por esto que no puede explicar la
+variabilidad ya que el R2 es de -13%
+
+### Validación Cruzada
+
+Utilizamos la función "cross_validation", esta nos permite evaluar el
+modelo en diferentes particiones de los datos y tener una estimación
+robusta del modelo
+
+se configuran los parámetros así:
+
+intial=730 el cual se utiliza como conjunto inicial de entrenamiento.
+
+period=180 Realiza una evaluación cada 180 días
+
+horizon=365 Predice 365 días en el futuro
+
+```{r ph_def}
+df_cv <- cross_validation(model_prophet, initial = 730, period = 90, horizon = 180, units = 'days')
+```
+
+Graficamos las métricas de rendimiento ,con la validación cruzada nos
+ayuda atener una evaluación mas precisa ya que los festivos no están
+distribuidos uniformemente en los conjuntos de entrenamiento y prueba
+
+En el gráfico se puede ver como a medida de que los días de predicción
+aumenta disminuye el RMSE ,lo cual es esperado ya que predecir más lejos
+es más difícil
+
+```{r ph_croos}
+df_p <- performance_metrics(df_cv)
+plot_cross_validation_metric(df_cv, metric = 'rmse')
+
+```
+
+**R2 de la validación cruzada**
+
+```{r ph_val_cruza  }
+actual <- df_cv$y
+predicted <- df_cv$yhat
+
+ss_res <- sum((actual - predicted)^2, na.rm = TRUE)
+ss_tot <- sum((actual - mean(actual, na.rm = TRUE))^2, na.rm = TRUE)
+r_squared <- 1 - (ss_res / ss_tot)
+
+cat("R²:", r_squared, "\n")
+```
+
+Un R2 negativo nos dice que no esta capturando la variabilidad de los
+datos
+
+### Entrenamiento con todos los datos
+
+**Métricas de Error**
+
+Calculamos los errores usando todos los datos del modelo
+
+**MAE (Mean Absolute Error):** Esto significa que en promedio las
+predicciones estan con una diferencia de 234 unidades
+
+**MSE (Mean Squared Error):** Penaliza los errores grandes
+
+**RMSE (Root Mean Squared Error):** Esta es la raiz cuadrada del MSE
+proporcioando la medida de de error en las mismas unidades de los datos
+originales
 
 ```{r ph_error}
 actual <- df$y
-predicted <- predict(modelo_prophet, df)$yhat
+predicted <- predict(model_prophet, df)$yhat
 
 mae <- mean(abs(actual - predicted), na.rm = TRUE)
 mse <- mean((actual - predicted)^2, na.rm = TRUE)
@@ -810,10 +1049,8 @@ print(sprintf("RESULTADO MSE: %.4f", mse))
 print(sprintf("RESULTADO RMSE: %.4f", rmse))
 ```
 
-
-**R² (Coeficiente de Determinación):** este Indica que el modelo explica el 6%  de la variabilidad  en los datos 
-
-
+**R² (Coeficiente de Determinación):** este Indica que el modelo explica
+el 80% de la variabilidad en los datos
 
 ```{r ph_r2}
 ss_res <- sum((actual - predicted)^2, na.rm = TRUE)
@@ -824,10 +1061,9 @@ r_squared <- as.numeric(r_squared)
 print(sprintf("RESULTADO R²: %.4f", r_squared))
 ```
 
-
-**MAPE (Mean Absolute Percentage Error:)**: Este indica que el error promedio es del 31.5%, proporciOna una medida relativa del error respecto a los  valores reales
-
-
+**MAPE (Mean Absolute Percentage Error:)**: Este indica que el error
+promedio es del 7.7%, proporciona una medida relativa del error respecto
+a los valores reales
 
 ```{r ph_mape}
 
@@ -837,9 +1073,86 @@ print(sprintf("RESULTADO MAPE: %.4f", mape))
 
 ```
 
-### Conclusiones 
-Las métricas de error (MAE,MSE,RMSE,R², MAPE) muestran que modelo NO captura tendencias y patrones de tráfico "Payload 4G". La incorporación de las festividades en "Holidays" no ha mejorado la precisión del modelo
+Cuando el modelo se ajusta con todos los datos, puede estar sobre
+ajustado a los datos de entrenamiento. Esto significa que el modelo se
+ajusta muy bien a los datos que ya ha visto, pero no generaliza bien a
+datos nuevos o no vistos.
 
+#### Análisis de Residuos
+
+Realizamos el análisis de residuos al modelo que tiene todos los datos
+ya que explica con mayor porcentaje la variabilidad de los datos.La
+mayor partde de los resiudos estan alrededor de cero. Los picos indican
+que el modelo no puede capturar la variabilidad de los datos . Al ver el
+gráfico se puede ver como los datos aumentan la amplitud en ciertos
+periodos (heterocedasticidad) . A simple vista se pueden ver patrones
+los cuales pueden ser autocorrelaciones entre residuos
+
+```{r ph_residuals}
+library(ggplot2)
+forecast <- predict(model_prophet, df)
+df$residuals <- df$y - forecast$yhat
+ggplot(df, aes(x = ds, y = residuals)) +
+  geom_line() +
+  ggtitle("Residuos a lo largo del tiempo") +
+  xlab("Fecha") +
+  ylab("Residuos")
+
+
+```
+
+En el gráfico observamos que los primeros retardos están por encima del
+umbral lo que indica que hay auto correlación de residuos.
+
+En el gráfico de QQ Plot se puede ver que los residuos no siguen la
+linea roja porlo cual no están normalmente distribuidos.
+
+En el histograma se puede ver la distribución de los residuos con unos
+outlier en los extremos confirmando una distribución no normal.
+
+En el Box-plot se puede ver como los outliers están pro fuera de los
+cuartiles
+
+```{r}
+par(mfrow = c(2, 2))
+acf(df$residuals, main = "ACF de los Residuos")
+qqnorm(df$residuals, main = "Q-Q Plot de los Residuos")
+qqline(df$residuals, col = "red")
+hist(df$residuals, main = "Histograma de los Residuos", xlab = "Residuos")
+boxplot(df$residuals, main = "Boxplot de los Residuos")
+```
+
+**Prueba de Ljung-Box**
+
+Dado que el valor p-values es -2.2e-16 se puede concluir que existe una
+fuerte autocorrelación de residuos
+
+```{r phres}
+
+summary(df$residuals)
+
+ljung_box_test <- Box.test(df$residuals, lag = 20, type = "Ljung-Box")
+print(ljung_box_test)
+```
+
+### Conclusiones
+
+El modelo Prophet de Facebook si bien tiene la configuración habilitada
+para captar regresores en una serie de tiempo, el volumen de festivos
+repercute altamente a la hora de entrenar el modelo
+
+En primera instancia al separar un dataset de entrenamiento y prueba ,
+la cantidad de festivos al no ser uniformes , el modelo no puede
+explicar la variabilidad de los datos por lo que su R2 es negativo
+
+Como alternativa se realiza la validación cruzada pero no logra crear
+los particionamiento de datos, por esta razón su R2 es negativo\
+Cuando realizamos el modelo con todos los datos las métricas de error
+(MAE,MSE,RMSE,R², MAPE) muestran que el modelo **Si** captura tendencias
+y patrones de tráfico "Payload 4G" con la incorporación de las
+festividades en "Holidays" ,pero tenemos el problema del sobre ajuste ya
+el modelo se adapta a lo que ya conoce, pero no generaliza los datos
+nuevos y adicional existe una alta auto correlación de residuos
 
 ## Regresión lineal en series de tiempo
 
@@ -849,7 +1162,6 @@ Las métricas de error (MAE,MSE,RMSE,R², MAPE) muestran que modelo NO captura t
 head(df,5)
 ```
 
-
 ```{r rs, echo=FALSE,message=FALSE,warning=FALSE}
 library(dynlm)
 library(zoo)
@@ -857,20 +1169,16 @@ library(fpp3)
 
 ```
 
-
-```{r}
-data_sitio <- read.csv("data_sitio.csv", sep = ";")
-data_sitio$M_FECHA_DIA <- as.Date(data_sitio$M_FECHA_DIA)
-data_sitio <- data_sitio[order(data_sitio$M_FECHA_DIA), ]
-df2 <- data_sitio[, c("M_FECHA_DIA", "PAYLOAD_4G","FIESTA")]
-df <- df2
-df <- df %>%
-  rename(ds = M_FECHA_DIA, y = PAYLOAD_4G)
-#df$ds <- as.Date(df$ds) 
-#df$y <- as.numeric(df$y)
+```{r reli_head}
+head(df)
 ```
 
-```{r}
+```{r rel_df}
+df$y <- as.numeric(df$y)
+df$FIESTA <- as.numeric(df$FIESTA)
+```
+
+```{r rl_tsible}
 library(tsibble)
 
 # Encuentra las filas duplicadas según el índice
@@ -879,16 +1187,31 @@ print(duplicated_rows)
 
 ```
 
-
-Convertimos los datos a un objeto tsibble, usando como indice la fecha "ds"
+Convertimos los datos a un objeto tsibble, usando como indice la fecha
+"ds"
 
 ```{r rs_ts}
 df_tsibble <- as_tsibble(df, index = ds)
 ```
 
+Definimos la s fechas futuras del 2024 delas festividades
+
+```{r rl_fest}
+fechas_festividades_futuras <- as.Date(c('2024-10-10', '2024-10-11', '2024-10-12', '2024-10-13', '2024-10-14'))
+```
+
+Creamos un tsibble con fechas futuras y replicar las festividades en
+estas fechas
+
+```{r rl_future_ar}
+futuro_ar <- new_data(df_tsibble, 365) %>%
+  mutate(FIESTA = ifelse(ds %in% fechas_festividades_futuras, 1, 0))
+```
+
 ### Modelo ARIMA con regresión
 
-Ajustamos el modelo ARIMA ala serie temporal usando la variable  "y" (PAYLOAD_4G)  , y utilizando un regresor "FIESTA"
+Ajustamos el modelo ARIMA ala serie temporal usando la variable "y"
+(PAYLOAD_4G) , y utilizando un regresor "FIESTA"
 
 ```{r rs_ar}
 fit <- df_tsibble %>%
@@ -898,47 +1221,99 @@ fit <- df_tsibble %>%
 ```{r rs_fit}
 report(fit)
 ```
-ARIMA(0,1,2): No hay terminos autoregresivos(AR=0) ,se realiza una diferencia (I=1), y hay dos medias moviles (MA=2).
 
-En el ma2 al tener un error de 0.0292 revertira con t-2 en el tiempo es decir los eventos pasados tienen repercusión sobre la serie de tiempo .
+ARIMA(3,1,1): Hay 3 términos auto regresivos(AR=3) ,se realiza una
+diferencia (I=1), y hay una media móvil (MA=1).
 
-El coeficiente de "FIESTA "es negativo , por cada unidad de aumento en "FIESTA"   el "PAYLOAD_4G " disminuye 4.4 unidades , el error de 63.2 indica que esta relación no es significativa
+Los auto regresores positivos de ar1(0.57) ar2(0.10) y ar3(0.071)
+indican la dependencia lineal con los valores anteriores en el tiempo
 
+En el "ma1" al tener un error de -0.98 el valor negativo indica una
+relación inversa con los errores pasados
+
+El "sma1" y el sma2" son los coeficientes de las partes de la media
+móvil estacional del modelo indican los errores estacionales pasados
+
+El coeficiente regresor "FIESTA" indica que un día festivo tiene un
+impacto positivo por cada unidad de aumento en de 181.22 en el
+PAYLOAD_4G
 
 ### Predicción
 
-
-Replicamos la variable FIESTAS en el ultimo año
-```{r rs_fiesta}
-ultimo_anio <- max(df$ds) - years(1)
-fechas_festividades_ultimo_anio <- df %>%
-  filter(ds > ultimo_anio & FIESTA == 1) %>%
-  pull(ds)
-
-# Crear un tsibble con fechas futuras y replicar las festividades en estas fechas
-futuro <- new_data(df_tsibble, 365) %>%
-  mutate(FIESTA = ifelse(format(ds, "%m-%d") %in% format(fechas_festividades_ultimo_anio, "%m-%d"), 1, 0))
-
-```
-
-
-Realizamos la prediccion teniendo encuenta los días de fiesta
+Realizamos la predicción teniendo en cuenta los días de fiesta
 
 ```{r rs_predic}
-predicciones <- fit %>%
-  forecast(new_data = futuro)
+prediccion_futura <- forecast(fit, new_data = futuro_ar)
 
-```
 
-```{r rs_plotpredec}
-autoplot(predicciones, df_tsibble) +
+autoplot(prediccion_futura, df_tsibble) +
   ggtitle("Predicciones ARIMA con FIESTA como Regresor Externo") +
   xlab("Fecha") + ylab("PAYLOAD_4G")
 ```
-### Analisis de residuos
 
+### Validacion con todo los datos
 
-Podemos ver que los residuos se parecen al "ruido blanco" ya que  estan bien distribuidos alrededor de cero .Podemos ver que el ARIMA  se ajusta bien alos datos ,aunque hay atipicos que toca investigar 
+```{r val_tod}
+actual <- as.numeric(df$y)
+predicted <- as.numeric(fitted(fit)$`.fitted`)
+
+head(predicted)
+```
+
+**Métricas de error**
+
+```{r rl_met}
+mae <- mean(abs(actual - predicted), na.rm = TRUE)
+mse <- mean((actual - predicted)^2, na.rm = TRUE)
+rmse <- sqrt(mse)
+ss_res <- sum((actual - predicted)^2, na.rm = TRUE)
+ss_tot <- sum((actual - mean(actual, na.rm = TRUE))^2, na.rm = TRUE)
+r_squared <- 1 - (ss_res / ss_tot)
+mape <- mean(abs((actual - predicted) / actual), na.rm = TRUE) * 100
+
+# Imprimir las métricas de rendimiento
+cat("MAE:", mae, "\n")
+cat("MSE:", mse, "\n")
+cat("RMSE:", rmse, "\n")
+cat("R²:", r_squared, "\n")
+cat("MAPE:", mape, "\n")
+```
+
+**MAE (Mean Absolute Error):** Esto significa que en promedio las
+predicciones están con una diferencia de 75 unidades
+
+**MSE (Mean Squared Error):** Penaliza los errores grandes
+
+**RMSE (Root Mean Squared Error):** Esta es la raiz cuadrada del MSE
+proporcioando la medida de de error en las mismas unidades de los datos
+originales
+
+**R² (Coeficiente de Determinación):** este Indica que el modelo explica
+el 87.5% de la variabilidad en los datos
+
+**MAPE (Mean Absolute Percentage Error:)**: Este indica que el error
+promedio es del 6.3%, proporciona una medida relativa del error respecto
+a los valores reales
+
+#### Analisis de residuos
+
+**Prueba Ljung_box_test:**
+
+```{r r_lung}
+residuos <- as.numeric(residuals(fit)$`.resid`)
+
+ljung_box_result <- Box.test(residuos, lag = 30, type = "Ljung-Box")
+print(ljung_box_result)
+```
+
+Dado que el valor -p es menor que 0.05 se rechaza la hipótesis nula que
+no existe auto correlaciones significativas en los residuos del modelo ,
+esto significa que los residuos no son completamente aleatorios por lo
+tanto el modelo puede no estar capturando toda la estructura dependiente
+en los datos
+
+**Grafico de residuos**
+
 ```{r rs_residuals}
 residuos <- residuals(fit)
 
@@ -946,33 +1321,1088 @@ residuos <- residuals(fit)
 autoplot(residuos) +
   ggtitle("Residuos del Modelo ARIMA")
 ```
-**ACF**:Se puede observar que hay un pico en el lag 7  , ya que esta por encima de los limites , esto indica que hayuna correlación alos 7 días
+
+Podemos ver que los residuos se parecen al "ruido blanco" ya que están
+bien distribuidos alrededor de cero .Podemos ver que el ARIMA se ajusta
+bien a los datos ,aunque hay atípicos que toca investigar
+
+**ACF**:Se puede observar que hay un pico en el lag 6 y 21 , ya que esta
+por encima de los limites , esto indica que hay una correlación
 
 ```{r rs_acf}
 autoplot(ACF(residuos)) +
   ggtitle("ACF de los Residuos")
 
 ```
-**PACF:** Al igual que el anterior tiene un pico en el lag 7, esto indica que hay una correlación parcial de los residuos alos 7 dias
+
+**PACF:** Tiene un pico el lag 8, 21, 28, esto indica que hay una
+correlación parcial de los residuos a los 7 días
+
 ```{r rs_pacf}
 autoplot(PACF(residuos)) +
   ggtitle("PACF de los Residuos")
 ```
-**Prueba Ljung_box_test:**
-```{r rs_lgung}
-ljung_box_test <- residuos %>%
-  features(.resid, ljung_box, lag = 10)
-
-ljung_box_test
-```
-
-
-Dado que el valor -p es menor que 0.05 se rechaza la hipotesis nula que
-no existe autocorrelaciones significativas en los residuos del modelo ,
-esto significa que los residuos no son completamente aleatorios por lo
-tanto el modelo puede no estar capturando toda la estructura dependiente en los datos
 
 ### Conclusiones
 
-Aunque el modelo ARIMA con la variable de regrsion "FIESTA" , la evidencia de autocorrelación residual y la periocidad semana sugiere realizar ajustes en el modelo para obtener predicciones más precisas
+Aunque el modelo ARIMA con la variable de regresión "FIESTA" muestra en
+la métricas de rendimiento buenas con una capacidad predictiva con el
+87.5% capturando así la mayoría de la variabilidad de datos, sin embargo
+la prueba de Ljung - Box y el análisis de ACF y PACF indican que hay
+auto correlación de residuos , por lo cual el modelo no a capturado
+todas las dependencias de los datos por lo que las predicciones podrían
+llegar hacer poco confiables
 
+## Redes Neuronales de Elman
+
+ELMAN es un tipo de red neuronal recurrente Simples0 (SRN) son una
+mejora a de las redes ""feedforward" ya que incluye una
+retroalimentación entre capas inmediatas contiguas
+
+### Elman con temporalidad diaria
+
+#### Cargue de datos
+
+Cargamos los datos diarios
+
+```{r eldlib, echo=FALSE ,warning=FALSE,error=FALSE ,message=FALSE}
+# Cargar librerías necesarias
+library(zoo)
+library(quantmod)
+library(Metrics)
+library(RSNNS)
+```
+
+```{r eld_data}
+data_el <- read.csv("data_sitio_smoothed.csv", sep = ",")
+data_el$M_FECHA_DIA <- as.Date(data_el$M_FECHA_DIA)
+data_el <- data_el[order(data_el$M_FECHA_DIA), ]
+head(data_el)
+```
+
+Creamos el objeto como serie temporal , como los datos son temporales
+creamos la frecuencia tomando el mínimo y el máximo del campo
+"M_FECHA_DIA"
+
+```{r eld_m_ts}
+data_ts <- ts(data_el$PAYLOAD_4G_smoo_mean, start = c(as.numeric(format(min(data_el$M_FECHA_DIA), "%Y")), as.numeric(format(min(data_el$M_FECHA_DIA), "%j"))), frequency = 365)
+head(data_ts,30)
+```
+
+#### Normalizamos los datos
+
+Colocamos la serie en valores normalizados de PAYLOAD, como se puede
+apreciar en la gráfica
+
+```{r eld_norm}
+Z <- as.ts(data_ts, F)
+S <- (Z - min(Z)) / (max(Z) - min(Z))
+#head(S,100)
+plot(S)
+```
+
+**División de datos de entrenamiento y pruebas**
+
+```{r eld_test}
+tamano_total <- length(S)
+tamano_total
+tamano_train <- round(tamano_total * 0.75)
+tamano_train
+train <- 1:tamano_train
+test <- (tamano_train + 1):tamano_total
+```
+
+#### Construcción de la Red Neuronal
+
+Creamos un dataframe con n columnas para la red neuronal , en esta caso
+vamos a realizar 12 lags que serán recorridas por la función lapply que
+su vez ejecutara una función lag de la librería zoo para que itere cada
+(k) lags, debido a los desplazamientos por los "lags" se generan varios
+nulos los cuales son reitrados en"slogN1" los cuales son almacenados en
+un datatable
+
+```{r eld_rlag}
+y <- as.zoo(S)
+lags <- 12
+inputs <- do.call(cbind, lapply(1:lags, function(k) Lag(y, k)))
+slogN <- cbind(y, inputs) 
+slogN1 <- slogN[-(1:lags), ]
+DT::datatable(slogN1)
+```
+
+**Definición de Inputs y Outputs**
+
+**Inputs** de los valores almacenados en "slogN1" tomamos a partir de la
+de la segunda columna donde empiezan los retardos.
+
+**Outputs** tomamos la primera columna es la serie temporal original "y"
+
+```{r eld_inpu}
+inputs <- slogN1[, 2:(lags + 1)]
+outputs <- slogN1[, 1]
+
+```
+
+#### Entrenamiento Red Neuronal
+
+Utilizamos como salidas "inputs" la cual es la matriz de lags de la
+serie temporal y train es el vector de se usaran para entrenar el
+modelo, en el "output" tenemos el vectores de los valores originales de
+la serie temporal y "train" indica las salidas que se usaran como
+entrenamiento , se usaran 5 neuronas (size=5), con una tasade
+aprendizaje de (0.1) con 10mil iteraciones
+
+```{r eld_mod}
+set.seed(42)
+fit <- elman(inputs[train, ], outputs[train], size = 5 , learnFuncParams = c(0.1), maxit = 500)
+```
+
+**Gráfica de error Iterativo**
+
+En el eje "X" esta las 500 iteraciones configuradas en el modelo, y en
+el eje "Y" representa el error cuadrático de la diferencia entre los
+valores predichos y los valores reales. Al ver la gráfica durante las
+primeras 100 iteraciones disminuye rápidamente lo que sugiere que
+aprende rápidamente y ajusta sus pesos de manera eficiente para reducir
+el error.
+
+```{r eld_plot}
+# Graficar el error iterativo
+plotIterativeError(fit, main = "Iterative Error for 5 Neuron")
+
+```
+
+#### Predicción
+
+Utilizamos la función "predict" con el resultado del modelo "fit" y
+traemos los valor originales en la variable "actual", luego
+desnormalizamos los valores
+
+```{r eld_predic}
+test <- (tamano_train + 1):nrow(inputs)
+pred <- predict(fit, inputs[test, ])
+actual <- as.vector(outputs[test])
+# Desnormalizar predicciones y valores reales
+pred <- pred * (max(Z) - min(Z)) + min(Z)
+actual <- actual * (max(Z) - min(Z)) + min(Z)
+```
+
+**Visualización de la Predicción**
+
+```{r eld_plotpred}
+plot(actual, type = "l", col = "blue", ylab = "Valor", xlab = "Índice")
+lines(pred, col = "red")
+legend("topleft", legend = c("Actual", "Predicted"), col = c("blue", "red"), lty = 1)
+```
+
+#### Métricas de error
+
+Todas las métricas los valores predichos están alejadas de los valores
+reales como lo podemos ver con el MSE ,MAE y RMSE , el R2 solo puede
+explicar el 20.6% de la variabilidad y el MAPE nos confirma el promedio
+del modelo esetan desviadas 2916 unidades
+
+```{r eld_error}
+mse_value <- mse(outputs[test], pred)
+mae_value <- mae(outputs[test], pred)
+rmse_value <- rmse(outputs[test], pred)
+r2_value <- cor(outputs[test], pred)^2
+mape_value <- mape(outputs[test], pred)
+cat("MSE:", mse_value, "\n")
+cat("MAE:", mae_value, "\n")
+cat("RMSE:", rmse_value, "\n")
+cat("R²:", r2_value, "\n")
+cat("MAPE:", mape_value, "\n")
+```
+
+### Elman con temporalidad Semanal
+
+Para nuestro caso lo que se hará es realizar la agregación semanal
+usando año y semana , creamos la agrupación en la variable weekly_data
+
+```{r els_data}
+data_el$week <- format(data_el$M_FECHA_DIA, "%Y-%U")
+data_el$year <- format(data_el$M_FECHA_DIA, "%Y")
+weekly_data <- aggregate(PAYLOAD_4G_smoo_mean ~ year + week, data_el, sum)
+head(weekly_data,5)
+```
+
+Creamos la serie temporal semanal tomando la mínima semana del año con
+las variables start_year y start_week para crear el la serie temporal
+
+```{r els_ts}
+start_year <- as.numeric(format(min(data_el$M_FECHA_DIA), "%Y"))
+start_week <- as.numeric(format(min(data_el$M_FECHA_DIA), "%U"))
+data_ts <- ts(weekly_data$PAYLOAD_4G_smoo_mean, start = c(start_year, start_week), frequency = 52)
+head(data_ts,5)
+```
+
+#### Normalizamos los datos
+
+Colocamos la serie en valores normalizados de PAYLOAD, como se puede
+apreciar en la gráfica
+
+```{r els_norm}
+Z <- as.ts(data_ts, F)
+S <- (Z - min(Z)) / (max(Z) - min(Z))
+plot(S)
+```
+
+**División de datos de entrenamiento y pruebas**
+
+Dividimos los conjunto de entrenamiento con el 75% de la data y el 25%
+para pruebas
+
+```{r els_test}
+tamano_total <- length(S)
+tamano_train <- round(tamano_total * 0.75)
+train <- 1:tamano_train
+test <- (tamano_train + 1):tamano_total
+
+```
+
+#### Construcción de la red Neuronal
+
+Creamos un dataframe con n columnas para la red neuronal , en esta caso
+vamos a realizar 12 lags que serán recorridas por la función lapply que
+su vez ejecutara una función lag de la librería zoo para que itere cada
+(k) lags, debido a los desplazamientos por los "lags" se generan varios
+nulos los cuales son retirados en"slogN1" los cuales son almacenados en
+un datatable
+
+```{r els_lag}
+
+# Crear matriz de lags
+y <- as.zoo(S)
+lags <- 20
+inputs <- do.call(cbind, lapply(1:lags, function(k) Lag(y, k)))
+slogN <- cbind(y, inputs)
+slogN1 <- slogN[-(1:lags), ]
+
+```
+
+**Definición de Inputs y Outputs**
+
+**Inputs:** de los valores almacenados en "slogN1" tomamos a partir de
+la de la segunda columna donde empiezan los retardos.
+
+**Outputs:** tomamos la primera columna es la serie temporal original
+"y"
+
+```{r els_input}
+inputs <- slogN1[, 2:(lags + 1)]
+outputs <- slogN1[, 1]
+```
+
+#### Entrenamiento Red Neuronal
+
+Utilizamos como salidas "inputs" la cual es la matriz de lags de la
+serie temporal y "tain" es el vector de se usara para entrenar el
+modelo, en el "output" tenemos el vectores de los valores originales de
+la serie temporal y "train" indica las salidas que se usaran como
+entrenamiento , se usaran 5 neuronas (size=5), con una tasa de
+aprendizaje de (0.1) con 500 iteraciones, el error cuadrático baja
+exponencialmente a medida que aumentan las iteraciones
+
+```{r els_mod}
+set.seed(42)
+fit <- elman(inputs[train, ], outputs[train], size = 5, learnFuncParams = c(0.1), maxit = 500)
+# Graficar el error iterativo
+plotIterativeError(fit, main = "Iterative Error for 5 Neuron")
+```
+
+#### Predicción
+
+Utilizamos la función "predict" con el resultado del modelo "fit" y
+traemos los valor originales en la variable "actual", luego des
+normalizamos los valores
+
+```{r els_pred}
+test <- (tamano_train + 1):nrow(inputs)
+pred <- predict(fit, inputs[test, ])
+actual <- as.vector(outputs[test])
+
+# Desnormalizar predicciones y valores reales
+pred <- pred * (max(Z) - min(Z)) + min(Z)
+actual <- actual * (max(Z) - min(Z)) + min(Z)
+
+```
+
+**Visualización de la Predicción**
+
+```{r}
+plot(actual, type = "l", col = "blue", ylab = "Valor", xlab = "Índice")
+lines(pred, col = "red")
+legend("topleft", legend = c("Actual", "Predicted"), col = c("blue", "red"), lty = 1)
+```
+
+#### Métricas de error
+
+Todas las métricas los valores predichos están alejadas de los valores
+reales , el R2 solo puede explicar el 5% de la variabilidad, por lo cual
+el error incrementa en todas las demás métricas MSE,MAE,RMSE y MAPE
+
+```{r els_error}
+
+# Calcular y mostrar las métricas de error
+mse_value <- mse(outputs[test], pred)
+mae_value <- mae(outputs[test], pred)
+rmse_value <- rmse(outputs[test], pred)
+r2_value <- cor(outputs[test], pred)^2
+mape_value <- mape(outputs[test], pred)
+
+cat("MSE:", mse_value, "\n")
+cat("MAE:", mae_value, "\n")
+cat("RMSE:", rmse_value, "\n")
+cat("R²:", r2_value, "\n")
+cat("MAPE:", mape_value, "\n")
+```
+
+### Elman con temporalidad diaria con Regresor
+
+#### Cargue de datos
+
+Seleccionamos las columnas para el modelo
+
+```{r elrdatos}
+data_el <- data_el %>%
+  select(M_FECHA_DIA, PAYLOAD_4G_smoo_mean, FIESTA)
+head(data_el)
+```
+
+Verificamos la columna "FIESTA" para incluirla
+
+```{r elr_sel}
+library(dplyr)
+data_el <- data_el %>%
+  select(M_FECHA_DIA, PAYLOAD_4G_smoo_mean, FIESTA)
+head(data_el)
+```
+
+Agregamos fechas futuras
+
+```{r elr_fes}
+future_festivities <- as.Date(c('2024-10-10', '2024-10-11', '2024-10-12', '2024-10-13', '2024-10-14'))
+future_dates <- seq.Date(from = max(data_el$M_FECHA_DIA) + 1, by = "day", length.out = length(future_festivities))
+
+```
+
+Verificamos que el dataset "future_dat" contenga las mimas columnas que
+"data_el"
+
+```{r elr_diasfut}
+future_data <- data.frame(M_FECHA_DIA = future_dates, PAYLOAD_4G_smoo_mean = NA, FIESTA = ifelse(future_dates %in% future_festivities, 1, 0))
+all_cols <- union(names(data_el), names(future_data))
+data_el <- data_el[, all_cols, drop = FALSE]
+future_data <- future_data[, all_cols, drop = FALSE]
+```
+
+Unimos los datos existentes "data_el" con los futuros "future_data"
+
+```{r elr_union}
+data_el <- rbind(data_el, future_data)
+```
+
+Creamos objetos de serie temporal "data_ts" y para los festivos
+"data_fiestas"
+
+```{r elr_seie_tem}
+# Crear la serie temporal
+data_ts <- ts(data_el$PAYLOAD_4G_smoo_mean, start = c(as.numeric(format(min(data_el$M_FECHA_DIA), "%Y")), as.numeric(format(min(data_el$M_FECHA_DIA), "%j"))), frequency = 365)
+data_fiestas <- ts(data_el$FIESTA, start = c(as.numeric(format(min(data_el$M_FECHA_DIA), "%Y")), as.numeric(format(min(data_el$M_FECHA_DIA), "%j"))), frequency = 365)
+
+```
+
+#### Normalización de los datos
+
+Normalizamos la serie temporal de "PAYLOAD_4G_smoo_mean" en "S" asu
+nismo para la "data_fiestas" en la variable "F"
+
+```{r elr_normdato}
+Z <- as.ts(data_ts, F)
+S <- (Z - min(Z, na.rm = TRUE)) / (max(Z, na.rm = TRUE) - min(Z, na.rm = TRUE))
+F <- (data_fiestas - min(data_fiestas)) / (max(data_fiestas) - min(data_fiestas))
+
+```
+
+#### Construcción de la Red Neuronal
+
+Creamos el objeto de clase "zoo" para el manejo de series temporales y
+establecemos la cantidad de retardos(lags=12)
+
+```{r elr_zoo}
+y <- as.zoo(S)
+lags <- 12
+```
+
+Creamos una lista con 12 series temporales cada una con un
+retraso(1,2,3.....12) y las incluimios en una matriz tanto para nuestra
+variable a predecir en "inputs" , hacemos lo mismos en la variable
+"FIESTAS" en "fiestas_lag"
+
+```{r elr_input}
+inputs <- do.call(cbind, lapply(1:lags, function(k) Lag(y, k)))
+fiestas_lag <- do.call(cbind, lapply(1:lags, function(k) Lag(F, k)))
+
+```
+
+Combinamos la series retrasadas en una sola matriz "inputs"
+
+```{r elrunion2}
+inputs <- cbind(inputs, fiestas_lag)
+```
+
+En la variable slogN colocamos la serie original "y" con la matri de
+"inputs" que contiene los valores retrasados. Luego en sLogN! elimina
+las primeras 12 filas de slogN ya que contiene las primeras 12 filas
+nulas"NA" .Almacenamos en "inputs" las columnas retrasadas de "y" y de
+"f" y en "outputs" la serie original "y"
+
+```{r elr_sal}
+slogN <- cbind(y, inputs)
+slogN1 <- slogN[-(1:lags), ]
+
+inputs <- slogN1[, 2:(lags + 1 + lags)]
+outputs <- slogN1[, 1]
+```
+
+**División de datos de entrenamiento y pruebas**
+
+Elimminamos filas nulas , y luego creamos el data set de entrenamiento
+con el 75% de los datos y el de pruebas con el 25%, verificamos el
+tamaño y si contiene Nulos"NA"
+
+```{r elt_reain}
+complete_cases <- complete.cases(inputs, outputs)
+inputs <- inputs[complete_cases, ]
+outputs <- outputs[complete_cases]
+
+tamano_total <- nrow(inputs)
+tamano_train <- round(tamano_total * 0.75)
+train_indices <- 1:tamano_train
+test_indices <- (tamano_train + 1):tamano_total
+
+inputs_train <- inputs[train_indices, ]
+outputs_train <- outputs[train_indices]
+inputs_test <- inputs[test_indices, ]
+outputs_test <- outputs[test_indices]
+
+anyNA(inputs_train)
+anyNA(outputs_train)
+```
+
+#### Entrenamiento Red Neuronal
+
+Utilizamos como salidas "inputs_train" la cual es la matriz de lags de
+la serie temporal y "output_train" es el vector de se usara para
+entrenar el modelo, se usaran 5 neuronas (size=5), con una tasa de
+aprendizaje de (0.1) con mil iteraciones
+
+```{r elr_-fit}
+fit <- elman(inputs_train, outputs_train, size = c(5), learnFuncParams = c(0.1), maxit = 1000)
+```
+
+**Gráfica de error iterativo**
+
+En el eje "X" esta las 1000 iteraciones configuradas en el modelo, y en
+el eje "Y" representa el error cuadrático de la diferencia entre los
+valores predichos y los valores reales. Al ver la gráfica durante las
+primeras 50 iteraciones disminuye rápidamente lo que sugiere que aprende
+rápidamente y ajusta sus pesos de manera eficiente para reducir el
+error.
+
+```{r elr_graferror}
+plotIterativeError(fit, main = "Iterative Error for 5 Neuron")
+```
+
+#### Predicción
+
+Utilizamos la función "predict" con el resultado del modelo "fit" y
+traemos los valor originales en la variable "actual", luego
+desnormalizamos los valores
+
+```{r elr_pred}
+pred <- predict(fit, inputs_test)
+actual <- as.vector(outputs_test)
+
+#Desnormalizar
+pred <- pred * (max(Z, na.rm = TRUE) - min(Z, na.rm = TRUE)) + min(Z, na.rm = TRUE)
+actual <- actual * (max(Z, na.rm = TRUE) - min(Z, na.rm = TRUE)) + min(Z, na.rm = TRUE)
+
+
+#verifica ancho
+if (length(pred) != length(actual)) {
+  stop("Las longitudes de 'pred' y 'actual' no coinciden.")
+}
+
+
+```
+
+**Visualización de la Predicción**
+
+```{r elr_plot}
+
+plot(actual, type = "l", col = "blue", ylab = "Valor", xlab = "Indice")
+lines(pred, col = "red")
+legend("topleft", legend = c("Actual", "Predicted"), col = c("blue", "red"), lty = 1)
+```
+
+#### Métricas de Error
+
+Todas las métricas los valores predichos están alejadas de los valores
+reales como lo podemos ver con el MSE ,MAE y RMSE , el R2 solo puede
+explicar el 35.6% de la variabilidad y el MAPE nos confirma el promedio
+del modelo estan desviadas 2916 unidades
+
+```{r elr_meterror}
+mse_value <- mse(actual, pred)
+mae_value <- mae(actual, pred)
+rmse_value <- rmse(actual, pred)
+r2_value <- cor(actual, pred)^2
+mape_value <- mape(actual, pred)
+cat("MSE:", mse_value, "\n")
+cat("MAE:", mae_value, "\n")
+cat("RMSE:", rmse_value, "\n")
+cat("R²:", r2_value, "\n")
+cat("MAPE:", mape_value, "\n")
+```
+
+### Conclusiones
+
+El modelo de red Neuronal simple "Elman" con temporalidad diaria tiene
+un rendimiento significativamente mejor que con temporalidad semanal en
+todas las métricas de errores alto y la capacidad explicativa del R2 es
+baja , En ambos modelos se tuvieron suavizado de outliers por media de
+media móvil , sin embargo no mejoro significativamente .EL modelo con
+temporalidad diaria aunque con errores altos mejora la capacidad de
+explicar el modelo con el R2 en comparación del semanal.
+
+Al utilizar el modelo diario Elman con una variable regresora "FIESTA"
+se logro explicar el 27% de la variabilidad del modelo pero sigue
+estando distante de un modelo que logre predecir con un porcentaje de
+error mínimo .Los modelos no pueden capturar la variabilidad de los
+datos
+
+## Redes Neuronales Jordan
+
+Las redes neuronales Jordan son similares a las Elman, pero en lugar de
+usar el estado oculto como entrada recurrente, utilizan la salida de la
+red como entrada recurrente.
+
+### Jordan con temporalidad diaria
+
+```{r jd_liv ,echo=FALSE, warning=FALSE, message=FALSE,error=FALSE}
+# Cargar librerías necesarias
+library(zoo)
+library(quantmod)
+library(Metrics)
+library(RSNNS)
+```
+
+#### Cargue de datos
+
+Cargamos los datos diarios
+
+Creamos el objeto como serie temporal , como los datos son temporales
+creamos la frecuencia tomando el mínimo y el máximo del campo
+"M_FECHA_DIA"
+
+```{r jd_ventana}
+start_year <- as.numeric(format(min(data_el$M_FECHA_DIA), "%Y"))
+start_day <- as.numeric(format(min(data_el$M_FECHA_DIA), "%j"))
+data_ts <- ts(data_el$PAYLOAD_4G_smoo_mean, start = c(start_year, start_day), frequency = 365)
+head(data_ts,5)
+
+```
+
+#### Normalizamos los datos
+
+Colocamos la serie en valores normalizados de PAYLOAD, como se puede
+apreciar en la gráfica
+
+```{r jd_norm}
+Z <- as.ts(data_ts, F)
+S <- (Z - min(Z, na.rm = TRUE)) / (max(Z, na.rm = TRUE) - min(Z, na.rm = TRUE))
+
+S <- S[is.finite(S)]
+plot(S)
+```
+
+**División de datos de entrenamiento y pruebas**
+
+```{r jd_entrena}
+tamano_total <- length(S)
+tamano_train <- round(tamano_total * 0.75)
+train <- 1:tamano_train
+test <- (tamano_train + 1):tamano_total
+```
+
+#### Construcción de la Red Neuronal
+
+Creamos un dataframe con n columnas para la red neuronal , en esta caso
+vamos a realizar 12 lags que serán recorridas por la función lapply que
+su vez ejecutara una función lag de la librería zoo para que itere cada
+(k) lags, debido a los desplazamientos por los "lags" se generan varios
+nulos los cuales son retirados en"slogN1" los cuales son almacenados en
+un datatable
+
+```{r jd_lags}
+y <- as.zoo(S)
+lags <- 12
+inputs <- do.call(cbind, lapply(1:lags, function(k) Lag(y, k)))
+slogN <- cbind(y, inputs)
+slogN1 <- slogN[-(1:lags), ]
+```
+
+**Definición de Inputs y Outputs**
+
+**Inputs:** de los valores almacenados en "slogN1" tomamos a partir de
+la de la segunda columna donde empiezan los retardos
+
+**Outputs:** tomamos la primera columna es la serie temporal original
+"y"
+
+```{r jd_inputs}
+
+inputs <- slogN1[, 2:(lags + 1)]
+outputs <- slogN1[, 1]
+```
+
+#### Entrenamiento Red Neuronal
+
+Utilizamos como salidas "inputs" la cual es la matriz de lags de la
+serie temporal y train es el vector de se usaran para entrenar el
+modelo, en el "output" tenemos el vectores de los valores originales de
+la serie temporal y "train" indica las salidas que se usaran como
+entrenamiento , se usaran 5 neuronas (size=5), con una tasade
+aprendizaje de (0.1) con 10mil iteraciones. Luego generamos el gráfico
+de error iterativo donde podemos ver como a medida que aumentan las
+Iteraciones , disminuye el error cuadrático.
+
+```{r jd_entre}
+set.seed(42)
+fit <- jordan(inputs[train, ], outputs[train], size = 5, learnFuncParams = c(0.1), maxit = 500)
+plotIterativeError(fit, main = "Iterative Error for 5 Neuron Jordan")
+
+
+```
+
+#### Predicción
+
+Utilizamos la función "predict" con el resultado del modelo "fit" y
+traemos los valor originales en la variable "actual", luego
+desnormalizamos los valores
+
+```{r jd_predic}
+test <- (tamano_train + 1):nrow(inputs)
+pred <- predict(fit, inputs[test, ])
+actual <- as.vector(outputs[test])
+
+# Desnormalizar predicciones y valores reales
+pred <- pred * (max(Z, na.rm = TRUE) - min(Z, na.rm = TRUE)) + min(Z, na.rm = TRUE)
+actual <- actual * (max(Z, na.rm = TRUE) - min(Z, na.rm = TRUE)) + min(Z, na.rm = TRUE)
+
+
+```
+
+**Visualización des la predicción**
+
+```{r}
+plot(actual, type = "l", col = "blue", ylab = "Valor", xlab = "Índice")
+lines(pred, col = "red")
+legend("topleft", legend = c("Actual", "Predicted"), col = c("blue", "red"), lty = 1)
+```
+
+#### Métricas de Error
+
+Todas las métricas los valores predichos están alejadas de los valores
+reales como lo podemos ver con el MSE ,MAE y RMSE , el R2 solo puede
+explicar el 20.7% de la variabilidad y el MAPE nos confirma el promedio
+del modelo esetan desviadas 2916 unidades
+
+```{r meterrire}
+
+# Calcular y mostrar las métricas de error
+mse_value <- mse(outputs[test], pred)
+mae_value <- mae(outputs[test], pred)
+rmse_value <- rmse(outputs[test], pred)
+r2_value <- cor(outputs[test], pred)^2
+mape_value <- mape(outputs[test], pred)
+
+cat("MSE:", mse_value, "\n")
+cat("MAE:", mae_value, "\n")
+cat("RMSE:", rmse_value, "\n")
+cat("R²:", r2_value, "\n")
+cat("MAPE:", mape_value, "\n")
+```
+
+### Jordan con temporalidad Semanal
+
+```{r js_lib,  echo=FALSE,warning=FALSE,error=FALSE}
+# Cargar librerías necesarias
+library(zoo)
+library(quantmod)
+library(Metrics)
+library(RSNNS)
+
+```
+
+#### Cargue de datos
+
+\`
+
+Para nuestro caso lo que se hará es realizar la agregación semanal
+usando año y semana , creamos la agrupación en la variable weekly_data
+
+```{r js_data}
+data_el$week <- format(data_el$M_FECHA_DIA, "%Y-%U")
+data_el$year <- format(data_el$M_FECHA_DIA, "%Y")
+weekly_data <- aggregate(PAYLOAD_4G_smoo_mean ~ year + week, data_el, sum)
+```
+
+Creamos la serie temporal semanal tomando la mínima semana del año con
+las variables start_year y start_week para crear el la serie temporal
+
+```{r js_ts}
+# Crear un objeto de serie temporal semanal
+start_year <- as.numeric(format(min(data_el$M_FECHA_DIA), "%Y"))
+start_week <- as.numeric(format(min(data_el$M_FECHA_DIA), "%U"))
+data_ts <- ts(weekly_data$PAYLOAD_4G_smoo_mean, start = c(start_year, start_week), frequency = 52)
+head(data_ts,5)
+```
+
+#### Normalizamos los datos
+
+Colocamos la serie en valores normalizados de PAYLOAD, como se puede
+apreciar en la gráfica
+
+```{r js_norm}
+# Normalizar la serie temporal
+Z <- as.ts(data_ts, F)
+S <- (Z - min(Z)) / (max(Z) - min(Z))
+plot(S)
+
+```
+
+**División de datos de entrenamiento y pruebas**
+
+Dividimos los conjunto de entrenamiento con el 75% de la data y el 25%
+para pruebas
+
+```{r js_test}
+tamano_total <- length(S)
+tamano_train <- round(tamano_total * 0.75)
+train <- 1:tamano_train
+test <- (tamano_train + 1):tamano_total
+```
+
+#### Construcción de la red Neuronal
+
+Creamos un dataframe con n columnas para la red neuronal , en esta caso
+vamos a realizar 12 lags que serán recorridas por la función lapply que
+su vez ejecutara una función lag de la librería zoo para que itere cada
+(k) lags, debido a los desplazamientos por los "lags" se generan varios
+nulos los cuales son retirados en"slogN1" los cuales son almacenados en
+un datatable
+
+```{r js_lags}
+# Crear matriz de lags
+y <- as.zoo(S)
+lags <- 12
+inputs <- do.call(cbind, lapply(1:lags, function(k) Lag(y, k)))
+slogN <- cbind(y, inputs)
+slogN1 <- slogN[-(1:lags), ]
+```
+
+**Definición de Inputs y Outputs**
+
+**Inputs:** de los valores almacenados en "slogN1" tomamos a partir de
+la de la segunda columna donde empiezan los retardos.
+
+**Outputs:** tomamos la primera columna es la serie temporal original
+"y"
+
+```{r js_input}
+# Definir entradas y salidas
+inputs <- slogN1[, 2:(lags + 1)]
+outputs <- slogN1[, 1]
+```
+
+#### Entrenamiento Red Neuronal
+
+Utilizamos como salidas "inputs" la cual es la matriz de lags de la
+serie temporal y train es el vector de se usaran para entrenar el
+modelo, en el "output" tenemos el vectores de los valores originales de
+la serie temporal y "train" indica las salidas que se usaran como
+entrenamiento , se usaran 5 neuronas (size=5), con una tasa de
+aprendizaje de (0.1) con 500 iteraciones
+
+```{r js_mod}
+# Entrenar la red neuronal Jordan
+set.seed(42)
+fit <- jordan(inputs[train, ], outputs[train], size = 5, learnFuncParams = c(0.1), maxit = 500)
+# Graficar el error iterativo
+plotIterativeError(fit, main = "Iterative Error for 5 Neuron Jordan")
+
+```
+
+#### Predicción
+
+Utilizamos la función "predict" con el resultado del modelo "fit" y
+traemos los valor originales en la variable "actual", luego
+desnormalizamos los valores
+
+```{r js_pred}
+test <- (tamano_train + 1):nrow(inputs)
+pred <- predict(fit, inputs[test, ])
+actual <- as.vector(outputs[test])
+
+# Desnormalizar predicciones y valores reales
+pred <- pred * (max(Z) - min(Z)) + min(Z)
+actual <- actual * (max(Z) - min(Z)) + min(Z)
+```
+
+**Visualización de la predicción**
+
+```{r js_plotp_pred}
+plot(actual, type = "l", col = "blue", ylab = "Valor", xlab = "Índice")
+lines(pred, col = "red")
+legend("topleft", legend = c("Actual", "Predicted"), col = c("blue", "red"), lty = 1)
+```
+
+#### Métricas de error
+
+Todas las métricas los valores predichos están alejadas de los valores
+reales , el R2 solo puede explicar el 18.8% de la variabilidad
+
+```{r js_error}
+# Calcular y mostrar las métricas de error
+mse_value <- mse(outputs[test], pred)
+mae_value <- mae(outputs[test], pred)
+rmse_value <- rmse(outputs[test], pred)
+r2_value <- cor(outputs[test], pred)^2
+mape_value <- mape(outputs[test], pred)
+
+cat("MSE:", mse_value, "\n")
+cat("MAE:", mae_value, "\n")
+cat("RMSE:", rmse_value, "\n")
+cat("R²:", r2_value, "\n")
+cat("MAPE:", mape_value, "\n")
+
+```
+
+### Jordan con temporalidad diaria y regresor
+
+#### Cargue de datos
+
+Seleccionamos las columnas para el modelo
+
+```{r jdr_dat}
+library(dplyr)
+data_jordan <- data_el %>%
+  select(M_FECHA_DIA, PAYLOAD_4G_smoo_mean, FIESTA)
+head(data_jordan)
+
+```
+
+Agregamos fechas futuras
+
+```{r jdr_fech}
+future_festivities <- as.Date(c('2024-10-10', '2024-10-11', '2024-10-12', '2024-10-13', '2024-10-14'))
+future_dates <- seq.Date(from = max(data_jordan$M_FECHA_DIA) + 1, by = "day", length.out = length(future_festivities))
+
+```
+
+Verificamos que el dataset "future_dat" contenga las mismas columnas que
+"data_jordan"
+
+```{r jdr_fecha_fut}
+future_data <- data.frame(M_FECHA_DIA = future_dates, PAYLOAD_4G_smoo_mean = NA, FIESTA = ifelse(future_dates %in% future_festivities, 1, 0))
+all_cols <- union(names(data_jordan), names(future_data))
+data_jordan <- data_jordan[, all_cols, drop = FALSE]
+future_data <- future_data[, all_cols, drop = FALSE]
+
+```
+
+Unimos los datos existentes "data_jordan" con los futuros "future_data"
+
+```{r jdr_union}
+data_jordan <- rbind(data_jordan, future_data)
+```
+
+Creamos objetos de serie temporal "data_ts" y para los festivos
+"data_fiestas"
+
+```{r jdr_ts}
+
+data_ts <- ts(data_jordan$PAYLOAD_4G_smoo_mean, start = c(as.numeric(format(min(data_jordan$M_FECHA_DIA), "%Y")), as.numeric(format(min(data_jordan$M_FECHA_DIA), "%j"))), frequency = 365)
+data_fiestas <- ts(data_jordan$FIESTA, start = c(as.numeric(format(min(data_jordan$M_FECHA_DIA), "%Y")), as.numeric(format(min(data_jordan$M_FECHA_DIA), "%j"))), frequency = 365)
+
+```
+
+#### Normalización de datos
+
+Normalizamos la serie temporal de "PAYLOAD_4G_smoo_mean" en "S" así
+mismo para la "data_fiestas" en la variable "F", validamos los nulos en
+"S"
+
+```{r jdr_norm}
+Z <- as.ts(data_ts, F)
+S <- (Z - min(Z, na.rm = TRUE)) / (max(Z, na.rm = TRUE) - min(Z, na.rm = TRUE))
+F <- (data_fiestas - min(data_fiestas)) / (max(data_fiestas) - min(data_fiestas))
+
+```
+
+#### Construcción de la Red Neuronal
+
+Creamos el objeto de clase "zoo" para el manejo de series temporales y
+establecemos la cantidad de retardos(lags=12)
+
+```{r jdr_zoo}
+y <- as.zoo(S)
+lags <- 12
+
+```
+
+Creamos una lista con 12 series temporales cada una con un
+retraso(1,2,3.....12) y las incluimos en una matriz tanto para nuestra
+variable a predecir en "inputs", hacemos lo mismo en la variable
+"FIESTAS" en "fiestas_lag"
+
+```{r jdr_inputs}
+inputs <- do.call(cbind, lapply(1:lags, function(k) Lag(y, k)))
+fiestas_lag <- do.call(cbind, lapply(1:lags, function(k) Lag(F, k)))
+
+```
+
+Combinamos las series retrasadas en una sola matriz "inputs"
+
+```{r jdr_inputs_2}
+inputs <- cbind(inputs, fiestas_lag)
+
+```
+
+En la variable slogN colocamos la serie original "y" con la matriz de
+"inputs" que contiene los valores retrasados. Luego en slogN1 eliminamos
+las primeras 12 filas de slogN ya que contiene las primeras 12 filas
+nulas "NA". Almacenamos en "inputs" las columnas retrasadas de "y" y de
+"f" y en "outputs" la serie original "y"
+
+```{r jdr_slogn}
+slogN <- cbind(y, inputs)
+slogN1 <- slogN[-(1:lags), ]
+
+inputs <- slogN1[, 2:(lags + 1 + lags)]
+outputs <- slogN1[, 1]
+
+```
+
+**División de datos de entrenamiento y pruebas**
+
+Eliminamos filas nulas, y luego creamos el dataset de entrenamiento con
+el 75% de los datos y el de pruebas con el 25%, verificamos el tamaño y
+si contiene Nulos "NA"
+
+```{r jdr_train}
+complete_cases <- complete.cases(inputs, outputs)
+inputs <- inputs[complete_cases, ]
+outputs <- outputs[complete_cases]
+
+tamano_total <- nrow(inputs)
+tamano_train <- round(tamano_total * 0.75)
+train_indices <- 1:tamano_train
+test_indices <- (tamano_train + 1):tamano_total
+
+inputs_train <- inputs[train_indices, ]
+outputs_train <- outputs[train_indices]
+inputs_test <- inputs[test_indices, ]
+outputs_test <- outputs[test_indices]
+
+anyNA(inputs_train)
+anyNA(outputs_train)
+
+```
+
+#### Entrenamiento Red Neuronal
+
+Utilizamos como entradas inputs_train, la cual es la matriz de lags de
+la serie temporal, y outputs_train, que es el vector de salida que se
+usará para entrenar el modelo. Se usaran 5 neuronas (size=5), con una
+tasa de aprendizaje de (0.1) con mil iteraciones
+
+```{r jdr_model}
+fit <- jordan(inputs_train, outputs_train, size = c(5), learnFuncParams = c(0.1), maxit = 1000)
+
+```
+
+**Gráfica de error iterativo**
+
+En el eje "X" están las 1000 iteraciones configuradas en el modelo, y en
+el eje "Y" representa el error cuadrático de la diferencia entre los
+valores predichos y los valores reales. Al ver la gráfica durante las
+primeras 200 iteraciones disminuye rápidamente lo que sugiere que
+aprende rápidamente y ajusta sus pesos de manera eficiente para reducir
+el error.
+
+```{r jdr_plot_graf}
+plotIterativeError(fit, main = "Iterative Error for 5 Neuron")
+
+```
+
+#### Predicción
+
+Utilizamos la función predict con el resultado del modelo fit y traemos
+los valores originales en la variable actual, luego desnormalizamos los
+valores
+
+```{r jdr_preicr}
+pred <- predict(fit, inputs_test)
+actual <- as.vector(outputs_test)
+
+# Desnormalizar
+pred <- pred * (max(Z, na.rm = TRUE) - min(Z, na.rm = TRUE)) + min(Z, na.rm = TRUE)
+actual <- actual * (max(Z, na.rm = TRUE) - min(Z, na.rm = TRUE)) + min(Z, na.rm = TRUE)
+
+# Verifica ancho
+if (length(pred) != length(actual)) {
+  stop("Las longitudes de 'pred' y 'actual' no coinciden.")
+}
+
+```
+
+Visualización
+
+```{r jdr_vis}
+plot(actual, type = "l", col = "blue", ylab = "Valor", xlab = "Indice")
+lines(pred, col = "red")
+legend("topleft", legend = c("Actual", "Predicted"), col = c("blue", "red"), lty = 1)
+
+```
+
+#### Métricas de Error
+
+Calculamos y mostramos las métricas de error
+
+```{r jdr_meterror}
+mse_value <- mse(actual, pred)
+mae_value <- mae(actual, pred)
+rmse_value <- rmse(actual, pred)
+r2_value <- cor(actual, pred)^2
+mape_value <- mape(actual, pred)
+cat("MSE:", mse_value, "\n")
+cat("MAE:", mae_value, "\n")
+cat("RMSE:", rmse_value, "\n")
+cat("R²:", r2_value, "\n")
+cat("MAPE:", mape_value, "\n")
+
+```
+
+### Conclusiones
+
+El modelo Jordan en la temporalidad diaria tiene una ligera mejora en la
+capacidad explicativa y precisión en comparación con la temporalidad
+semanal , como ocurrio en las redes Elman , al incluir la variable
+"FIESTA" el modelo logra superar al diario ligeramente explicando el 34%
+de la variabilidad. En conclusión el modelo Jordan tiene problemas para
+capturar la dinámica de los datos con métricas de error altas y baja
+capacidad explicativa igual que el de Elman
